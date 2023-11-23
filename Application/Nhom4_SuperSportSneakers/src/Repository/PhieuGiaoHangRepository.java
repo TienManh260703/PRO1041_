@@ -37,10 +37,10 @@ public class PhieuGiaoHangRepository {
                     + "JOIN KHACHHANG AS KH ON KH.ID = PGH.IdKH "
                     + "	order by ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
             con = DBConnection.getConnect();
-            stm = con.createStatement();
+            pstm = con.prepareStatement(query);
             pstm.setInt(1, (page - 1) * limt);
             pstm.setInt(2, limt);
-            rs = stm.executeQuery(query);
+            rs = pstm.executeQuery();
             while (rs.next()) {
                 KhachHang khachHang = new KhachHang();
                 khachHang.setTenKhachHang(rs.getString("TenKhachHang"));
