@@ -173,8 +173,16 @@ public class PhieuGiaoHang {
     }
 
     public Object[] rowData(int iindex) {
+        
+        String result = (trangThai == null) ? "Giá trị null" :
+                (trangThai == 0 ? "Đang tạo" :
+                (trangThai == 1 ? "Chờ giao" :
+                (trangThai == 2 ? "Đang giao" :
+                (trangThai == 3 ? "Hẹn lại" :
+                "Hủy"))));
         return new Object[]{
-            iindex, maVanDon, idHD.getMaHoaDon(), idKH.getTenKhachHang(), idKH.getSdt(), giaShip, tenShip, sdtNNguoiNhan, sdtShip, ngayTao, ngayHoanThanh, this.setTrangThaiString(this.trangThai)
+            iindex, maVanDon, idHD.getMaHoaDon(), idKH.getTenKhachHang(), idKH.getSdt(), giaShip, tenShip, sdtShip, ngayTao, ngayHoanThanh,result
+//            trangThai=0 ? "Đang tạo":( (trangThai==1 ? "Chờ giao": (trangThai ==2 ? "Đang giao":(trangThai==3 ? "Hẹn lại" : "Hủy"))))
         };
     }
 

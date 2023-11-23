@@ -314,6 +314,11 @@ public class HoaDon {
         };
     }
 
+    public Object[] rowDataPGH (int i){
+        return new Object[]{
+            i , maHoaDon ,ngayTao , IdKH.getTenKhachHang()
+        };
+    }
     @Override
     public String toString() {
         return "HoaDon{" + "id=" + id + ", IdPGG=" + IdPGG + ", IdNV=" + IdNV + ", IdKH=" + IdKH + ", maHoaDon=" + maHoaDon + ", capBac=" + capBac + ", phanTramGG=" + phanTramGG + ", tienPhieuGiam=" + tienPhieuGiam + ", diemDoi=" + diemDoi + ", phuongThucTT=" + phuongThucTT + ", TienKhDua=" + tienKhDua + ", TienKhChuyenKhoan=" + tienKhChuyenKhoan + ", TienThua=" + tienThua + ", ThanhTien=" + thanhTien + ", NgayTao=" + ngayTao + ", NgayThanhToan=" + ngayThanhToan + ", hinhThucMua=" + hinhThucMua + ", trangThai=" + trangThai + '}';

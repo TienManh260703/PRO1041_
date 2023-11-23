@@ -32,7 +32,7 @@ public class PhieuGiaoHangRepository {
     public List<PhieuGiaoHang> getAll(int page, int limt) {
         List<PhieuGiaoHang> list = new ArrayList<>();
         try {
-            query = "SELECT PGH.ID ,  MaVanDon , MaHoaDon , TenKhachHang , SDTNguoiNhan , GiaShip , TenShip , SDTShip , PGH.NgayTaoPhieu ,NgayHoanThanhDon , PGH.TrangThai FROM PHIEUGIAOHANG AS PGH\n"
+            query = "SELECT PGH.ID ,  HD.ID AS IDHD ,  MaVanDon , MaHoaDon , TenKhachHang , SDTNguoiNhan , GiaShip , TenShip , SDTShip , PGH.NgayTaoPhieu ,NgayHoanThanhDon , PGH.TrangThai FROM PHIEUGIAOHANG AS PGH\n"
                     + "JOIN HOADON AS HD ON HD.ID = PGH.IdHoaDon\n"
                     + "JOIN KHACHHANG AS KH ON KH.ID = PGH.IdKH "
                     + "	order by ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";;;
@@ -46,8 +46,10 @@ public class PhieuGiaoHangRepository {
                 khachHang.setTenKhachHang(rs.getString("TenKhachHang"));
                 khachHang.setSdt(rs.getString("SDTNguoiNhan"));
                 HoaDon hoaDon = new HoaDon();
-                hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+                hoaDon.setId(rs.getLong("IDHD"));
 
+                hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+                System.out.println("Repository.PhieuGiaoHangRepository.getAll()"+rs.getInt("TrangThai"));
                 PhieuGiaoHang phieuGiaoHang = new PhieuGiaoHang();
                 phieuGiaoHang.setId(rs.getLong("ID"));
                 phieuGiaoHang.setIdHD(hoaDon);
@@ -68,8 +70,37 @@ public class PhieuGiaoHangRepository {
             return null;
         }
     }
-    
-     public int getRowCount() {
+
+    public List<HoaDon> listDSHD() {
+        List<HoaDon> list = new ArrayList<>();
+        try {
+            query = "SELECT HD.ID AS IDHD , MaHoaDon , KH.ID as IDKH , HD.NgayTao , TenKhachHang FROM HOADON AS HD\n"
+                    + "JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH\n"
+                    + "WHERE HD.HinhThucMua =1 AND HD.TrangThai = 0";
+            con = DBConnection.getConnect();
+            stm = con.createStatement();
+            rs = stm.executeQuery(query);
+            while (rs.next()) {
+                KhachHang khachHang = new KhachHang();
+                khachHang.setTenKhachHang(rs.getString("TenKhachHang"));
+                
+                khachHang.setId(rs.getLong("IDKH"));
+                HoaDon hoaDon = new HoaDon();
+                hoaDon.setIdKH(khachHang);
+                hoaDon.setId(rs.getLong("IDHD"));
+                hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+                hoaDon.setNgayTao(rs.getDate("NgayTao"));
+                list.add(hoaDon);
+
+            }
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public int getRowCount() {
         String countSql = "SELECT COUNT(*) AS totalRows FROM PHIEUGIAOHANG";
         Connection con = DBConnection.getConnect();
         Statement stm;
