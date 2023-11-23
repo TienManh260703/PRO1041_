@@ -49,7 +49,7 @@ public class PhieuGiaoHangRepository {
                 hoaDon.setId(rs.getLong("IDHD"));
 
                 hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
-                System.out.println("Repository.PhieuGiaoHangRepository.getAll()"+rs.getInt("TrangThai"));
+       
                 PhieuGiaoHang phieuGiaoHang = new PhieuGiaoHang();
                 phieuGiaoHang.setId(rs.getLong("ID"));
                 phieuGiaoHang.setIdHD(hoaDon);
