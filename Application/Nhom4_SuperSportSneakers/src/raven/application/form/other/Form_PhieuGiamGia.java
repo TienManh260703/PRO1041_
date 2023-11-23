@@ -111,7 +111,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
 
     private PhieuGiamGia getForm() {
         NhanVien nhanVien = new NhanVien(1L);
-        String maPhieu = "";
+        String maPhieu = txtMaPhieu.getText().trim();
         int max = servicePGG.getRowCountPGG();
         if (maPhieu.isEmpty()) {
             if (max < 10) {
@@ -302,10 +302,6 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         lblPageTTKH.setText(gioiHanPage + " / " + gioiHanPage);
         listPGG = servicePGG.getAllPGG(gioiHanPage, lmit);
         loadToTable(listPGG);
-    }
-
-    private void timKiem() {
-
     }
 
     /**

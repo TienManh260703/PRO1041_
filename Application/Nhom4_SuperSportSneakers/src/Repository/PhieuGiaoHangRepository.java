@@ -7,6 +7,7 @@ package Repository;
 import Model.HoaDon;
 import Model.KhachHang;
 import Model.PhieuGiaoHang;
+import Utils.XDate;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,10 +33,10 @@ public class PhieuGiaoHangRepository {
     public List<PhieuGiaoHang> getAll(int page, int limt) {
         List<PhieuGiaoHang> list = new ArrayList<>();
         try {
-            query = "SELECT PGH.ID ,  HD.ID AS IDHD ,  MaVanDon , MaHoaDon , TenKhachHang , SDTNguoiNhan , GiaShip , TenShip , SDTShip , PGH.NgayTaoPhieu ,NgayHoanThanhDon , PGH.TrangThai FROM PHIEUGIAOHANG AS PGH\n"
+            query = "SELECT PGH.ID ,  HD.ID AS IDHD ,  MaVanDon , MaHoaDon , TenKhachHang , PGH.DiaChi , SDTNguoiNhan , GiaShip , TenShip , SDTShip , PGH.NgayTaoPhieu , ĐonViVanChuyen ,NgayHoanThanhDon , PGH.TrangThai FROM PHIEUGIAOHANG AS PGH\n"
                     + "JOIN HOADON AS HD ON HD.ID = PGH.IdHoaDon\n"
                     + "JOIN KHACHHANG AS KH ON KH.ID = PGH.IdKH "
-                    + "	order by ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";;;
+                    + "	order by PGH.NgayTaoPhieu DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
             pstm.setInt(1, (page - 1) * limt);
@@ -45,6 +46,7 @@ public class PhieuGiaoHangRepository {
                 KhachHang khachHang = new KhachHang();
                 khachHang.setTenKhachHang(rs.getString("TenKhachHang"));
                 khachHang.setSdt(rs.getString("SDTNguoiNhan"));
+                khachHang.setDiaChi(rs.getString("DiaChi"));
                 HoaDon hoaDon = new HoaDon();
                 hoaDon.setId(rs.getLong("IDHD"));
 
@@ -61,6 +63,7 @@ public class PhieuGiaoHangRepository {
                 phieuGiaoHang.setSdtNNguoiNhan(rs.getString("SDTNguoiNhan"));
                 phieuGiaoHang.setNgayTao(rs.getDate("NgayTaoPhieu"));
                 phieuGiaoHang.setNgayHoanThanh(rs.getDate("NgayHoanThanhDon"));
+                phieuGiaoHang.setDonViVanChuyen(rs.getString("ĐonViVanChuyen"));
                 phieuGiaoHang.setTrangThai(rs.getInt("TrangThai"));
                 list.add(phieuGiaoHang);
             }
@@ -71,12 +74,41 @@ public class PhieuGiaoHangRepository {
         }
     }
 
+    public int update(PhieuGiaoHang phieuGiaoHang) {
+        try {
+            query = "UPDATE PHIEUGIAOHANG \n"
+                    + "SET TenNguoiNhan = ? , SDTNguoiNhan = ? , DiaChi = ? , TenShip = ? , SDTShip = ? , ĐonViVanChuyen = ? , NgayHoanThanhDon = ? , GiaShip = ? \n"
+                    + "WHERE MaVanDon LIKE ? ";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setString(1, phieuGiaoHang.getTenNguoiNhan());
+            pstm.setString(2, phieuGiaoHang.getSdtNNguoiNhan());
+            pstm.setString(3, phieuGiaoHang.getDiaChi());
+            pstm.setString(4, phieuGiaoHang.getTenShip());
+            pstm.setString(5, phieuGiaoHang.getSdtShip());
+            pstm.setString(6, phieuGiaoHang.getDonViVanChuyen());
+            pstm.setString(7, XDate.toString(phieuGiaoHang.getNgayHoanThanh(), "MM-dd-yyyy"));
+            pstm.setFloat(8, phieuGiaoHang.getGiaShip());
+            pstm.setString(9, phieuGiaoHang.getMaVanDon());
+            System.out.println("Repository.PhieuGiaoHangRepository.update()" + "      OKE");
+            return pstm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("Repository.PhieuGiaoHangRepository.update()");
+            Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+
+    }
+
     public List<HoaDon> listDSHD() {
         List<HoaDon> list = new ArrayList<>();
         try {
-            query = "SELECT HD.ID AS IDHD , MaHoaDon , KH.ID as IDKH , HD.NgayTao , TenKhachHang FROM HOADON AS HD\n"
+            query = "SELECT HD.ID AS IDHD, MaHoaDon, KH.ID AS IDKH, HD.NgayTao, TenKhachHang\n"
+                    + "FROM HOADON AS HD\n"
                     + "JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH\n"
-                    + "WHERE HD.HinhThucMua =1 AND HD.TrangThai = 0";
+                    + "WHERE HD.HinhThucMua = 1 AND HD.TrangThai = 1 AND NOT EXISTS (\n"
+                    + "    SELECT 1 FROM PHIEUGIAOHANG AS PGH WHERE PGH.IDHoaDon = HD.ID\n"
+                    + ");";
             con = DBConnection.getConnect();
             stm = con.createStatement();
             rs = stm.executeQuery(query);
@@ -122,6 +154,34 @@ public class PhieuGiaoHangRepository {
             Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
             return -1;
         }
+    }
+
+    public List<Object> listPGHCT(String maP) {
+        List<Object> list = new ArrayList<>();
+        try {
+            query = "SELECT MaHoaDon , TenNguoiNhan , PGH.NgayTaoPhieu , TenSP , SoLuong , HDCT.GiaBan , (SoLuong * HDCT.GiaBan) AS THANHTIEN  FROM HOADON\n"
+                    + "JOIN PHIEUGIAOHANG AS PGH ON PGH.IdHoaDon = HOADON.ID\n"
+                    + "JOIN HOADONCHITIET AS HDCT ON HDCT.IdHoaDon = HOADON.ID\n"
+                    + "JOIN CHI_TIET_SAN_PHAM AS CTSP ON CTSP.ID = HDCT.IdCTSP\n"
+                    + "JOIN SANPHAM AS SP ON SP.ID = CTSP.IdSP\n"
+                    + "WHERE MaVanDon LIKE ?";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setString(1, maP);
+            rs = pstm.executeQuery();
+            int i = 1;
+            while (rs.next()) {
+                Object[] ob = new Object[]{i, rs.getString("MaHoaDon"),
+                    rs.getString("TenNguoiNhan"), rs.getDate("NgayTaoPhieu"), rs.getString("TenSP"), rs.getInt("SoLuong"),
+                    rs.getFloat("GiaBan"), rs.getFloat("THANHTIEN")};
+                list.add(ob);
+            }
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+
     }
 
     public int getRowCount() {

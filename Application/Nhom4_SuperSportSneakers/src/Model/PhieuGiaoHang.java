@@ -181,8 +181,7 @@ public class PhieuGiaoHang {
                 (trangThai == 3 ? "Hẹn lại" :
                 "Hủy"))));
         return new Object[]{
-            iindex, maVanDon, idHD.getMaHoaDon(), idKH.getTenKhachHang(), idKH.getSdt(), giaShip, tenShip, sdtShip, ngayTao, ngayHoanThanh,result
-//            trangThai=0 ? "Đang tạo":( (trangThai==1 ? "Chờ giao": (trangThai ==2 ? "Đang giao":(trangThai==3 ? "Hẹn lại" : "Hủy"))))
+            iindex, maVanDon, idHD.getMaHoaDon(), idKH.getTenKhachHang(), idKH.getSdt(), idKH.getDiaChi(), giaShip, tenShip, sdtShip, ngayTao, ngayHoanThanh,result
         };
     }
 
