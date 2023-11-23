@@ -52,10 +52,11 @@ public class PhieuGiaoHangRepository {
                 phieuGiaoHang.setId(rs.getLong("ID"));
                 phieuGiaoHang.setIdHD(hoaDon);
                 phieuGiaoHang.setIdKH(khachHang);
+                phieuGiaoHang.setMaVanDon(rs.getString("MaVanDon"));
                 phieuGiaoHang.setSdtShip(rs.getString("SDTShip"));
                 phieuGiaoHang.setTenShip(rs.getString("TenShip"));
                 phieuGiaoHang.setGiaShip(rs.getFloat("GiaShip"));
-                phieuGiaoHang.setSdtShip(rs.getString("SDTShip"));
+                phieuGiaoHang.setSdtNNguoiNhan(rs.getString("SDTNguoiNhan"));
                 phieuGiaoHang.setNgayTao(rs.getDate("NgayTaoPhieu"));
                 phieuGiaoHang.setNgayHoanThanh(rs.getDate("NgayHoanThanhDon"));
                 phieuGiaoHang.setTrangThai(rs.getInt("TrangThai"));

@@ -158,9 +158,23 @@ public class PhieuGiaoHang {
         this.trangThai = trangThai;
     }
 
+    public String setTrangThaiString(int tt) {
+        if (tt == 0) {
+            return "Đang tạo";
+        } else if (tt == 1) {
+            return "Chờ giao";
+        } else if (tt == 2) {
+            return "Đang giao";
+        } else if (tt == 3) {
+            return "Hẹn lại";
+        } else {
+            return "Hủy";
+        }
+    }
+
     public Object[] rowData(int iindex) {
         return new Object[]{
-            iindex, maVanDon, idHD.getMaHoaDon(), idKH.getTenKhachHang(), idKH.getSdt(), giaShip, tenShip, sdtNNguoiNhan, ngayTao, ngayHoanThanh, trangThai
+            iindex, maVanDon, idHD.getMaHoaDon(), idKH.getTenKhachHang(), idKH.getSdt(), giaShip, tenShip, sdtNNguoiNhan, sdtShip, ngayTao, ngayHoanThanh, this.setTrangThaiString(this.trangThai)
         };
     }
 

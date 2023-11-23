@@ -494,16 +494,7 @@ public class PhieuGiamGiaService {
         try {
             PreparedStatement pr = conn.prepareCall(sql);
             pr.setObject(1, ma);
-//            pr.setObject(11, pgg.getMaPhieu());
-//            pr.setObject(2, pgg.getTenPhieu());
-//            pr.setObject(3, pgg.getLoaiPhieu());
-//            pr.setObject(4, pgg.getGiaTri());
-//            pr.setObject(5, pgg.getSoLuongPhieu());
-//            pr.setObject(6, pgg.getDonToiThieu());
-//            pr.setObject(7, pgg.getNgayBatDau());
-//            pr.setObject(8, pgg.getNgayKetThuc());
-//            pr.setObject(9, pgg.getMoTa());
-//            pr.setObject(10, pgg.getTrangThai());
+
             row = pr.executeUpdate();
         } catch (Exception e) {
         }
