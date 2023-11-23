@@ -49,7 +49,7 @@ public class PhieuGiaoHangRepository {
                 hoaDon.setId(rs.getLong("IDHD"));
 
                 hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
-       
+
                 PhieuGiaoHang phieuGiaoHang = new PhieuGiaoHang();
                 phieuGiaoHang.setId(rs.getLong("ID"));
                 phieuGiaoHang.setIdHD(hoaDon);
@@ -83,7 +83,7 @@ public class PhieuGiaoHangRepository {
             while (rs.next()) {
                 KhachHang khachHang = new KhachHang();
                 khachHang.setTenKhachHang(rs.getString("TenKhachHang"));
-                
+
                 khachHang.setId(rs.getLong("IDKH"));
                 HoaDon hoaDon = new HoaDon();
                 hoaDon.setIdKH(khachHang);
@@ -97,6 +97,30 @@ public class PhieuGiaoHangRepository {
         } catch (SQLException ex) {
             Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        }
+    }
+
+    public int insert(PhieuGiaoHang phieuGiaoHang) {
+        try {
+            query = "INSERT INTO PHIEUGIAOHANG (IdHoaDon , IdKH , TenNguoiNhan , SDTNguoiNhan , DiaChi , TenShip , SDTShip , GiaShip , MaVanDon , ĐonViVanChuyen , NgayHoanThanhDon)\n"
+                    + "VALUES  (? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?)";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setLong(1, phieuGiaoHang.getIdHD().getId());
+            pstm.setLong(2, phieuGiaoHang.getIdKH().getId());
+            pstm.setString(3, phieuGiaoHang.getTenNguoiNhan());
+            pstm.setString(4, phieuGiaoHang.getSdtNNguoiNhan());
+            pstm.setString(5, phieuGiaoHang.getDiaChi());
+            pstm.setString(6, phieuGiaoHang.getTenShip());
+            pstm.setString(7, phieuGiaoHang.getSdtShip());
+            pstm.setFloat(8, phieuGiaoHang.getGiaShip());
+            pstm.setString(9, phieuGiaoHang.getMaVanDon());
+            pstm.setString(10, phieuGiaoHang.getDonViVanChuyen());
+            pstm.setDate(11, new java.sql.Date(phieuGiaoHang.getNgayHoanThanh().getTime()));
+            return pstm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
         }
     }
 
