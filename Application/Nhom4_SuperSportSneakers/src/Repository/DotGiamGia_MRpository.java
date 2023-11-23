@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,95 +29,39 @@ public class DotGiamGia_MRpository {
     private ResultSet rs = null;
     private Connection con = null;
 
-    public ArrayList<DotGiamGia_M> getAllKhuyenmai() {
-
-        ArrayList<DotGiamGia_M> lst = new ArrayList<>();
-        String sql = "SELECT IdNV, MaDGG, TenDGG, Loai, GiaTri, NgayBatDau, NgayKetThuc, MoTa, NgayTao, TrangThai   FROM DOT_GIAM_GIA";
-        //Tạo kết nối
-        con = DBConnection.getConnect();
+    public List<DotGiamGia_M> getAll(int page, int limt) {
+        List<DotGiamGia_M> list = new ArrayList<>();
         try {
-            //Tạo statement
-            PreparedStatement pstm = con.prepareStatement(sql);
-            //Thi hành Statement=> dùng Resultset nhận kq
-            ResultSet rs = pstm.executeQuery();
-            //xử lý kq: duyệt rs => đổ dữ liệu vào lst
+            query = " SELECT DGG.ID AS ID , NV.ID AS IDNV , NV.HoVaTen  , TenDGG , Loai , GiaTri , NgayBatDau , NgayKetThuc ,"
+                    + " DGG.NgayTao , DGG.TrangThai  FROM DOT_GIAM_GIA AS DGG\n"
+                    + "JOIN NHANVIEN AS NV ON NV.ID = DGG.IdNV " + "	order by ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";;
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, (page - 1) * limt);
+            pstm.setInt(2, limt);
+            rs = pstm.executeQuery();
             while (rs.next()) {
-
-                DotGiamGia_M n = new DotGiamGia_M();
-                NhanVien nhanVien = new NhanVien(rs.getLong("IdNV"));
-                n.setIdNV(nhanVien);
-                n.setMaDGG(rs.getString("MaDGG"));
-                n.setTenDGG(rs.getString("TenDGG"));
-                n.setHinhThucDGG(rs.getInt("Loai"));
-                n.setGiaTri(rs.getFloat("GiaTri"));
-                n.setNgayBatDau(rs.getDate("NgayBatDau"));
-                n.setNgayKetThuc(rs.getDate("NgayKetThuc"));
-                n.setMoTa(rs.getString("MoTa"));
-                n.setNgayTao(rs.getDate("NgayTao"));
-                n.setTrangThai(rs.getInt("TrangThai"));
-                lst.add(n);
+                NhanVien nhanVien = new NhanVien();
+                nhanVien.setId(rs.getLong("IDNV"));
+                nhanVien.setTenNhanVien(rs.getString("HoVaTen"));
+                DotGiamGia_M dggm = new DotGiamGia_M();
+                dggm.setIdDGG(rs.getLong("ID"));
+                dggm.setTenDGG(rs.getString("TenDGG"));
+                dggm.setHinhThucDGG(rs.getInt("Loai"));
+                dggm.setGiaTri(rs.getFloat("GiaTri"));
+                dggm.setNgayBatDau(rs.getDate("NgayBatDau"));
+                dggm.setNgayKetThuc(rs.getDate("NgayKetThuc"));
+                dggm.setNgayTao(rs.getDate("NgayTao"));
+                dggm.setTrangThai(rs.getInt("TrangThai"));
+                dggm.setIdNV(nhanVien);
+                list.add(dggm);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return lst;
-    }
-
-    private boolean isMaKhuyenmaiExist(String maKhuyenmai) {
-        boolean result = false;
-        String sql = "SELECT COUNT(*) FROM DOT_GIAM_GIA WHERE MaDGG = ?";
-
-        try (Connection connection = DBConnection.getConnect(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setString(1, maKhuyenmai);
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next() && resultSet.getInt(1) > 0) {
-                    result = true;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Xử lý lỗi nếu cần
-        }
-
-        return result;
-    }
-
-    public Integer addKhuyenmai(DotGiamGia_M sv) {
-        if (!isMaKhuyenmaiExist(sv.getMaDGG())) {
-            Integer row = null;
-            String sql = "INSERT INTO DOT_GIAM_GIA (IdNV, MaDGG, TenDGG, Loai, GiaTri, NgayBatDau, NgayKetThuc, MoTa, TrangThai, NgayTao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())";
-
-            try (Connection cn = DBConnection.getConnect(); PreparedStatement pstm = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-                pstm.setObject(1, sv.getIdNV().getId());
-                pstm.setObject(2, sv.getMaDGG());
-                pstm.setObject(3, sv.getTenDGG());
-                pstm.setObject(4, sv.getHinhThucDGG());
-                pstm.setObject(5, sv.getGiaTri());
-                pstm.setObject(6, sv.getNgayBatDau());
-                pstm.setObject(7, sv.getNgayKetThuc());
-                pstm.setObject(8, sv.getMoTa());
-                pstm.setObject(9, sv.getTrangThai());
-
-                row = pstm.executeUpdate();
-                ResultSet generatedKeys = pstm.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    NhanVien nhanVien = new NhanVien(rs.getLong("IdNV"));
-                    sv.setIdNV(nhanVien);
-                }
-            } catch (SQLIntegrityConstraintViolationException e) {
-                System.out.println("Mã khuyến mại đã tồn tại. Hãy chọn mã khác.");
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-
-            return row;
-        } else {
-            System.out.println("bị trùng mã");
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+
     }
 
     public DotGiamGia_M getDGGByMaCTSP(String maCTSP) {
@@ -143,6 +88,25 @@ public class DotGiamGia_MRpository {
         } catch (SQLException ex) {
             Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        }
+    }
+
+    public int getRowCount() {
+        String countSql = "SELECT COUNT(*) AS totalRows FROM DOT_GIAM_GIA";
+        Connection con = DBConnection.getConnect();
+        Statement stm;
+        ResultSet rs;
+        try {
+            stm = con.createStatement();
+            rs = stm.executeQuery(countSql);
+            int totalRows = 0;
+            if (rs.next()) {
+                return totalRows = rs.getInt("totalRows");
+            }
+            return 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
         }
     }
 }

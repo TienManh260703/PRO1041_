@@ -4,8 +4,10 @@
  */
 package raven.application.form.other;
 
+import Model.DotGiamGia_M;
 import Model.PhieuGiamGia;
 import Model.PhieuGiaoHang;
+import Repository.DotGiamGia_MRpository;
 import Repository.PhieuGiamGiaService;
 import Repository.PhieuGiaoHangRepository;
 import Utils.XuLyString;
@@ -25,22 +27,49 @@ import javax.swing.table.DefaultTableModel;
  * @author manhnt
  */
 public class Form_DotGiamGia extends javax.swing.JPanel {
-  
-   
+
+    private static List<DotGiamGia_M> listDGG = new ArrayList<>();
+    private static DotGiamGia_MRpository rpository = new DotGiamGia_MRpository();
+    private static int page = 1;
+    private static int page2 = 1;
+    private static int lmit = 4;
+    private static int gioiHanPage = (int) ((Math.ceil(rpository.getRowCount() / lmit))) + 1;
+
     public Form_DotGiamGia() {
         initComponents();
-       
+        listDGG = rpository.getAll(page, lmit);
+        fillTotable(listDGG);
     }
-    void init (){
-        
-    }
-    
-    
-    
-   
-    
-    
 
+    void init() {
+
+    }
+
+    private void fillTotable(List<DotGiamGia_M> list) {
+        DefaultTableModel dtm = (DefaultTableModel) this.tblDGG.getModel();
+
+        dtm.setRowCount(0);
+        int i = 1;
+        for (DotGiamGia_M dggm : list) {
+            dtm.addRow(dggm.rowData(i));
+            i++;
+        }
+    }
+
+    private void showData(int index) {
+
+        DotGiamGia_M dgg = rpository.getAll(page, lmit).get(index);
+
+        txtGiaTri.setText(dgg.getGiaTri() + "");
+        txtMaPhieu.setText(dgg.getMaDGG() + "");
+        txtMoTa.setText(dgg.getMoTa() + "");
+        txtNgayBatDAu.setDate(dgg.getNgayBatDau());
+
+        txtNguoiTao.setText(dgg.getIdNV().getTenNhanVien() + "");
+
+        txtTenPhieu.setText(dgg.getTenDGG() + "");
+        cboLoaiPhieu.setSelectedIndex(dgg.getHinhThucDGG());
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -75,6 +104,8 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtMoTa = new javax.swing.JTextArea();
         jButton6 = new javax.swing.JButton();
+        txtNgayBatDAu = new com.toedter.calendar.JDateChooser();
+        txtNgayBatDAu1 = new com.toedter.calendar.JDateChooser();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tblSP = new javax.swing.JTable();
@@ -88,7 +119,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel10 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblPhieuGG = new javax.swing.JTable();
+        tblDGG = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         cboTrangThai = new javax.swing.JComboBox<>();
@@ -169,6 +200,12 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
 
         jButton6.setText("Lọc");
 
+        txtNgayBatDAu.setDateFormatString("dd-MM-yyyy");
+        txtNgayBatDAu.setMaxSelectableDate(new java.util.Date(253370743316000L));
+
+        txtNgayBatDAu1.setDateFormatString("dd-MM-yyyy");
+        txtNgayBatDAu1.setMaxSelectableDate(new java.util.Date(253370743316000L));
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -176,14 +213,19 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(34, 34, 34)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(181, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNgayBatDAu, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNgayBatDAu1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
                 .addComponent(jButton6)
                 .addGap(18, 18, 18))
         );
@@ -191,16 +233,20 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(32, 32, 32)
-                .addComponent(jLabel10)
-                .addGap(7, 7, 7)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10)
+                    .addComponent(txtNgayBatDAu1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton6)
-                .addGap(7, 7, 7)
-                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel11)
+                    .addComponent(txtNgayBatDAu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel12)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -296,7 +342,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cboLoaiPhieu, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtGiaTri, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -324,14 +370,16 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(txtNguoiTao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6)
-                            .addComponent(txtGiaTri, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel5)
+                                .addComponent(cboLoaiPhieu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(txtMaPhieu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5)
-                            .addComponent(cboLoaiPhieu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel6)
+                                .addComponent(txtGiaTri, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
@@ -361,26 +409,26 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
 
         jTabbedPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        tblPhieuGG.setModel(new javax.swing.table.DefaultTableModel(
+        tblDGG.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Người Tạo", "Mã Phiếu", "Tên Phiếu", "Loại Phiếu", "Giá Trị", "Số Lượng Phát Hành", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Ngày Tạo", "Mô Tả", "Trạng Thái"
+                "STT", "Người Tạo", "Mã Phiếu", "Tên Phiếu", "Loại Phiếu", "Giá Trị", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Ngày Tạo", "Mô Tả", "Trạng Thái"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, true, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(tblPhieuGG);
+        jScrollPane2.setViewportView(tblDGG);
 
         jLabel7.setText("Tìm kiếm :");
 
@@ -644,7 +692,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void cboLoaiPhieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboLoaiPhieuActionPerformed
@@ -702,13 +750,15 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable tblDGG;
     private javax.swing.JTable tblHD;
     private javax.swing.JTable tblPhieu;
-    private javax.swing.JTable tblPhieuGG;
     private javax.swing.JTable tblSP;
     private javax.swing.JTextField txtGiaTri;
     private javax.swing.JTextField txtMaPhieu;
     private javax.swing.JTextArea txtMoTa;
+    private com.toedter.calendar.JDateChooser txtNgayBatDAu;
+    private com.toedter.calendar.JDateChooser txtNgayBatDAu1;
     private javax.swing.JTextField txtNguoiTao;
     private javax.swing.JTextField txtTenPhieu;
     private javax.swing.JTextField txtTim;

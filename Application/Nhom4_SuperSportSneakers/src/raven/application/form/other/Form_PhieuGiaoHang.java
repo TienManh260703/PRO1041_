@@ -5,6 +5,7 @@
 package raven.application.form.other;
 
 import Model.PhieuGiaoHang;
+import Repository.DotGiamGia_MRpository;
 import Repository.PhieuGiaoHangRepository;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -16,20 +17,24 @@ import javax.swing.table.DefaultTableModel;
  * @author manhnt
  */
 public class Form_PhieuGiaoHang extends javax.swing.JPanel {
-    
+
     private PhieuGiaoHangRepository pghr = new PhieuGiaoHangRepository();
-    List<PhieuGiaoHang> list  = new ArrayList<>();
-  
+    List<PhieuGiaoHang> list = new ArrayList<>();
+    private static DotGiamGia_MRpository dotGiamGia_MRpository = new DotGiamGia_MRpository();
+    private static int page = 1;
+    private static int page2 = 1;
+    private static int lmit = 4;
+    private static int gioiHanPage = (int) ((Math.ceil(dotGiamGia_MRpository.getRowCount() / lmit))) + 1;
 
     /**
      * Creates new form Form_PhieuGiaoHang
      */
     public Form_PhieuGiaoHang() {
         initComponents();
-        list = pghr.getAll();
+        list = pghr.getAll(page , lmit);
         filfToTablePGH(list);
     }
-    
+
     private void filfToTablePGH(List<PhieuGiaoHang> list) {
         DefaultTableModel dtm = (DefaultTableModel) this.tblPGH.getModel();
         dtm.setRowCount(0);

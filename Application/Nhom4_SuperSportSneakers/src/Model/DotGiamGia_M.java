@@ -175,8 +175,8 @@ public class DotGiamGia_M {
         this.trangThai = trangThai;
     }
 
-    public Object[] rowData() {
-        return new Object[]{idDGG, maDGG, tenDGG, hinhThucDGG, giaTri, ngayBatDau, ngayKetThuc, moTa, ngayTao, trangThai};
+    public Object[] rowData(int i) {
+        return new Object[]{i , idNV.getTenNhanVien() , maDGG, tenDGG , hinhThucDGG==0 ? "Phần trăm %": " VND ", giaTri , ngayBatDau , ngayKetThuc , ngayTao, moTa , trangThai == 0 ?"Sắp Đến ":trangThai==1 ? "Đạng áp dụng":"Hết Hạn"};
 
     }
 
