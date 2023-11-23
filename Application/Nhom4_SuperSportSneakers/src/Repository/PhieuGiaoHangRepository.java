@@ -29,15 +29,18 @@ public class PhieuGiaoHangRepository {
     private ResultSet rs = null;
     private Connection con = null;
 
-    public List<PhieuGiaoHang> getAll() {
+    public List<PhieuGiaoHang> getAll(int page, int limt) {
         List<PhieuGiaoHang> list = new ArrayList<>();
         try {
             query = "SELECT PGH.ID ,  MaVanDon , MaHoaDon , TenKhachHang , SDTNguoiNhan , GiaShip , TenShip , SDTShip , PGH.NgayTaoPhieu ,NgayHoanThanhDon , PGH.TrangThai FROM PHIEUGIAOHANG AS PGH\n"
                     + "JOIN HOADON AS HD ON HD.ID = PGH.IdHoaDon\n"
-                    + "JOIN KHACHHANG AS KH ON KH.ID = PGH.IdKH ";
+                    + "JOIN KHACHHANG AS KH ON KH.ID = PGH.IdKH "
+                    + "	order by ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";;;
             con = DBConnection.getConnect();
-            stm = con.createStatement();
-            rs = stm.executeQuery(query);
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, (page - 1) * limt);
+            pstm.setInt(2, limt);
+            rs = pstm.executeQuery();
             while (rs.next()) {
                 KhachHang khachHang = new KhachHang();
                 khachHang.setTenKhachHang(rs.getString("TenKhachHang"));
@@ -62,6 +65,25 @@ public class PhieuGiaoHangRepository {
         } catch (SQLException ex) {
             Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        }
+    }
+    
+     public int getRowCount() {
+        String countSql = "SELECT COUNT(*) AS totalRows FROM PHIEUGIAOHANG";
+        Connection con = DBConnection.getConnect();
+        Statement stm;
+        ResultSet rs;
+        try {
+            stm = con.createStatement();
+            rs = stm.executeQuery(countSql);
+            int totalRows = 0;
+            if (rs.next()) {
+                return totalRows = rs.getInt("totalRows");
+            }
+            return 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
         }
     }
 }
