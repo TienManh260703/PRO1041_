@@ -21,7 +21,9 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
     private static DotGiamGia_MRpository dotGiamGia_MRpository = new DotGiamGia_MRpository();
     private static int lmit = 4;
     private static int gioiHanPage = (int) ((Math.ceil(dotGiamGia_MRpository.getRowCount() / lmit))) + 1;
-    private static List<SanPhamChiTiet> list = new ArrayList<>();
+    private  List<SanPhamChiTiet> list = new ArrayList<>();
+    private  List<SanPhamChiTiet> listSP_DGG = new ArrayList<>();
+   
 
     /**
      * Creates new form ViewCTSP_DGG
@@ -34,7 +36,7 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
     }
 
     public List<SanPhamChiTiet> getListCTSP() {
-        return list;
+        return listSP_DGG;
     }
 
     private void fillTable(List<SanPhamChiTiet> list) {
@@ -50,8 +52,8 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
     private void first() {
 
         lblPageTTKH.setText(1 + " / " + gioiHanPage);
-//        list = phieuGiaoHangRepository.getAll(1, lmit);
-//        filfToTablePGH(list);
+//        listSP = phieuGiaoHangRepository.getAll(1, lmit);
+//        filfToTablePGH(listSP);
     }
 
     private void prev() {
@@ -59,8 +61,8 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
 
         if (page >= 1) {
             lblPageTTKH.setText(page + " / " + gioiHanPage);
-//            list = phieuGiaoHangRepository.getAll(page, lmit);
-//            filfToTablePGH(list);
+//            listSP = phieuGiaoHangRepository.getAll(page, lmit);
+//            filfToTablePGH(listSP);
             return;
         }
         page = 1;
@@ -71,8 +73,8 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
         page++;
 
         if (page <= gioiHanPage) {
-//            list = phieuGiaoHangRepository.getAll(page, lmit);
-//            filfToTablePGH(list);
+//            listSP = phieuGiaoHangRepository.getAll(page, lmit);
+//            filfToTablePGH(listSP);
             lblPageTTKH.setText(page + " / " + gioiHanPage);
             return;
         }
@@ -81,9 +83,25 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
 
     private void last() {
         lblPageTTKH.setText(gioiHanPage + " / " + gioiHanPage);
-//        list = phieuGiaoHangRepository.getAll(gioiHanPage, lmit);
-//        filfToTablePGH(list);
+//        listSP = phieuGiaoHangRepository.getAll(gioiHanPage, lmit);
+//        filfToTablePGH(listSP);
     }
+    
+    private List<SanPhamChiTiet> getTable (){
+        List<SanPhamChiTiet> listSP = new  ArrayList<>();
+        
+        for (int i = 0; i < tblSP.getRowCount(); i++) {
+            Object  ktr =  tblSP.getValueAt(i, 0);
+            if (ktr instanceof Boolean && (Boolean) ktr) {
+                SanPhamChiTiet sanPhamChiTiet = list.get(i);
+                System.out.println(sanPhamChiTiet);
+                listSP.add(sanPhamChiTiet);
+            }
+        }
+        return listSP;
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -111,6 +129,11 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
         jCheckBox1.setText("Select All");
 
         btnThem.setText("Thêm vào danh sách");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
         tblSP.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -236,6 +259,14 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
     private void btnCuoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCuoiActionPerformed
         last();
     }//GEN-LAST:event_btnCuoiActionPerformed
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+     listSP_DGG = getTable();
+        int i=0;
+        for(SanPhamChiTiet chiTiet :listSP_DGG){
+          System.out.println(chiTiet.rowDataDGG(i));
+      }
+    }//GEN-LAST:event_btnThemActionPerformed
 
     /**
      * @param args the command line arguments

@@ -243,7 +243,6 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
     }
 
     private void first() {
-
         lblPageTTKH.setText(1 + " / " + gioiHanPage);
         list = phieuGiaoHangRepository.getAll(1, lmit);
         filfToTablePGH(list);
@@ -264,7 +263,6 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
 
     private void next() {
         page++;
-
         if (page <= gioiHanPage) {
             list = phieuGiaoHangRepository.getAll(page, lmit);
             filfToTablePGH(list);

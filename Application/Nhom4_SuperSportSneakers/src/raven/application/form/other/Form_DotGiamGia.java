@@ -39,7 +39,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     private static DotGiamGia_MRpository dotGiamGia_MRpository = new DotGiamGia_MRpository();
     private List<SanPhamChiTiet> lisrSP = new ArrayList<>();
     private static List<DotGiamGia_M> listDGG = new ArrayList<>();
-     private static int page = 1;
+    private static int page = 1;
     private static int lmit = 4;
     private static int gioiHanPage = (int) ((Math.ceil(dotGiamGia_MRpository.getRowCount() / lmit))) + 1;
 
@@ -48,7 +48,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         init();
 
     }
-    
+
     void init() {
         fillToCboThuongHieu();
         listDGG = dotGiamGia_MRpository.getAllDGG(page, page);
@@ -63,15 +63,15 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
             //dtm.addRow();
         }
     }
-    
-    private void fillToTableDGG (List<DotGiamGia_M> list){
-         DefaultTableModel dtm = (DefaultTableModel) this.tblPhieuGG.getModel();
-         dtm.setRowCount(0);
-         int i=0;
-         for (DotGiamGia_M dggm : list){
-             dtm.addRow(dggm.rowData(i));
-             i++;
-         }
+
+    private void fillToTableDGG(List<DotGiamGia_M> list) {
+        DefaultTableModel dtm = (DefaultTableModel) this.tblPhieuGG.getModel();
+        dtm.setRowCount(0);
+        int i = 0;
+        for (DotGiamGia_M dggm : list) {
+            dtm.addRow(dggm.rowData(i));
+            i++;
+        }
     }
 
     public void fillToCboThuongHieu() {
@@ -83,6 +83,44 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
 
             model3.addElement(th);
         }
+    }
+
+    private void first() {
+
+        lblPageTTKH.setText(1 + " / " + gioiHanPage);
+        listDGG = dotGiamGia_MRpository.getAllDGG(1, lmit);
+        fillToTableDGG(listDGG);
+    }
+
+    private void prev() {
+        page--;
+
+        if (page >= 1) {
+            lblPageTTKH.setText(page + " / " + gioiHanPage);
+            listDGG = dotGiamGia_MRpository.getAllDGG(page, lmit);
+            fillToTableDGG(listDGG);
+            return;
+        }
+        page = 1;
+
+    }
+
+    private void next() {
+        page++;
+
+        if (page <= gioiHanPage) {
+            listDGG = dotGiamGia_MRpository.getAllDGG(page, lmit);
+            fillToTableDGG(listDGG);
+            lblPageTTKH.setText(page + " / " + gioiHanPage);
+            return;
+        }
+        page = gioiHanPage;
+    }
+
+    private void last() {
+        lblPageTTKH.setText(gioiHanPage + " / " + gioiHanPage);
+        listDGG = dotGiamGia_MRpository.getAllDGG(gioiHanPage, lmit);
+        fillToTableDGG(listDGG);
     }
 
     /**
@@ -814,19 +852,19 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnDauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDauActionPerformed
-       // first();
+        first();
     }//GEN-LAST:event_btnDauActionPerformed
 
     private void btnLuiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuiActionPerformed
-      //  prev();
+        prev();
     }//GEN-LAST:event_btnLuiActionPerformed
 
     private void btnTienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTienActionPerformed
-      //  next();
+        next();
     }//GEN-LAST:event_btnTienActionPerformed
 
     private void btnCuoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCuoiActionPerformed
-     //   last();
+        last();
     }//GEN-LAST:event_btnCuoiActionPerformed
 
 
