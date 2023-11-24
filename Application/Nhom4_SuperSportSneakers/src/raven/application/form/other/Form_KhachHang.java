@@ -27,7 +27,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
     private static List<KhachHang> list = new ArrayList<>();
     private static List<Object> listLSGD = new ArrayList<>();
     private static int page = 1;
-    private static int page2 = 1;
+    private static  int page2 = 1;
     private static int lmit = 4;
     private static int gioiHanPage = (int) ((Math.ceil(khachHangRepository.getRowCountKH() / lmit))) + 1;
 
@@ -708,7 +708,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
                     .addComponent(jLabel1)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

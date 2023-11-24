@@ -11,6 +11,7 @@ import Model.NhanVien;
 import Model.SanPham;
 import Model.SanPhamChiTiet;
 import Model.ThuongHieu;
+import Utils.XDate;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,93 +36,40 @@ public class DotGiamGia_MRpository {
     private ResultSet rs = null;
     private Connection con = null;
 
-    public ArrayList<DotGiamGia_M> getAllKhuyenmai() {
-
-        ArrayList<DotGiamGia_M> lst = new ArrayList<>();
-        String sql = "SELECT IdNV, MaDGG, TenDGG, Loai, GiaTri, NgayBatDau, NgayKetThuc, MoTa, NgayTao, TrangThai   FROM DOT_GIAM_GIA";
-        //Tạo kết nối
-        con = DBConnection.getConnect();
+       public List<DotGiamGia_M> getAllDGG(int page, int limit) {
+        List<DotGiamGia_M> list = new ArrayList<>();
         try {
-            //Tạo statement
-            PreparedStatement pstm = con.prepareStatement(sql);
-            //Thi hành Statement=> dùng Resultset nhận kq
-            ResultSet rs = pstm.executeQuery();
-            //xử lý kq: duyệt rs => đổ dữ liệu vào lst
+            query = "SELECT NV.ID AS IDNV , NV.HoVaTen ,DGG.ID AS ID  , MaDGG , TenDGG, Loai , GiaTri , "
+                    + " NgayBatDau , NgayKetThuc , DGG.NgayTao, MoTa , DGG.TrangThai FROM DOT_GIAM_GIA AS DGG\n"
+                    + "	JOIN NHANVIEN AS NV ON NV.ID = DGG.IdNV"
+                    + "	order by DGG.NgayTao OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";;
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, (page - 1) * limit);
+            pstm.setInt(2, limit);
+            rs = pstm.executeQuery();
             while (rs.next()) {
+                DotGiamGia_M dggm = new DotGiamGia_M();
+                NhanVien nhanVien = new NhanVien();
+                nhanVien.setId(rs.getLong("IDNV"));
+                nhanVien.setTenNhanVien(rs.getString("HoVaTen"));
+                dggm.setIdNV(nhanVien);
+                dggm.setIdDGG(rs.getLong("ID"));
+                dggm.setMaDGG(rs.getString("MaDGG"));
+                dggm.setTenDGG(rs.getString("TenDGG"));
+                dggm.setHinhThucDGG(rs.getInt("Loai"));
+                dggm.setGiaTri(rs.getFloat("GiaTri"));
+                dggm.setNgayBatDau(rs.getDate("NgayBatDau"));
+                dggm.setNgayKetThuc(rs.getDate("NgayKetThuc"));
+                dggm.setNgayTao(rs.getDate("NgayTao"));
+                dggm.setMoTa(rs.getString("MoTa"));
+                dggm.setTrangThai(rs.getInt("TrangThai"));
+                list.add(dggm);
 
-                DotGiamGia_M n = new DotGiamGia_M();
-                NhanVien nhanVien = new NhanVien(rs.getLong("IdNV"));
-                n.setIdNV(nhanVien);
-                n.setMaDGG(rs.getString("MaDGG"));
-                n.setTenDGG(rs.getString("TenDGG"));
-                n.setHinhThucDGG(rs.getInt("Loai"));
-                n.setGiaTri(rs.getFloat("GiaTri"));
-                n.setNgayBatDau(rs.getDate("NgayBatDau"));
-                n.setNgayKetThuc(rs.getDate("NgayKetThuc"));
-                n.setMoTa(rs.getString("MoTa"));
-                n.setNgayTao(rs.getDate("NgayTao"));
-                n.setTrangThai(rs.getInt("TrangThai"));
-                lst.add(n);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return lst;
-    }
-
-    private boolean isMaKhuyenmaiExist(String maKhuyenmai) {
-        boolean result = false;
-        String sql = "SELECT COUNT(*) FROM DOT_GIAM_GIA WHERE MaDGG = ?";
-
-        try (Connection connection = DBConnection.getConnect(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setString(1, maKhuyenmai);
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next() && resultSet.getInt(1) > 0) {
-                    result = true;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Xử lý lỗi nếu cần
-        }
-
-        return result;
-    }
-
-    public Integer addKhuyenmai(DotGiamGia_M sv) {
-        if (!isMaKhuyenmaiExist(sv.getMaDGG())) {
-            Integer row = null;
-            String sql = "INSERT INTO DOT_GIAM_GIA (IdNV, MaDGG, TenDGG, Loai, GiaTri, NgayBatDau, NgayKetThuc, MoTa, TrangThai, NgayTao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())";
-
-            try (Connection cn = DBConnection.getConnect(); PreparedStatement pstm = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-                pstm.setObject(1, sv.getIdNV().getId());
-                pstm.setObject(2, sv.getMaDGG());
-                pstm.setObject(3, sv.getTenDGG());
-                pstm.setObject(4, sv.getHinhThucDGG());
-                pstm.setObject(5, sv.getGiaTri());
-                pstm.setObject(6, sv.getNgayBatDau());
-                pstm.setObject(7, sv.getNgayKetThuc());
-                pstm.setObject(8, sv.getMoTa());
-                pstm.setObject(9, sv.getTrangThai());
-
-                row = pstm.executeUpdate();
-                ResultSet generatedKeys = pstm.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    NhanVien nhanVien = new NhanVien(rs.getLong("IdNV"));
-                    sv.setIdNV(nhanVien);
-                }
-            } catch (SQLIntegrityConstraintViolationException e) {
-                System.out.println("Mã khuyến mại đã tồn tại. Hãy chọn mã khác.");
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-
-            return row;
-        } else {
-            System.out.println("bị trùng mã");
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -175,13 +123,16 @@ public class DotGiamGia_MRpository {
                     + "    );";
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
-            System.out.println(query);
-            pstm.setDate(1, new java.sql.Date(ngayBatDau.getTime()));
-            pstm.setDate(2, new java.sql.Date(ngayKetThuc.getTime()));
-            pstm.setDate(3, new java.sql.Date(ngayBatDau.getTime()));
-            pstm.setDate(4, new java.sql.Date(ngayKetThuc.getTime()));
-            pstm.setDate(5, new java.sql.Date(ngayBatDau.getTime()));
-            pstm.setDate(6, new java.sql.Date(ngayKetThuc.getTime()));
+            System.out.println(XDate.toString(XDate.convertDateFormat(XDate.toString(ngayBatDau, "dd-MM-yyyy"), "MM-dd-yyyy"), "MM-dd-yyyy"));
+            System.out.println(XDate.toString(XDate.convertDateFormat(XDate.toString(ngayKetThuc, "dd-MM-yyyy"), "MM-dd-yyyy"), "MM-dd-yyyy"));
+
+            pstm.setString(1, XDate.toString(XDate.convertDateFormat(XDate.toString(ngayBatDau, "dd-MM-yyyy"), "MM-dd-yyyy"), "MM-dd-yyyy"));
+            pstm.setString(2, XDate.toString(XDate.convertDateFormat(XDate.toString(ngayKetThuc, "dd-MM-yyyy"), "MM-dd-yyyy"), "MM-dd-yyyy"));
+            pstm.setString(3, XDate.toString(XDate.convertDateFormat(XDate.toString(ngayBatDau, "dd-MM-yyyy"), "MM-dd-yyyy"), "MM-dd-yyyy"));
+            pstm.setString(4, XDate.toString(XDate.convertDateFormat(XDate.toString(ngayKetThuc, "dd-MM-yyyy"), "MM-dd-yyyy"), "MM-dd-yyyy"));
+            pstm.setString(5, XDate.toString(XDate.convertDateFormat(XDate.toString(ngayBatDau, "dd-MM-yyyy"), "MM-dd-yyyy"), "MM-dd-yyyy"));
+            pstm.setString(6, XDate.toString(XDate.convertDateFormat(XDate.toString(ngayKetThuc, "dd-MM-yyyy"), "MM-dd-yyyy"), "MM-dd-yyyy"));
+
             rs = pstm.executeQuery();
             while (rs.next()) {
                 KichThuoc kichThuoc = new KichThuoc();

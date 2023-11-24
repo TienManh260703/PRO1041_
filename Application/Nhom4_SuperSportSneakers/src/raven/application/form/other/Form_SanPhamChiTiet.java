@@ -1126,6 +1126,7 @@ public class Form_SanPhamChiTiet extends javax.swing.JPanel {
             });
         }
         dlScanQr.add(webcamPanel);
+        
 
     }
 

@@ -4,6 +4,7 @@
  */
 package Model;
 
+import Utils.XDate;
 import java.util.Date;
 
 /**
@@ -175,9 +176,11 @@ public class DotGiamGia_M {
         this.trangThai = trangThai;
     }
 
-    public Object[] rowData() {
-        return new Object[]{idDGG, maDGG, tenDGG, hinhThucDGG, giaTri, ngayBatDau, ngayKetThuc, moTa, ngayTao, trangThai};
-
+    public Object[] rowData(int index) {
+        return new Object[]{
+            index, idNV.getTenNhanVien(), maDGG, tenDGG, hinhThucDGG == 0 ? "Phần trăm % " : " VND ", giaTri + hinhThucDGG == 0 ? "( % )" : "( VND )", XDate.toString(ngayBatDau, "dd-MM-yyyy"),
+            XDate.toString(ngayKetThuc, "dd-MM-yyyy"),
+            XDate.toString(ngayTao, "dd-MM-yyyy"), trangThai ==0 ? "Sắp đến" : (trangThai ==1 ? "Đang áp dụng" : (trangThai ==2 ?"Hết hạn": ""))};
     }
 
 }

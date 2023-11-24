@@ -4,6 +4,7 @@
  */
 package raven.application.form.other;
 
+import Model.DotGiamGia_M;
 import Model.PhieuGiamGia;
 import Model.PhieuGiaoHang;
 import Model.SanPhamChiTiet;
@@ -32,22 +33,29 @@ import raven.application.Application;
  * @author manhnt
  */
 public class Form_DotGiamGia extends javax.swing.JPanel {
-    
+
     private DefaultComboBoxModel model3 = new DefaultComboBoxModel();
     private ThuongHieu_Repository thuongHieu_Repository = new ThuongHieu_Repository();
     private static DotGiamGia_MRpository dotGiamGia_MRpository = new DotGiamGia_MRpository();
-    private  List<SanPhamChiTiet> lisrSP = new ArrayList<>();
-    
+    private List<SanPhamChiTiet> lisrSP = new ArrayList<>();
+    private static List<DotGiamGia_M> listDGG = new ArrayList<>();
+     private static int page = 1;
+    private static int lmit = 4;
+    private static int gioiHanPage = (int) ((Math.ceil(dotGiamGia_MRpository.getRowCount() / lmit))) + 1;
+
     public Form_DotGiamGia() {
         initComponents();
-        fillToCboThuongHieu();
-        
+        init();
+
     }
     
     void init() {
-        
+        fillToCboThuongHieu();
+        listDGG = dotGiamGia_MRpository.getAllDGG(page, page);
+        fillToTableDGG(listDGG);
+        lblPageTTKH.setText(TOOL_TIP_TEXT_KEY);
     }
-    
+
     private void fillToTableSP(List<SanPhamChiTiet> list) {
         DefaultTableModel dtm = (DefaultTableModel) this.tblSP.getModel();
         dtm.setRowCount(0);
@@ -56,13 +64,23 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         }
     }
     
+    private void fillToTableDGG (List<DotGiamGia_M> list){
+         DefaultTableModel dtm = (DefaultTableModel) this.tblPhieuGG.getModel();
+         dtm.setRowCount(0);
+         int i=0;
+         for (DotGiamGia_M dggm : list){
+             dtm.addRow(dggm.rowData(i));
+             i++;
+         }
+    }
+
     public void fillToCboThuongHieu() {
         model3 = (DefaultComboBoxModel) this.cboThuongHieu.getModel();
         model3.removeAllElements();;
         model3.addElement("---Tất cả---");
         List<ThuongHieu> list = thuongHieu_Repository.getToAll();
         for (ThuongHieu th : list) {
-            
+
             model3.addElement(th);
         }
     }
@@ -120,6 +138,11 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         jTextField1 = new javax.swing.JTextField();
         cboTrangThai = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
+        btnDau = new javax.swing.JButton();
+        btnLui = new javax.swing.JButton();
+        lblPageTTKH = new javax.swing.JLabel();
+        btnTien = new javax.swing.JButton();
+        btnCuoi = new javax.swing.JButton();
         jPanel11 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
@@ -220,9 +243,8 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtNgayKetThuc, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
-                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txtNgayBatDAu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)))
+                    .addComponent(txtNgayBatDAu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                 .addComponent(jButton6)
                 .addGap(18, 18, 18))
@@ -320,8 +342,8 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                     .addComponent(jButton7)
                     .addComponent(cboThuongHieu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jLabel8.setText("Sản phẩm muosos ap dụng đợt giảm giá");
@@ -449,6 +471,37 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel9.setText("Trạng thái :");
 
+        btnDau.setText("<<");
+        btnDau.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDauActionPerformed(evt);
+            }
+        });
+
+        btnLui.setText("<");
+        btnLui.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLuiActionPerformed(evt);
+            }
+        });
+
+        lblPageTTKH.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblPageTTKH.setText("1/ 2");
+
+        btnTien.setText(">");
+        btnTien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTienActionPerformed(evt);
+            }
+        });
+
+        btnCuoi.setText(">>");
+        btnCuoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCuoiActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
@@ -466,7 +519,18 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                         .addComponent(cboTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addGap(15, 15, 15)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1310, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1310, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGap(428, 428, 428)
+                        .addComponent(btnDau, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(42, 42, 42)
+                        .addComponent(btnLui, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblPageTTKH)
+                        .addGap(31, 31, 31)
+                        .addComponent(btnTien, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(49, 49, 49)
+                        .addComponent(btnCuoi, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(35, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
@@ -480,8 +544,15 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                         .addComponent(jLabel9)
                         .addComponent(cboTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnLui)
+                    .addComponent(btnCuoi)
+                    .addComponent(btnTien)
+                    .addComponent(lblPageTTKH)
+                    .addComponent(btnDau))
+                .addGap(24, 24, 24))
         );
 
         jTabbedPane2.addTab("Danh sách khuyến mãi", jPanel10);
@@ -528,8 +599,8 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(183, 183, 183)
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(116, 116, 116)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton4)
                     .addComponent(jButton5)
@@ -728,22 +799,42 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-       Date date  = txtNgayBatDAu.getDate();
-       Date date2 = txtNgayKetThuc.getDate();
-        System.out.println("raven.application.form.other.Form_DotGiamGia.jButton6ActionPerformed()"+date + date2 + "");
-       if(date == null || date2 == null){
-           MsgBox.aleart(this, "Bạn hãy điển đủ thông tin");
-           return;
-       }
-       
-        ViewCTSP_DGG cTSP_DGG = new ViewCTSP_DGG(new Application(), true, date2, date2);
+        Date date = txtNgayBatDAu.getDate();
+        Date date2 = txtNgayKetThuc.getDate();
+        System.out.println("raven.application.form.other.Form_DotGiamGia.jButton6ActionPerformed()" + date + date2 + "");
+        if (date == null || date2 == null) {
+            MsgBox.aleart(this, "Bạn hãy điển đủ thông tin");
+            return;
+        }
+
+        ViewCTSP_DGG cTSP_DGG = new ViewCTSP_DGG(new Application(), true, date, date2);
         cTSP_DGG.setVisible(true);
         lisrSP = cTSP_DGG.getListCTSP();
-        
+
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void btnDauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDauActionPerformed
+       // first();
+    }//GEN-LAST:event_btnDauActionPerformed
+
+    private void btnLuiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuiActionPerformed
+      //  prev();
+    }//GEN-LAST:event_btnLuiActionPerformed
+
+    private void btnTienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTienActionPerformed
+      //  next();
+    }//GEN-LAST:event_btnTienActionPerformed
+
+    private void btnCuoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCuoiActionPerformed
+     //   last();
+    }//GEN-LAST:event_btnCuoiActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCuoi;
+    private javax.swing.JButton btnDau;
+    private javax.swing.JButton btnLui;
+    private javax.swing.JButton btnTien;
     private javax.swing.JComboBox<String> cboLoaiPhieu;
     private javax.swing.JComboBox<String> cboThuongHieu;
     private javax.swing.JComboBox<String> cboTrangThai;
@@ -789,6 +880,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel lblPageTTKH;
     private javax.swing.JTable tblHD;
     private javax.swing.JTable tblPhieu;
     private javax.swing.JTable tblPhieuGG;
