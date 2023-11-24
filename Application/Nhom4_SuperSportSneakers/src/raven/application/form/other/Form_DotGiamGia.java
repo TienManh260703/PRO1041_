@@ -8,6 +8,7 @@ import Model.PhieuGiamGia;
 import Model.PhieuGiaoHang;
 import Model.SanPhamChiTiet;
 import Model.ThuongHieu;
+import Repository.DotGiamGia_MRpository;
 import Repository.PhieuGiamGiaService;
 import Repository.PhieuGiaoHangRepository;
 import Repository.ThuongHieu_Repository;
@@ -24,6 +25,7 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import raven.application.Application;
 
 /**
  *
@@ -33,6 +35,8 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     
     private DefaultComboBoxModel model3 = new DefaultComboBoxModel();
     private ThuongHieu_Repository thuongHieu_Repository = new ThuongHieu_Repository();
+    private static DotGiamGia_MRpository dotGiamGia_MRpository = new DotGiamGia_MRpository();
+    private  List<SanPhamChiTiet> lisrSP = new ArrayList<>();
     
     public Form_DotGiamGia() {
         initComponents();
@@ -726,9 +730,16 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
        Date date  = txtNgayBatDAu.getDate();
        Date date2 = txtNgayKetThuc.getDate();
+        System.out.println("raven.application.form.other.Form_DotGiamGia.jButton6ActionPerformed()"+date + date2 + "");
        if(date == null || date2 == null){
            MsgBox.aleart(this, "Bạn hãy điển đủ thông tin");
+           return;
        }
+       
+        ViewCTSP_DGG cTSP_DGG = new ViewCTSP_DGG(new Application(), true, date2, date2);
+        cTSP_DGG.setVisible(true);
+        lisrSP = cTSP_DGG.getListCTSP();
+        
     }//GEN-LAST:event_jButton6ActionPerformed
 
 

@@ -276,7 +276,7 @@ public class SanPhamChiTiet {
 
     public Object[] rowDataDGG (int index){
         return new Object[]{
-        maSPCT, idSanPham.getTenSanpham() , giaBan , idThuongHieu.getTenThuongHieu(), idMau.getTenMau() , idKichThuoc.getTenSize() 
+     false, index,  maSPCT, idSanPham.getTenSanpham() , giaBan , idThuongHieu.getTenThuongHieu(), idMau.getTenMau() , idKichThuoc.getTenSize() 
         };
     }
     @Override

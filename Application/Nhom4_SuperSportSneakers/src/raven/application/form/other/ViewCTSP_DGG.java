@@ -9,6 +9,7 @@ import Repository.DotGiamGia_MRpository;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -25,9 +26,25 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
     /**
      * Creates new form ViewCTSP_DGG
      */
-    public ViewCTSP_DGG(java.awt.Frame parent, boolean modal, Date ngayBatDau , Date ngayKetThuc) {
+    public ViewCTSP_DGG(java.awt.Frame parent, boolean modal, Date ngayBatDau, Date ngayKetThuc) {
         super(parent, modal);
         initComponents();
+        list = dotGiamGia_MRpository.getAllSPST_DGG(ngayBatDau, ngayKetThuc);
+        fillTable(list);
+    }
+
+    public List<SanPhamChiTiet> getListCTSP() {
+        return list;
+    }
+
+    private void fillTable(List<SanPhamChiTiet> list) {
+        DefaultTableModel dtm = (DefaultTableModel) this.tblSP.getModel();
+        dtm.setRowCount(0);
+        int i = 1;
+        for (SanPhamChiTiet spct : list) {
+            dtm.addRow(spct.rowDataDGG(i));
+            i++;
+        }
     }
 
     private void first() {
@@ -81,7 +98,7 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
         txtTim = new javax.swing.JTextField();
         btnThem = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblSP = new javax.swing.JTable();
         btnDau = new javax.swing.JButton();
         btnLui = new javax.swing.JButton();
         lblPageTTKH = new javax.swing.JLabel();
@@ -95,7 +112,7 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
 
         btnThem.setText("Thêm vào danh sách");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblSP.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -118,7 +135,7 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblSP);
 
         btnDau.setText("<<");
         btnDau.addActionListener(new java.awt.event.ActionListener() {
@@ -250,7 +267,7 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ViewCTSP_DGG dialog = new ViewCTSP_DGG(new javax.swing.JFrame(), true , new Date()   , new Date() );
+                ViewCTSP_DGG dialog = new ViewCTSP_DGG(new javax.swing.JFrame(), true, new Date(), new Date());
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -270,8 +287,8 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
     private javax.swing.JButton btnTien;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblPageTTKH;
+    private javax.swing.JTable tblSP;
     private javax.swing.JTextField txtTim;
     // End of variables declaration//GEN-END:variables
 }

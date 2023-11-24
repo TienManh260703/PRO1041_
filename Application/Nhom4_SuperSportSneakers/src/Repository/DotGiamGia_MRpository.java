@@ -175,6 +175,7 @@ public class DotGiamGia_MRpository {
                     + "    );";
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
+            System.out.println(query);
             pstm.setDate(1, new java.sql.Date(ngayBatDau.getTime()));
             pstm.setDate(2, new java.sql.Date(ngayKetThuc.getTime()));
             pstm.setDate(3, new java.sql.Date(ngayBatDau.getTime()));
