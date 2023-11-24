@@ -274,6 +274,11 @@ public class SanPhamChiTiet {
         };
     }
 
+    public Object[] rowDataDGG (int index){
+        return new Object[]{
+        maSPCT, idSanPham.getTenSanpham() , giaBan , idThuongHieu.getTenThuongHieu(), idMau.getTenMau() , idKichThuoc.getTenSize() 
+        };
+    }
     @Override
     public String toString() {
         return "ChiTietSanPham_M{" + "idSPCT=" + idSPCT + ", idDGG=" + idDGG + ", maSPCT=" + maSPCT + ", soLuong=" + soLuong + ", giaBan=" + giaBan + ", giaNiemYet=" + giaNiemYet + ", TrangThai=" + TrangThai + ", moTa=" + moTa + ", idMau="/* + idMau.getIdMau() + ", idKichThuoc=" + idKichThuoc.getIdSize() + ", idThuongHieu=" + idThuongHieu.getIdThuongHieu() + ", idSanPham=" + idSanPham.getIdSanPham() + */+'}';

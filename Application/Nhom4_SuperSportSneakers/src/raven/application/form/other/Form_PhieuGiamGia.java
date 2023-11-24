@@ -901,7 +901,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         }
 
         int kq = servicePGG.ThemPGG(phieuGiamGia);
-        if (kq == 1) {
+        if (kq != -1) {
             MsgBox.aleart(this, "Thêm thành có");
             listPGG = servicePGG.getAllPGG(page, lmit);
             loadToTable(listPGG);

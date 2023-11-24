@@ -5,7 +5,12 @@
 package Repository;
 
 import Model.DotGiamGia_M;
+import Model.KichThuoc;
+import Model.MauSac;
 import Model.NhanVien;
+import Model.SanPham;
+import Model.SanPhamChiTiet;
+import Model.ThuongHieu;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +18,8 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -143,6 +150,78 @@ public class DotGiamGia_MRpository {
         } catch (SQLException ex) {
             Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        }
+    }
+
+    public List<SanPhamChiTiet> getAllSPST_DGG(Date ngayBatDau, Date ngayKetThuc) {
+        List<SanPhamChiTiet> list = new ArrayList<>();
+        try {
+
+            query = "SELECT CTSP.ID AS IdCTSP, CTSP.MaCTSP , SP.TenSP , CTSP.GiaBan , TH.TenThuongHieu , S.TenSize , M.TenMau\n"
+                    + "FROM CHI_TIET_SAN_PHAM AS CTSP\n"
+                    + "JOIN SANPHAM AS SP ON SP.ID  = CTSP.IdSP\n"
+                    + "JOIN SIZE AS S ON S.ID = CTSP.IdSize\n"
+                    + "JOIN THUONGHIEU AS TH ON TH.ID = CTSP.IdThuongHieu\n"
+                    + "JOIN MAU AS M ON M.ID = CTSP.IdMau\n"
+                    + "WHERE CTSP.TrangThai = 0 -- Chi tiết sản phẩm còn hàng\n"
+                    + "    AND NOT EXISTS (\n"
+                    + "        SELECT 1\n"
+                    + "        FROM CHI_TIET_DGG AS CTDGG\n"
+                    + "        JOIN DOT_GIAM_GIA AS DGG ON CTDGG.IdDGG = DGG.ID\n"
+                    + "        WHERE CTDGG.IdCTSP = CTSP.ID\n"
+                    + "            AND (DGG.NgayBatDau BETWEEN ? AND ? \n"
+                    + "                 OR DGG.NgayKetThuc BETWEEN ?  AND ? \n"
+                    + "                 OR (DGG.NgayBatDau <= ? AND DGG.NgayKetThuc >= ? ))\n"
+                    + "    );";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setDate(1, new java.sql.Date(ngayBatDau.getTime()));
+            pstm.setDate(2, new java.sql.Date(ngayKetThuc.getTime()));
+            pstm.setDate(3, new java.sql.Date(ngayBatDau.getTime()));
+            pstm.setDate(4, new java.sql.Date(ngayKetThuc.getTime()));
+            pstm.setDate(5, new java.sql.Date(ngayBatDau.getTime()));
+            pstm.setDate(6, new java.sql.Date(ngayKetThuc.getTime()));
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                KichThuoc kichThuoc = new KichThuoc();
+                kichThuoc.setTenSize(rs.getFloat("TenSize"));
+                MauSac mauSac = new MauSac();
+                mauSac.setTenMau(rs.getString("TenMau"));
+                SanPham sanPham = new SanPham();
+                sanPham.setTenSanpham(rs.getString("TenSP"));
+                ThuongHieu thuongHieu = new ThuongHieu();
+                thuongHieu.setTenThuongHieu(rs.getString("TenThuongHieu"));
+                SanPhamChiTiet sanPhamChiTiet = new SanPhamChiTiet();
+                sanPhamChiTiet.setIdSPCT(rs.getLong("IdCTSP"));
+                sanPhamChiTiet.setMaSPCT(rs.getString("MaCTSP"));
+
+                sanPhamChiTiet.setIdKichThuoc(kichThuoc);
+                sanPhamChiTiet.setIdMau(mauSac);
+                sanPhamChiTiet.setIdSanPham(sanPham);
+                sanPhamChiTiet.setIdThuongHieu(thuongHieu);
+                list.add(sanPhamChiTiet);
+            }
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public int getRowCount() {
+        String countSql = "SELECT COUNT(*) AS totalRows FROM DOT_GIAM_GIA";
+        con = DBConnection.getConnect();
+        try {
+            stm = con.createStatement();
+            rs = stm.executeQuery(countSql);
+            int totalRows = 0;
+            if (rs.next()) {
+                return totalRows = rs.getInt("totalRows");
+            }
+            return 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
         }
     }
 }

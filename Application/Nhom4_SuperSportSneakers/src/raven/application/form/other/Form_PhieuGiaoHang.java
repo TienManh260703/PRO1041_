@@ -32,7 +32,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
     private List<Object> listCTPG = new ArrayList<>();
     private static PhieuGiaoHangRepository phieuGiaoHangRepository = new PhieuGiaoHangRepository();
     private static int page = 1;
-    private static int page2 = 1;
+   
     private static int lmit = 4;
     private static int gioiHanPage = (int) ((Math.ceil(phieuGiaoHangRepository.getRowCount() / lmit))) + 1;
     private KhachHang khachHang = new KhachHang();
