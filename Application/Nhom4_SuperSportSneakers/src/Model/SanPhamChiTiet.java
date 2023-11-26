@@ -273,6 +273,12 @@ public class SanPhamChiTiet {
             maSPCT, idSanPham.getTenSanpham(), idMau.getTenMau(), idKichThuoc.getTenSize(), idThuongHieu.getTenThuongHieu(), soLuong, giaNiemYet
         };
     }
+    
+    public Object [] rowDataViewDGG (){
+       return new Object[]{
+            maSPCT,idSanPham.getTenSanpham() , giaNiemYet , idThuongHieu.getTenThuongHieu() , idMau.getTenMau(), idKichThuoc.getTenSize() , false
+       };
+    }
 
     public Object[] rowDataDGG (int index){
         return new Object[]{

@@ -105,7 +105,7 @@ public class DotGiamGia_MRpository {
         List<SanPhamChiTiet> list = new ArrayList<>();
         try {
 
-            query = "SELECT CTSP.ID AS IdCTSP, CTSP.MaCTSP , SP.TenSP , CTSP.GiaBan , TH.TenThuongHieu , S.TenSize , M.TenMau\n"
+            query = "SELECT CTSP.ID AS IdCTSP, CTSP.MaCTSP , SP.TenSP , CTSP.GiaNiemYet , TH.TenThuongHieu , S.TenSize , M.TenMau\n"
                     + "FROM CHI_TIET_SAN_PHAM AS CTSP\n"
                     + "JOIN SANPHAM AS SP ON SP.ID  = CTSP.IdSP\n"
                     + "JOIN SIZE AS S ON S.ID = CTSP.IdSize\n"
@@ -146,7 +146,7 @@ public class DotGiamGia_MRpository {
                 SanPhamChiTiet sanPhamChiTiet = new SanPhamChiTiet();
                 sanPhamChiTiet.setIdSPCT(rs.getLong("IdCTSP"));
                 sanPhamChiTiet.setMaSPCT(rs.getString("MaCTSP"));
-
+                sanPhamChiTiet.setGiaNiemYet(rs.getFloat("GiaNiemYet"));
                 sanPhamChiTiet.setIdKichThuoc(kichThuoc);
                 sanPhamChiTiet.setIdMau(mauSac);
                 sanPhamChiTiet.setIdSanPham(sanPham);

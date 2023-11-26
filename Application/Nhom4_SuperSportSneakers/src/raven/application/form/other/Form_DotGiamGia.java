@@ -35,9 +35,10 @@ import raven.application.Application;
 public class Form_DotGiamGia extends javax.swing.JPanel {
 
     private DefaultComboBoxModel model3 = new DefaultComboBoxModel();
+    DefaultTableModel dtmSP = new DefaultTableModel();
     private ThuongHieu_Repository thuongHieu_Repository = new ThuongHieu_Repository();
     private static DotGiamGia_MRpository dotGiamGia_MRpository = new DotGiamGia_MRpository();
-    private List<SanPhamChiTiet> lisrSP = new ArrayList<>();
+    private static List<SanPhamChiTiet> lisrSP = new ArrayList<>();
     private static List<DotGiamGia_M> listDGG = new ArrayList<>();
     private static int page = 1;
     private static int lmit = 4;
@@ -57,17 +58,17 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     }
 
     private void fillToTableSP(List<SanPhamChiTiet> list) {
-        DefaultTableModel dtm = (DefaultTableModel) this.tblSP.getModel();
-        dtm.setRowCount(0);
+        dtmSP = (DefaultTableModel) this.tblSP.getModel();
+        dtmSP.setRowCount(0);
         for (SanPhamChiTiet spct : list) {
-            //dtm.addRow();
+            dtmSP.addRow(spct.rowDataViewDGG());
         }
     }
 
     private void fillToTableDGG(List<DotGiamGia_M> list) {
         DefaultTableModel dtm = (DefaultTableModel) this.tblPhieuGG.getModel();
         dtm.setRowCount(0);
-        int i = 0;
+        int i = 1;
         for (DotGiamGia_M dggm : list) {
             dtm.addRow(dggm.rowData(i));
             i++;
@@ -313,10 +314,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
 
         tblSP.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Mã Sản Phẩm", "Tên sản phẩm", "Giá Bán", "Hãng", "Mùa sắc", "Size", "Chọn"
@@ -354,6 +352,21 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         });
 
         cboThuongHieu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--Tất Cả--", " " }));
+        cboThuongHieu.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cboThuongHieuItemStateChanged(evt);
+            }
+        });
+        cboThuongHieu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cboThuongHieuMouseClicked(evt);
+            }
+        });
+        cboThuongHieu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboThuongHieuActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -504,7 +517,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         jLabel7.setText("Tìm kiếm :");
 
         cboTrangThai.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        cboTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "                               Sắp đến", "                         Đang diễn ra", "                            Đã hết hạn" }));
+        cboTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "                       Sắp đến", "                    Đang diễn ra", "                       Đã hết hạn" }));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel9.setText("Trạng thái :");
@@ -524,7 +537,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         });
 
         lblPageTTKH.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lblPageTTKH.setText("1/ 2");
+        lblPageTTKH.setText("0/0");
 
         btnTien.setText(">");
         btnTien.addActionListener(new java.awt.event.ActionListener() {
@@ -847,7 +860,9 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
 
         ViewCTSP_DGG cTSP_DGG = new ViewCTSP_DGG(new Application(), true, date, date2);
         cTSP_DGG.setVisible(true);
-        lisrSP = cTSP_DGG.getListCTSP();
+
+        lisrSP = cTSP_DGG.getTable();
+        fillToTableSP(lisrSP);
 
     }//GEN-LAST:event_jButton6ActionPerformed
 
@@ -866,6 +881,37 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     private void btnCuoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCuoiActionPerformed
         last();
     }//GEN-LAST:event_btnCuoiActionPerformed
+
+    private void cboThuongHieuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cboThuongHieuMouseClicked
+
+    }//GEN-LAST:event_cboThuongHieuMouseClicked
+
+    private void cboThuongHieuItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboThuongHieuItemStateChanged
+
+    }//GEN-LAST:event_cboThuongHieuItemStateChanged
+
+    private void cboThuongHieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboThuongHieuActionPerformed
+        try {
+            String tt = cboThuongHieu.getSelectedItem().toString();
+            System.out.println(tt);
+            dtmSP.setRowCount(0);
+            if (tt.equals("---Tất cả---")) {
+                for (SanPhamChiTiet spct : lisrSP) {
+                    dtmSP.addRow(spct.rowDataViewDGG());
+                    
+                }
+            }
+            for (SanPhamChiTiet spct : lisrSP) {
+                System.out.println("raven.application.form.other.Form_DotGiamGia.cboThuongHieuActionPerformed()"+spct.getIdSanPham().getTenSanpham());
+                if (spct.getIdThuongHieu().getTenThuongHieu().equals(tt)) {
+                    dtmSP.addRow(spct.rowDataViewDGG());
+                }
+
+            }
+
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_cboThuongHieuActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

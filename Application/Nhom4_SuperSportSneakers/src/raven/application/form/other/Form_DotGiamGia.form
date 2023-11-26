@@ -488,7 +488,7 @@
                         <Component class="javax.swing.JTable" name="tblSP">
                           <Properties>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                              <Table columnCount="7" rowCount="4">
+                              <Table columnCount="7" rowCount="0">
                                 <Column editable="false" title="M&#xe3; S&#x1ea3;n Ph&#x1ea9;m" type="java.lang.Object"/>
                                 <Column editable="false" title="T&#xea;n s&#x1ea3;n ph&#x1ea9;m" type="java.lang.Object"/>
                                 <Column editable="false" title="Gi&#xe1; B&#xe1;n" type="java.lang.Object"/>
@@ -569,6 +569,11 @@
                           </StringArray>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cboThuongHieuItemStateChanged"/>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="cboThuongHieuMouseClicked"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboThuongHieuActionPerformed"/>
+                      </Events>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                       </AuxValues>
@@ -788,9 +793,9 @@
                         </Property>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="3">
-                            <StringItem index="0" value="                               S&#x1eaf;p &#x111;&#x1ebf;n"/>
-                            <StringItem index="1" value="                         &#x110;ang di&#x1ec5;n ra"/>
-                            <StringItem index="2" value="                            &#x110;&#xe3; h&#x1ebf;t h&#x1ea1;n"/>
+                            <StringItem index="0" value="                       S&#x1eaf;p &#x111;&#x1ebf;n"/>
+                            <StringItem index="1" value="                    &#x110;ang di&#x1ec5;n ra"/>
+                            <StringItem index="2" value="                       &#x110;&#xe3; h&#x1ebf;t h&#x1ea1;n"/>
                           </StringArray>
                         </Property>
                       </Properties>
@@ -827,7 +832,7 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI" size="12" style="1"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="1/ 2"/>
+                        <Property name="text" type="java.lang.String" value="0/0"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JButton" name="btnTien">
