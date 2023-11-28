@@ -201,7 +201,7 @@ public class Form_SanPhamChiTiet extends javax.swing.JPanel {
             return null;
         }
 
-        Float giaBan, giaNiemYet;
+        BigDecimal giaBan, giaNiemYet;
 
         String txtGiaBanValue = txtGiaBan.getText();
         String txtGiaBan1Value = txtGiaBan1.getText();
@@ -212,10 +212,10 @@ public class Form_SanPhamChiTiet extends javax.swing.JPanel {
         }
 
         try {
-            giaBan = Float.parseFloat(txtGiaBanValue);
-            giaNiemYet = Float.parseFloat(txtGiaBan1Value);
+            giaBan = new BigDecimal(txtGiaBanValue);
+            giaNiemYet = new BigDecimal(txtGiaBan1Value);
 
-            if (giaBan < 0 || giaNiemYet < 0) {
+            if (giaBan.compareTo(BigDecimal.ZERO) < 0 || giaNiemYet.compareTo(BigDecimal.ZERO) < 0) {
                 Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Giá tiền phải lớn hơn hoặc bằng 0.");
                 return null;
             }

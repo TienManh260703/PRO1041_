@@ -20,13 +20,13 @@ public class HoaDon {
     private String maHoaDon;
     private Integer capBac;
     private Float phanTramGG;//	PhanTramGia INT NULL , --- CẤP BẬC + PHIẾU THEO % ++ Doi thanh FLoat
-    private Float tienPhieuGiam;
-    private Float diemDoi; //	DiemDoi INT NULL, -- tiền khách hàng từ đó lấy ra tiền 1 diem = 10k => MONEY
+    private BigDecimal tienPhieuGiam;
+    private BigDecimal diemDoi; //	DiemDoi INT NULL, -- tiền khách hàng từ đó lấy ra tiền 1 diem = 10k => MONEY
     private Integer phuongThucTT;
-    private Float tienKhDua;
-    private Float tienKhChuyenKhoan;
-    private Float tienThua;
-    private Float thanhTien;
+    private BigDecimal tienKhDua;
+    private BigDecimal tienKhChuyenKhoan;
+    private BigDecimal tienThua;
+    private BigDecimal thanhTien;
     private Date ngayTao;
     private Date ngayThanhToan;
     private boolean hinhThucMua;
@@ -35,7 +35,7 @@ public class HoaDon {
     public HoaDon() {
     }
 
-    public HoaDon(NhanVien IdNV, KhachHang IdKH, String maHoaDon, Integer capBac, Float phanTramGG, Float tienPhieuGiam, Float diemDoi, Integer phuongThucTT, Float tienKhDua, Float tienKhChuyenKhoan, Float tienThua, Float thanhTien, Date ngayThanhToan, boolean hinhThucMua, Integer trangThai) {
+    public HoaDon(NhanVien IdNV, KhachHang IdKH, String maHoaDon, Integer capBac, Float phanTramGG, BigDecimal tienPhieuGiam, BigDecimal diemDoi, Integer phuongThucTT, BigDecimal tienKhDua, BigDecimal tienKhChuyenKhoan, BigDecimal tienThua, BigDecimal thanhTien, Date ngayThanhToan, boolean hinhThucMua, Integer trangThai) {
         this.IdNV = IdNV;
         this.IdKH = IdKH;
         this.maHoaDon = maHoaDon;
@@ -87,7 +87,7 @@ public class HoaDon {
         this.ngayTao = ngayTao;
     }
 
-    public HoaDon(PhieuGiamGia IdPGG, NhanVien IdNV, KhachHang IdKH, String maHoaDon, Integer capBac, Float phanTramGG, Float tienPhieuGiam, Float diemDoi, Integer phuongThucTT, Float TienKhDua, Float TienKhChuyenKhoan, Float TienThua, Float ThanhTien, boolean hinhThucMua, Integer trangThai) {
+    public HoaDon(PhieuGiamGia IdPGG, NhanVien IdNV, KhachHang IdKH, String maHoaDon, Integer capBac, Float phanTramGG, BigDecimal tienPhieuGiam, BigDecimal diemDoi, Integer phuongThucTT, BigDecimal TienKhDua, BigDecimal TienKhChuyenKhoan, BigDecimal TienThua, BigDecimal ThanhTien, boolean hinhThucMua, Integer trangThai) {
         this.IdPGG = IdPGG;
         this.IdNV = IdNV;
         this.IdKH = IdKH;
@@ -105,7 +105,7 @@ public class HoaDon {
         this.trangThai = trangThai;
     }
 
-    public HoaDon(PhieuGiamGia IdPGG, NhanVien IdNV, KhachHang IdKH, String maHoaDon, Integer capBac, Float phanTramGG, Float tienPhieuGiam, Float diemDoi, Integer phuongThucTT, Float TienKhDua, Float TienKhChuyenKhoan, Float TienThua, Float ThanhTien, Date NgayThanhToan, boolean hinhThucMua, Integer trangThai) {
+    public HoaDon(PhieuGiamGia IdPGG, NhanVien IdNV, KhachHang IdKH, String maHoaDon, Integer capBac, Float phanTramGG, BigDecimal tienPhieuGiam, BigDecimal diemDoi, Integer phuongThucTT, BigDecimal TienKhDua, BigDecimal TienKhChuyenKhoan, BigDecimal TienThua, BigDecimal ThanhTien, Date NgayThanhToan, boolean hinhThucMua, Integer trangThai) {
         this.IdPGG = IdPGG;
         this.IdNV = IdNV;
         this.IdKH = IdKH;
@@ -124,7 +124,7 @@ public class HoaDon {
         this.trangThai = trangThai;
     }
 
-    public HoaDon(Long id, PhieuGiamGia IdPGG, NhanVien IdNV, KhachHang IdKH, String maHoaDon, Integer capBac, Float phanTramGG, Float tienPhieuGiam, Float diemDoi, Integer phuongThucTT, Float tienKhDua, Float tienKhChuyenKhoan, Float tienThua, Float thanhTien, boolean hinhThucMua, Integer trangThai) {
+    public HoaDon(Long id, PhieuGiamGia IdPGG, NhanVien IdNV, KhachHang IdKH, String maHoaDon, Integer capBac, Float phanTramGG, BigDecimal tienPhieuGiam, BigDecimal diemDoi, Integer phuongThucTT, BigDecimal tienKhDua, BigDecimal tienKhChuyenKhoan, BigDecimal tienThua, BigDecimal thanhTien, boolean hinhThucMua, Integer trangThai) {
         this.id = id;
         this.IdPGG = IdPGG;
         this.IdNV = IdNV;
@@ -203,19 +203,19 @@ public class HoaDon {
         this.phanTramGG = phanTramGG;
     }
 
-    public Float getTienPhieuGiam() {
+    public BigDecimal getTienPhieuGiam() {
         return tienPhieuGiam;
     }
 
-    public void setTienPhieuGiam(Float tienPhieuGiam) {
+    public void setTienPhieuGiam(BigDecimal tienPhieuGiam) {
         this.tienPhieuGiam = tienPhieuGiam;
     }
 
-    public Float getDiemDoi() {
+    public BigDecimal getDiemDoi() {
         return diemDoi;
     }
 
-    public void setDiemDoi(Float diemDoi) {
+    public void setDiemDoi(BigDecimal diemDoi) {
         this.diemDoi = diemDoi;
     }
 
@@ -227,35 +227,35 @@ public class HoaDon {
         this.phuongThucTT = phuongThucTT;
     }
 
-    public Float getTienKhDua() {
+    public BigDecimal getTienKhDua() {
         return tienKhDua;
     }
 
-    public void setTienKhDua(Float TienKhDua) {
+    public void setTienKhDua(BigDecimal TienKhDua) {
         this.tienKhDua = TienKhDua;
     }
 
-    public Float getTienKhChuyenKhoan() {
+    public BigDecimal getTienKhChuyenKhoan() {
         return tienKhChuyenKhoan;
     }
 
-    public void setTienKhChuyenKhoan(Float TienKhChuyenKhoan) {
+    public void setTienKhChuyenKhoan(BigDecimal TienKhChuyenKhoan) {
         this.tienKhChuyenKhoan = TienKhChuyenKhoan;
     }
 
-    public Float getTienThua() {
+    public BigDecimal getTienThua() {
         return tienThua;
     }
 
-    public void setTienThua(Float TienThua) {
+    public void setTienThua(BigDecimal TienThua) {
         this.tienThua = TienThua;
     }
 
-    public Float getThanhTien() {
+    public BigDecimal getThanhTien() {
         return thanhTien;
     }
 
-    public void setThanhTien(Float ThanhTien) {
+    public void setThanhTien(BigDecimal ThanhTien) {
         this.thanhTien = ThanhTien;
     }
 

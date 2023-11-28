@@ -4,6 +4,7 @@
  */
 package Model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -18,11 +19,11 @@ public class ChiTietHoaDon {
     private Integer soLuong;
     private String maDGG;
     private Integer loaiDGG;
-    private Float giaTriDGG;
-    private Float quyDoiDGGTT;
-    private Float GiaBan;
-    private Float DonGia;
-    private Float thanhTien;
+    private BigDecimal giaTriDGG;
+    private BigDecimal quyDoiDGGTT;
+    private BigDecimal GiaBan;
+    private BigDecimal DonGia;
+    private BigDecimal thanhTien;
     private Date ngayTao;
     private Integer trangThai;
 
@@ -35,7 +36,7 @@ public class ChiTietHoaDon {
         this.soLuong = soLuong;
     }
 
-    public ChiTietHoaDon(HoaDon IdHoaDon, SanPhamChiTiet IdCTSP, Integer soLuong, String maDGG, Integer loaiDGG, Float giaTriDGG, Float quyDoiDGGTT, Float GiaBan, Float DonGia, Integer trangThai) {
+    public ChiTietHoaDon(HoaDon IdHoaDon, SanPhamChiTiet IdCTSP, Integer soLuong, String maDGG, Integer loaiDGG, BigDecimal giaTriDGG, BigDecimal quyDoiDGGTT, BigDecimal GiaBan, BigDecimal DonGia, Integer trangThai) {
         this.IdHoaDon = IdHoaDon;
         this.IdCTSP = IdCTSP;
         this.soLuong = soLuong;
@@ -48,7 +49,7 @@ public class ChiTietHoaDon {
         this.trangThai = trangThai;
     }
 
-    public ChiTietHoaDon(HoaDon IdHoaDon, SanPhamChiTiet IdCTSP, Integer soLuong, String maDGG, Integer loaiDGG, Float giaTriDGG, Float quyDoiDGGTT, Float GiaBan, Float DonGia, Float thanhTien) {
+    public ChiTietHoaDon(HoaDon IdHoaDon, SanPhamChiTiet IdCTSP, Integer soLuong, String maDGG, Integer loaiDGG, BigDecimal giaTriDGG, BigDecimal quyDoiDGGTT, BigDecimal GiaBan, BigDecimal DonGia, BigDecimal thanhTien) {
         this.IdHoaDon = IdHoaDon;
         this.IdCTSP = IdCTSP;
         this.soLuong = soLuong;
@@ -62,7 +63,7 @@ public class ChiTietHoaDon {
 
     }
 
-    public ChiTietHoaDon(Long id, HoaDon IdHoaDon, SanPhamChiTiet IdCTSP, Integer soLuong, String maDGG, Integer loaiDGG, Float giaTriDGG, Float quyDoiDGGTT, Float GiaBan, Float DonGia, Float thanhTien) {
+    public ChiTietHoaDon(Long id, HoaDon IdHoaDon, SanPhamChiTiet IdCTSP, Integer soLuong, String maDGG, Integer loaiDGG, BigDecimal giaTriDGG, BigDecimal quyDoiDGGTT, BigDecimal GiaBan, BigDecimal DonGia, BigDecimal thanhTien) {
         this.id = id;
         this.IdHoaDon = IdHoaDon;
         this.IdCTSP = IdCTSP;
@@ -76,11 +77,11 @@ public class ChiTietHoaDon {
         this.thanhTien = thanhTien;
     }
 
-    public Float getThanhTien() {
+    public BigDecimal getThanhTien() {
         return thanhTien;
     }
 
-    public void setThanhTien(Float thanhTien) {
+    public void setThanhTien(BigDecimal thanhTien) {
         this.thanhTien = thanhTien;
     }
 
@@ -128,35 +129,35 @@ public class ChiTietHoaDon {
         return loaiDGG;
     }
 
-    public Float getGiaTriDGG() {
+    public BigDecimal getGiaTriDGG() {
         return giaTriDGG;
     }
 
-    public void setGiaTriDGG(Float giaTriDGG) {
+    public void setGiaTriDGG(BigDecimal giaTriDGG) {
         this.giaTriDGG = giaTriDGG;
     }
 
-    public Float getQuyDoiDGGTT() {
+    public BigDecimal getQuyDoiDGGTT() {
         return quyDoiDGGTT;
     }
 
-    public void setQuyDoiDGGTT(Float quyDoiDGGTT) {
+    public void setQuyDoiDGGTT(BigDecimal quyDoiDGGTT) {
         this.quyDoiDGGTT = quyDoiDGGTT;
     }
 
-    public Float getGiaBan() {
+    public BigDecimal getGiaBan() {
         return GiaBan;
     }
 
-    public void setGiaBan(Float GiaBan) {
+    public void setGiaBan(BigDecimal GiaBan) {
         this.GiaBan = GiaBan;
     }
 
-    public Float getDonGia() {
+    public BigDecimal getDonGia() {
         return DonGia;
     }
 
-    public void setDonGia(Float DonGia) {
+    public void setDonGia(BigDecimal DonGia) {
         this.DonGia = DonGia;
     }
 
@@ -186,9 +187,9 @@ public class ChiTietHoaDon {
 //        }
 //        return 0f;
 //    }
-
-    public Float setThanhTien2() {
-        Float thanhTien = soLuong * IdCTSP.tinhGiaBan();
+    public BigDecimal setThanhTien2() {
+        BigDecimal thanhTien = BigDecimal.valueOf(Long.parseLong(soLuong + "")).multiply(IdCTSP.tinhGiaBan());
+        //soLuong * IdCTSP.tinhGiaBan();
         System.err.println("TT : " + thanhTien);
         return thanhTien;
     }
@@ -208,14 +209,12 @@ public class ChiTietHoaDon {
             IdCTSP.getIdSanPham().getTenSanpham(),
             IdCTSP.getGiaNiemYet(),
             soLuong,
-          ( IdCTSP.getGiaBan() - IdCTSP.tinhGiaBan())+ str,
+            (IdCTSP.getGiaBan().subtract(IdCTSP.tinhGiaBan())) + str,
             IdCTSP.tinhGiaBan(),
             setThanhTien2(),
             id
         };
     }
-    
-    
 
     @Override
     public String toString() {

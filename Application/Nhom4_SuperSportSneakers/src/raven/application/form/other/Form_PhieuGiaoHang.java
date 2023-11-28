@@ -14,6 +14,7 @@ import Repository.PhieuGiaoHangRepository;
 import Utils.MsgBox;
 import Utils.Validate;
 import java.awt.Graphics;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -154,14 +155,14 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
                 return null;
             }
         }
-        float giaShipF = 0;
+        BigDecimal giaShipB = BigDecimal.ZERO;
         if (giaShip.isEmpty()) {
             MsgBox.aleart(this, "Giá ship chưa có !");
             txtGiaShip.requestFocus();
             return null;
         } else {
             try {
-                giaShipF = Float.parseFloat(giaShip);
+                giaShipB = new BigDecimal(giaShip);
             } catch (Exception e) {
                 MsgBox.aleart(this, "Giá ship phải là số !");
                 txtGiaShip.requestFocus();
@@ -185,7 +186,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         phieuGiaoHang.setDiaChi(diaChi);
         phieuGiaoHang.setTenShip(tenShip);
         phieuGiaoHang.setSdtShip(sdtShip);
-        phieuGiaoHang.setGiaShip(giaShipF);
+        phieuGiaoHang.setGiaShip(giaShipB);
         phieuGiaoHang.setDonViVanChuyen(donViVC);
         phieuGiaoHang.setNgayHoanThanh(ngayTT);
 

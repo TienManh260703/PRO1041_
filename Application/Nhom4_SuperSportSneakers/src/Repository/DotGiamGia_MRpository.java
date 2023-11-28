@@ -36,13 +36,13 @@ public class DotGiamGia_MRpository {
     private ResultSet rs = null;
     private Connection con = null;
 
-       public List<DotGiamGia_M> getAllDGG(int page, int limit) {
+    public List<DotGiamGia_M> getAllDGG(int page, int limit) {
         List<DotGiamGia_M> list = new ArrayList<>();
         try {
             query = "SELECT NV.ID AS IDNV , NV.HoVaTen ,DGG.ID AS ID  , MaDGG , TenDGG, Loai , GiaTri , "
                     + " NgayBatDau , NgayKetThuc , DGG.NgayTao, MoTa , DGG.TrangThai FROM DOT_GIAM_GIA AS DGG\n"
                     + "	JOIN NHANVIEN AS NV ON NV.ID = DGG.IdNV"
-                    + "	order by DGG.NgayTao OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";;
+                    + "	order by ID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";;
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
             pstm.setInt(1, (page - 1) * limit);
@@ -58,7 +58,7 @@ public class DotGiamGia_MRpository {
                 dggm.setMaDGG(rs.getString("MaDGG"));
                 dggm.setTenDGG(rs.getString("TenDGG"));
                 dggm.setHinhThucDGG(rs.getInt("Loai"));
-                dggm.setGiaTri(rs.getFloat("GiaTri"));
+                dggm.setGiaTri(rs.getBigDecimal("GiaTri"));
                 dggm.setNgayBatDau(rs.getDate("NgayBatDau"));
                 dggm.setNgayKetThuc(rs.getDate("NgayKetThuc"));
                 dggm.setNgayTao(rs.getDate("NgayTao"));
@@ -72,6 +72,135 @@ public class DotGiamGia_MRpository {
             Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    public List<DotGiamGia_M> listTimCboTT(int tt, int page, int limit) {
+        List<DotGiamGia_M> list = new ArrayList<>();
+        try {
+            query = "SELECT NV.ID AS IDNV, NV.HoVaTen, DGG.ID AS ID, MaDGG, TenDGG, Loai, GiaTri,\n"
+                    + "       NgayBatDau, NgayKetThuc, DGG.NgayTao, MoTa, DGG.TrangThai\n"
+                    + "FROM DOT_GIAM_GIA AS DGG\n"
+                    + "JOIN NHANVIEN AS NV ON NV.ID = DGG.IdNV\n"
+                    + "WHERE DGG.TrangThai = ?\n"
+                    + "ORDER BY ID DESC\n"
+                    + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, tt);
+            pstm.setInt(2, (page - 1) * limit);
+            pstm.setInt(3, limit);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                DotGiamGia_M dggm = new DotGiamGia_M();
+                NhanVien nhanVien = new NhanVien();
+                nhanVien.setId(rs.getLong("IDNV"));
+                nhanVien.setTenNhanVien(rs.getString("HoVaTen"));
+                dggm.setIdNV(nhanVien);
+                dggm.setIdDGG(rs.getLong("ID"));
+                dggm.setMaDGG(rs.getString("MaDGG"));
+                dggm.setTenDGG(rs.getString("TenDGG"));
+                dggm.setHinhThucDGG(rs.getInt("Loai"));
+                dggm.setGiaTri(rs.getBigDecimal("GiaTri"));
+                dggm.setNgayBatDau(rs.getDate("NgayBatDau"));
+                dggm.setNgayKetThuc(rs.getDate("NgayKetThuc"));
+                dggm.setNgayTao(rs.getDate("NgayTao"));
+                dggm.setMoTa(rs.getString("MoTa"));
+                dggm.setTrangThai(rs.getInt("TrangThai"));
+                list.add(dggm);
+
+            }
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public List<DotGiamGia_M> listTimTT(String tt, int page, int limit) {
+        List<DotGiamGia_M> list = new ArrayList<>();
+        try {
+            query = "SELECT NV.ID AS IDNV, NV.HoVaTen, DGG.ID AS ID, MaDGG, TenDGG, Loai, GiaTri,\n"
+                    + "       NgayBatDau, NgayKetThuc, DGG.NgayTao, MoTa, DGG.TrangThai\n"
+                    + "FROM DOT_GIAM_GIA AS DGG\n"
+                    + "JOIN NHANVIEN AS NV ON NV.ID = DGG.IdNV\n"
+                    + "WHERE MaDGG LIKE ? OR TenDGG LIKE ? \n"
+                    + "ORDER BY ID DESC\n"
+                    + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setString(1, "%" + tt + "%");
+            pstm.setString(2, "%" + tt + "%");
+            pstm.setInt(3, (page - 1) * limit);
+            pstm.setInt(4, limit);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                DotGiamGia_M dggm = new DotGiamGia_M();
+                NhanVien nhanVien = new NhanVien();
+                nhanVien.setId(rs.getLong("IDNV"));
+                nhanVien.setTenNhanVien(rs.getString("HoVaTen"));
+                dggm.setIdNV(nhanVien);
+                dggm.setIdDGG(rs.getLong("ID"));
+                dggm.setMaDGG(rs.getString("MaDGG"));
+                dggm.setTenDGG(rs.getString("TenDGG"));
+                dggm.setHinhThucDGG(rs.getInt("Loai"));
+                dggm.setGiaTri(rs.getBigDecimal("GiaTri"));
+                dggm.setNgayBatDau(rs.getDate("NgayBatDau"));
+                dggm.setNgayKetThuc(rs.getDate("NgayKetThuc"));
+                dggm.setNgayTao(rs.getDate("NgayTao"));
+                dggm.setMoTa(rs.getString("MoTa"));
+                dggm.setTrangThai(rs.getInt("TrangThai"));
+                list.add(dggm);
+
+            }
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public int insertDGG(DotGiamGia_M dgg) {
+        try {
+            query = "INSERT INTO DOT_GIAM_GIA (IdNV , MaDGG , TenDGG , Loai , GiaTri , NgayBatDau , NgayKetThuc, TrangThai  )VALUES \n"
+                    + "( ? , ? , ? , ? , ? , ? , ? , ? )";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setLong(1, dgg.getIdNV().getId());
+            pstm.setString(2, dgg.getMaDGG());
+            pstm.setString(3, dgg.getTenDGG());
+            pstm.setInt(4, dgg.getHinhThucDGG());
+            pstm.setBigDecimal(5, dgg.getGiaTri());
+            pstm.setObject(6, dgg.getNgayBatDau());
+            pstm.setObject(7, dgg.getNgayKetThuc());
+            pstm.setObject(8, dgg.getTrangThai());
+
+            return pstm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+
+    public int update(DotGiamGia_M dgg) {
+        try {
+            query = "UPDATE DOT_GIAM_GIA\n"
+                    + "SET TenDGG = ? , Loai = ? , GiaTri = ? , NgayBatDau = ? , NgayKetThuc = ? , MoTa  = ?\n"
+                    + "WHERE MaDGG LIKE ? ";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setString(1, dgg.getTenDGG());
+            pstm.setInt(2, dgg.getHinhThucDGG());
+            pstm.setObject(3, dgg.getGiaTri());
+            pstm.setObject(4, dgg.getNgayBatDau());
+            pstm.setObject(5, dgg.getNgayKetThuc());
+            pstm.setString(6, dgg.getMoTa());
+            pstm.setString(7, dgg.getMaDGG());
+            return pstm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+
     }
 
     public DotGiamGia_M getDGGByMaCTSP(String maCTSP) {
@@ -90,7 +219,7 @@ public class DotGiamGia_MRpository {
                         rs.getLong("IdDGG"),
                         rs.getString("MaDGG"),
                         rs.getInt("LoaiDGG"),
-                        rs.getFloat("GiaTriDGG"),
+                        rs.getBigDecimal("GiaTriDGG"),
                         rs.getInt("TrangThaiDGG"));
                 return dgg;
             }
@@ -146,7 +275,7 @@ public class DotGiamGia_MRpository {
                 SanPhamChiTiet sanPhamChiTiet = new SanPhamChiTiet();
                 sanPhamChiTiet.setIdSPCT(rs.getLong("IdCTSP"));
                 sanPhamChiTiet.setMaSPCT(rs.getString("MaCTSP"));
-                sanPhamChiTiet.setGiaNiemYet(rs.getFloat("GiaNiemYet"));
+                sanPhamChiTiet.setGiaNiemYet(rs.getBigDecimal("GiaNiemYet"));
                 sanPhamChiTiet.setIdKichThuoc(kichThuoc);
                 sanPhamChiTiet.setIdMau(mauSac);
                 sanPhamChiTiet.setIdSanPham(sanPham);
@@ -154,6 +283,29 @@ public class DotGiamGia_MRpository {
                 list.add(sanPhamChiTiet);
             }
             return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public DotGiamGia_M getDGGByMaDGG(String maDGG) {
+        try {
+            query = "SELECT ID , MaDGG , TenDGG , Loai , GiaTri FROM DOT_GIAM_GIA \n"
+                    + "WHERE MaDGG LIKE '" + maDGG + "'";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                DotGiamGia_M dgg = new DotGiamGia_M();
+                dgg.setIdDGG(rs.getLong("ID"));
+                dgg.setMaDGG(rs.getString("MaDGG"));
+                dgg.setTenDGG(rs.getString("TenDGG"));
+                dgg.setHinhThucDGG(rs.getInt("Loai"));
+                dgg.setGiaTri(rs.getBigDecimal("GiaTri"));
+                return dgg;
+            }
+            return null;
         } catch (SQLException ex) {
             Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
             return null;

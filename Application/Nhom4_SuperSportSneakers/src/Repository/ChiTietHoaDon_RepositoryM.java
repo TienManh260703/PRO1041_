@@ -65,22 +65,22 @@ public class ChiTietHoaDon_RepositoryM {
                 NhanVien nhanVien = new NhanVien(rs.getLong("IdNV"), rs.getString("MaNhanVien"), rs.getString("TenNV"));
                 KhachHang khachHang = new KhachHang(rs.getLong("IdKH"), rs.getString("MaKhachHang"), rs.getString("TenKH"));
                 SanPham sanPham = new SanPham(rs.getLong("IDSP"), rs.getString("MASP"), rs.getString("TENSP"));
-                DotGiamGia_M dotGiamGia = new DotGiamGia_M(rs.getLong("IDDGG"), nhanVien, rs.getString("MADGG"), rs.getString("TENDGG"), rs.getInt("LOAIDGG"), rs.getFloat("GIATRI"), rs.getDate("NGAYBD"), rs.getDate("NGAYKT"), rs.getString("MOTA"), rs.getInt("TRANGTHAIDGG"));
+                DotGiamGia_M dotGiamGia = new DotGiamGia_M(rs.getLong("IDDGG"), nhanVien, rs.getString("MADGG"), rs.getString("TENDGG"), rs.getInt("LOAIDGG"), rs.getBigDecimal("GIATRI"), rs.getDate("NGAYBD"), rs.getDate("NGAYKT"), rs.getString("MOTA"), rs.getInt("TRANGTHAIDGG"));
 
                 //  DotGiamGia_M dotGiamGia = dotGiamGia_MRpository.getDGGByMaCTSP(rs.getString("MaCTSP"));
                 System.out.println("GG :" + dotGiamGia);
-                SanPhamChiTiet chiTietSanPham = new SanPhamChiTiet(rs.getLong("IdCTSP"), dotGiamGia, rs.getString("MaCTSP"), rs.getFloat("GiaBan"), rs.getFloat("GiaNiemYet"), sanPham);
+                SanPhamChiTiet chiTietSanPham = new SanPhamChiTiet(rs.getLong("IdCTSP"), dotGiamGia, rs.getString("MaCTSP"), rs.getBigDecimal("GiaBan"), rs.getBigDecimal("GiaNiemYet"), sanPham);
                 PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
                 phieuGiamGia.setIdPGG(rs.getLong("IdPGG"));
                 phieuGiamGia.setMaPhieu(rs.getString("MaPhieu"));
                 phieuGiamGia.setTenPhieu(rs.getString("TenPhieu"));
                 phieuGiamGia.setLoaiPhieu(rs.getInt("LoaiPhieu"));
-                phieuGiamGia.setGiaTri(rs.getFloat("GiaTri"));
+                phieuGiamGia.setGiaTri(rs.getBigDecimal("GiaTri"));
                 phieuGiamGia.setSoLuongPhieu(rs.getInt("SoLuongPhieu"));
-                phieuGiamGia.setDonToiThieu(rs.getFloat("DonToiThieu"));
+                phieuGiamGia.setDonToiThieu(rs.getBigDecimal("DonToiThieu"));
                 phieuGiamGia.setTrangThai(rs.getInt("TrangThaiPGG"));
-                HoaDon hoaDon = new HoaDon(phieuGiamGia, nhanVien, khachHang, rs.getString("MaHoaDon"), rs.getInt("CAPBAC"), rs.getFloat("PhanTramGia"), rs.getFloat("TienPhieuGiam"), rs.getFloat("DiemDoi"), rs.getInt("PhuongThucTT"), rs.getFloat("TienKhDua"), rs.getFloat("TienKhChuyenKhoan"), rs.getFloat("TienThua"), rs.getFloat("ThanhTien"), rs.getBoolean("HinhThucMua"), rs.getInt("TrangThaiHD"));
-                ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(hoaDon, chiTietSanPham, rs.getInt("SoLuongHDCT"), rs.getString("MaDGGHDCT"), rs.getInt("LoaiGGHDCT"), rs.getFloat("GiaTriHDCT"), rs.getFloat("QuyDoiDGGTT"), rs.getFloat("GiaBanHDCT"), rs.getFloat("DonGiaHDCT"), rs.getFloat("ThanhtIENHDCT"));
+                HoaDon hoaDon = new HoaDon(phieuGiamGia, nhanVien, khachHang, rs.getString("MaHoaDon"), rs.getInt("CAPBAC"), rs.getFloat("PhanTramGia"), rs.getBigDecimal("TienPhieuGiam"), rs.getBigDecimal("DiemDoi"), rs.getInt("PhuongThucTT"), rs.getBigDecimal("TienKhDua"), rs.getBigDecimal("TienKhChuyenKhoan"), rs.getBigDecimal("TienThua"), rs.getBigDecimal("ThanhTien"), rs.getBoolean("HinhThucMua"), rs.getInt("TrangThaiHD"));
+                ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(hoaDon, chiTietSanPham, rs.getInt("SoLuongHDCT"), rs.getString("MaDGGHDCT"), rs.getInt("LoaiGGHDCT"), rs.getBigDecimal("GiaTriHDCT"), rs.getBigDecimal("QuyDoiDGGTT"), rs.getBigDecimal("GiaBanHDCT"), rs.getBigDecimal("DonGiaHDCT"), rs.getBigDecimal("ThanhtIENHDCT"));
                 list.add(chiTietHoaDon);
             }
             return list;
@@ -103,11 +103,11 @@ public class ChiTietHoaDon_RepositoryM {
             pstm.setInt(3, chiTietHoaDon.getSoLuong());
             pstm.setString(4, chiTietHoaDon.getMaDGG());
             pstm.setInt(5, chiTietHoaDon.getLoaiDGG());
-            pstm.setFloat(6, chiTietHoaDon.getGiaTriDGG());
-            pstm.setFloat(7, chiTietHoaDon.getQuyDoiDGGTT());
-            pstm.setFloat(8, chiTietHoaDon.getDonGia());
-            pstm.setFloat(9, chiTietHoaDon.getGiaBan());
-            pstm.setFloat(10, chiTietHoaDon.getThanhTien());
+            pstm.setBigDecimal(6, chiTietHoaDon.getGiaTriDGG());
+            pstm.setBigDecimal(7, chiTietHoaDon.getQuyDoiDGGTT());
+            pstm.setBigDecimal(8, chiTietHoaDon.getDonGia());
+            pstm.setBigDecimal(9, chiTietHoaDon.getGiaBan());
+            pstm.setBigDecimal(10, chiTietHoaDon.getThanhTien());
             return pstm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ChiTietHoaDon_RepositoryM.class.getName()).log(Level.SEVERE, null, ex);
@@ -145,8 +145,8 @@ public class ChiTietHoaDon_RepositoryM {
                 NhanVien nhanVien = new NhanVien(rs.getLong("IdNV"), rs.getString("MaNhanVien"), rs.getString("TenNV"));
                 KhachHang khachHang = new KhachHang(rs.getLong("IdKH"), rs.getString("MaKhachHang"), rs.getString("TenKH"));
                 SanPham sanPham = new SanPham(rs.getLong("IDSP"), rs.getString("MASP"), rs.getString("TENSP"));
-                DotGiamGia_M dotGiamGia = new DotGiamGia_M(rs.getLong("IDDGG"), nhanVien, rs.getString("MADGG"), rs.getString("TENDGG"), rs.getInt("LOAIDGG"), rs.getFloat("GIATRI"), rs.getDate("NGAYBD"), rs.getDate("NGAYKT"), rs.getString("MOTA"), rs.getInt("TRANGTHAIDGG"));
-                SanPhamChiTiet chiTietSanPham = new SanPhamChiTiet(rs.getLong("IdCTSP"), dotGiamGia, rs.getString("MASP"), rs.getFloat("GiaBan"), rs.getFloat("GiaNiemYet"), sanPham);
+                DotGiamGia_M dotGiamGia = new DotGiamGia_M(rs.getLong("IDDGG"), nhanVien, rs.getString("MADGG"), rs.getString("TENDGG"), rs.getInt("LOAIDGG"), rs.getBigDecimal("GIATRI"), rs.getDate("NGAYBD"), rs.getDate("NGAYKT"), rs.getString("MOTA"), rs.getInt("TRANGTHAIDGG"));
+                SanPhamChiTiet chiTietSanPham = new SanPhamChiTiet(rs.getLong("IdCTSP"), dotGiamGia, rs.getString("MASP"), rs.getBigDecimal("GiaBan"), rs.getBigDecimal("GiaNiemYet"), sanPham);
 //                PhieuGiamGia_M phieuGiamGia = new PhieuGiamGia_M(
 //                        rs.getLong("IdPGG"),
 //                        rs.getString("MaPhieu"), 
@@ -156,21 +156,19 @@ public class ChiTietHoaDon_RepositoryM {
 //                        rs.getInt("SoLuongPhieu"), 
 //                        rs.getFloat("DonToiThieu"), 
 //                        rs.getInt("TrangThaiPGG"));
-               
-                
-                 PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
+
+                PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
                 phieuGiamGia.setIdPGG(rs.getLong("IdPGG"));
                 phieuGiamGia.setMaPhieu(rs.getString("MaPhieu"));
                 phieuGiamGia.setTenPhieu(rs.getString("TenPhieu"));
                 phieuGiamGia.setLoaiPhieu(rs.getInt("LoaiPhieu"));
-                phieuGiamGia.setGiaTri(rs.getFloat("GiaTri"));
+                phieuGiamGia.setGiaTri(rs.getBigDecimal("GiaTri"));
                 phieuGiamGia.setSoLuongPhieu(rs.getInt("SoLuongPhieu"));
-                phieuGiamGia.setDonToiThieu(rs.getFloat("DonToiThieu"));
+                phieuGiamGia.setDonToiThieu(rs.getBigDecimal("DonToiThieu"));
                 phieuGiamGia.setTrangThai(rs.getInt("TrangThaiPGG"));
-               
-                
-                HoaDon hoaDon = new HoaDon(phieuGiamGia, nhanVien, khachHang, rs.getString("MaHoaDon"), rs.getInt("CAPBAC"), rs.getFloat("PhanTramGia"), rs.getFloat("TienPhieuGiam"), rs.getFloat("DiemDoi"), rs.getInt("PhuongThucTT"), rs.getFloat("TienKhDua"), rs.getFloat("TienKhChuyenKhoan"), rs.getFloat("TienThua"), rs.getFloat("ThanhTien"), rs.getBoolean("HinhThucMua"), rs.getInt("TrangThaiHD"));
-                ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(hoaDon, chiTietSanPham, rs.getInt("SoLuongHDCT"), rs.getString("MaDGGHDCT"), rs.getInt("LoaiGGHDCT"), rs.getFloat("GiaTriHDCT"), rs.getFloat("QuyDoiDGGTT"), rs.getFloat("GiaBanHDCT"), rs.getFloat("DonGiaHDCT"), rs.getFloat("ThanhtIENHDCT"));
+
+                HoaDon hoaDon = new HoaDon(phieuGiamGia, nhanVien, khachHang, rs.getString("MaHoaDon"), rs.getInt("CAPBAC"), rs.getFloat("PhanTramGia"), rs.getBigDecimal("TienPhieuGiam"), rs.getBigDecimal("DiemDoi"), rs.getInt("PhuongThucTT"), rs.getBigDecimal("TienKhDua"), rs.getBigDecimal("TienKhChuyenKhoan"), rs.getBigDecimal("TienThua"), rs.getBigDecimal("ThanhTien"), rs.getBoolean("HinhThucMua"), rs.getInt("TrangThaiHD"));
+                ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(hoaDon, chiTietSanPham, rs.getInt("SoLuongHDCT"), rs.getString("MaDGGHDCT"), rs.getInt("LoaiGGHDCT"), rs.getBigDecimal("GiaTriHDCT"), rs.getBigDecimal("QuyDoiDGGTT"), rs.getBigDecimal("GiaBanHDCT"), rs.getBigDecimal("DonGiaHDCT"), rs.getBigDecimal("ThanhtIENHDCT"));
                 return chiTietHoaDon;
             }
             return null;

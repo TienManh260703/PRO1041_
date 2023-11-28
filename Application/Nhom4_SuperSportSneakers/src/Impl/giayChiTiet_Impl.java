@@ -435,8 +435,8 @@ public class giayChiTiet_Impl {
                             }
                             try {
                                 // SUA R : Float giaBan = Float.parseFloat((String) cellValue);
-                                Float giaBan = Float.parseFloat((String) cellValue);
-                                if (giaBan <0) {
+                                BigDecimal giaBan = BigDecimal.valueOf(Double.parseDouble((String) cellValue)); //Float.parseFloat((String) cellValue);
+                                if (giaBan.compareTo(BigDecimal.ZERO) <0) {
                                     ketQua = "Giá bán không được nhỏ hơn 0 - dòng: " + (cell.getRowIndex() + 1);
                                     return ketQua;
                                 }
@@ -455,8 +455,9 @@ public class giayChiTiet_Impl {
                             }
                             try {
                                 /// SUA
-                                Float giaNiemYet = Float.parseFloat((String) cellValue);
-                                if (giaNiemYet<0) {
+                                BigDecimal giaNiemYet = BigDecimal.valueOf(Double.parseDouble((String) cellValue));
+                                //Float.parseFloat((String) cellValue);
+                                if (giaNiemYet.compareTo(BigDecimal.ZERO) <0) {
                                     ketQua = "Giá niêm yết không được nhỏ hơn 0 - dòng: " + (cell.getRowIndex() + 1);
                                     return ketQua;
                                 }
@@ -522,7 +523,7 @@ public class giayChiTiet_Impl {
                 ThuongHieu thuongHieu = new ThuongHieu(rs.getString("TenThuongHieu"));
                 KichThuoc kichThuoc = new KichThuoc(rs.getFloat("TenSize"));
 
-                SanPhamChiTiet sanPhamChiTiet = new SanPhamChiTiet(rs.getLong("ID"), rs.getString("MaCTSP"), rs.getInt("SoLuongTon"), rs.getFloat("GiaBan"), rs.getFloat("GiaNiemYet"), rs.getInt("TrangThai"), rs.getString("MoTa"), mauSac, kichThuoc, thuongHieu, sanPham);
+                SanPhamChiTiet sanPhamChiTiet = new SanPhamChiTiet(rs.getLong("ID"), rs.getString("MaCTSP"), rs.getInt("SoLuongTon"), rs.getBigDecimal("GiaBan"), rs.getBigDecimal("GiaNiemYet"), rs.getInt("TrangThai"), rs.getString("MoTa"), mauSac, kichThuoc, thuongHieu, sanPham);
                 list.add(sanPhamChiTiet);
             }
         } catch (Exception e) {

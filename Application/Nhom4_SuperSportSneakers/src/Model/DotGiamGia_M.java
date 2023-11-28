@@ -5,6 +5,7 @@
 package Model;
 
 import Utils.XDate;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -18,7 +19,7 @@ public class DotGiamGia_M {
     private String maDGG;
     private String tenDGG;
     private Integer hinhThucDGG;
-    private Float giaTri;
+    private BigDecimal giaTri;
     private Date ngayBatDau;
     private Date ngayKetThuc;
     private String moTa;
@@ -28,7 +29,7 @@ public class DotGiamGia_M {
     public DotGiamGia_M() {
     }
 
-    public DotGiamGia_M(Long id, NhanVien idNV, String MaDGG, String tenDGG, Integer hinhThucDGG, Float giaTri, Date ngayBatDau, Date ngayKetThuc, String moTa, Date ngayTao, Integer trangThai) {
+    public DotGiamGia_M(Long id, NhanVien idNV, String MaDGG, String tenDGG, Integer hinhThucDGG, BigDecimal giaTri, Date ngayBatDau, Date ngayKetThuc, String moTa, Date ngayTao, Integer trangThai) {
         this.idDGG = id;
         this.idNV = idNV;
         this.maDGG = MaDGG;
@@ -42,7 +43,7 @@ public class DotGiamGia_M {
         this.trangThai = trangThai;
     }
 
-    public DotGiamGia_M(NhanVien idNV, String MaDGG, String tenDGG, Integer hinhThucDGG, Float giaTri, Date ngayBatDau, Date ngayKetThuc, String moTa, Integer trangThai) {
+    public DotGiamGia_M(NhanVien idNV, String MaDGG, String tenDGG, Integer hinhThucDGG, BigDecimal giaTri, Date ngayBatDau, Date ngayKetThuc, String moTa, Integer trangThai) {
         this.idNV = idNV;
         this.maDGG = MaDGG;
         this.tenDGG = tenDGG;
@@ -54,7 +55,7 @@ public class DotGiamGia_M {
         this.trangThai = trangThai;
     }
 
-    public DotGiamGia_M(Long id, NhanVien idNV, String MaDGG, String tenDGG, Integer hinhThucDGG, Float giaTri, Date ngayBatDau, Date ngayKetThuc, String moTa, Integer trangThai) {
+    public DotGiamGia_M(Long id, NhanVien idNV, String MaDGG, String tenDGG, Integer hinhThucDGG, BigDecimal giaTri, Date ngayBatDau, Date ngayKetThuc, String moTa, Integer trangThai) {
         this.idDGG = id;
         this.idNV = idNV;
         this.maDGG = MaDGG;
@@ -67,7 +68,7 @@ public class DotGiamGia_M {
         this.trangThai = trangThai;
     }
 
-    public DotGiamGia_M(Long id, String MaDGG, Integer hinhThucDGG, Float giaTri, Integer trangThai) {
+    public DotGiamGia_M(Long id, String MaDGG, Integer hinhThucDGG, BigDecimal giaTri, Integer trangThai) {
         this.idDGG = id;
         this.maDGG = MaDGG;
         this.hinhThucDGG = hinhThucDGG;
@@ -75,7 +76,7 @@ public class DotGiamGia_M {
         this.trangThai = trangThai;
     }
 
-    public DotGiamGia_M(long idDGG, String maDGG, String tenDGG, Integer hinhThucDGG, float giaTri, Date ngayBatDau, Date ngayKetThuc, String moTa, Date ngayTao, int trangThai) {
+    public DotGiamGia_M(long idDGG, String maDGG, String tenDGG, Integer hinhThucDGG, BigDecimal giaTri, Date ngayBatDau, Date ngayKetThuc, String moTa, Date ngayTao, int trangThai) {
         this.idDGG = idDGG;
         this.maDGG = maDGG;
         this.tenDGG = tenDGG;
@@ -128,11 +129,11 @@ public class DotGiamGia_M {
         this.hinhThucDGG = hinhThucDGG;
     }
 
-    public Float getGiaTri() {
+    public BigDecimal getGiaTri() {
         return giaTri;
     }
 
-    public void setGiaTri(Float giaTri) {
+    public void setGiaTri(BigDecimal giaTri) {
         this.giaTri = giaTri;
     }
 

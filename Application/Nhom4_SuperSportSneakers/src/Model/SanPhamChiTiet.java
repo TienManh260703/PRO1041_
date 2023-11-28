@@ -17,22 +17,19 @@ public class SanPhamChiTiet {
     private DotGiamGia_M idDGG;
     private String maSPCT;
     private int soLuong;
-    private Float giaBan;
-    private Float giaNiemYet;
+    private BigDecimal giaBan;
+    private BigDecimal giaNiemYet;
     private int TrangThai;
     private String moTa;
     private MauSac idMau;
     private KichThuoc idKichThuoc;
     private ThuongHieu idThuongHieu;
     private SanPham idSanPham;
-    
-    
-
 
     public SanPhamChiTiet() {
     }
-    
-     public SanPhamChiTiet(Long idSPCT, String maSPCT, int soLuong, Float giaBan, Float giaNiemYet, int TrangThai, String moTa, MauSac idMau, KichThuoc idKichThuoc, ThuongHieu idThuongHieu, SanPham idSanPham) {
+
+    public SanPhamChiTiet(Long idSPCT, String maSPCT, int soLuong, BigDecimal giaBan, BigDecimal giaNiemYet, int TrangThai, String moTa, MauSac idMau, KichThuoc idKichThuoc, ThuongHieu idThuongHieu, SanPham idSanPham) {
         this.idSPCT = idSPCT;
         this.maSPCT = maSPCT;
         this.soLuong = soLuong;
@@ -46,7 +43,7 @@ public class SanPhamChiTiet {
         this.idSanPham = idSanPham;
     }
 
-    public SanPhamChiTiet(String maSPCT, int soLuong, Float giaBan, Float giaNiemYet, int TrangThai, String moTa, MauSac idMau, KichThuoc idKichThuoc, ThuongHieu idThuongHieu, SanPham idSanPham) {
+    public SanPhamChiTiet(String maSPCT, int soLuong, BigDecimal giaBan, BigDecimal giaNiemYet, int TrangThai, String moTa, MauSac idMau, KichThuoc idKichThuoc, ThuongHieu idThuongHieu, SanPham idSanPham) {
         this.maSPCT = maSPCT;
         this.soLuong = soLuong;
         this.giaBan = giaBan;
@@ -58,9 +55,8 @@ public class SanPhamChiTiet {
         this.idThuongHieu = idThuongHieu;
         this.idSanPham = idSanPham;
     }
-    
 
-    public SanPhamChiTiet(Long idSPCT, DotGiamGia_M idDGG, String maSPCT, int soLuong, Float giaBan, Float giaNiemYet, SanPham idSanPham) {
+    public SanPhamChiTiet(Long idSPCT, DotGiamGia_M idDGG, String maSPCT, int soLuong, BigDecimal giaBan, BigDecimal giaNiemYet, SanPham idSanPham) {
         this.idSPCT = idSPCT;
         this.idDGG = idDGG;
         this.maSPCT = maSPCT;
@@ -69,7 +65,8 @@ public class SanPhamChiTiet {
         this.giaNiemYet = giaNiemYet;
         this.idSanPham = idSanPham;
     }
-     public SanPhamChiTiet(Long idSPCT, DotGiamGia_M idDGG, String maSPCT, Float giaBan, Float giaNiemYet, SanPham idSanPham) {
+
+    public SanPhamChiTiet(Long idSPCT, DotGiamGia_M idDGG, String maSPCT, BigDecimal giaBan, BigDecimal giaNiemYet, SanPham idSanPham) {
         this.idSPCT = idSPCT;
         this.idDGG = idDGG;
         this.maSPCT = maSPCT;
@@ -78,7 +75,7 @@ public class SanPhamChiTiet {
         this.idSanPham = idSanPham;
     }
 
-    public SanPhamChiTiet(Long idSPCT, String maSPCT, int soLuong, Float giaBan, Float giaNiemYet, MauSac idMau, KichThuoc idKichThuoc, ThuongHieu idThuongHieu, SanPham idSanPham) {
+    public SanPhamChiTiet(Long idSPCT, String maSPCT, int soLuong, BigDecimal giaBan, BigDecimal giaNiemYet, MauSac idMau, KichThuoc idKichThuoc, ThuongHieu idThuongHieu, SanPham idSanPham) {
         this.idSPCT = idSPCT;
         this.maSPCT = maSPCT;
         this.soLuong = soLuong;
@@ -91,9 +88,7 @@ public class SanPhamChiTiet {
 
     }
 
- 
-
-    public SanPhamChiTiet(Long idSPCT, DotGiamGia_M idDGG, String maSPCT, int soLuong, Float giaBan, Float giaNiemYet, MauSac idMau, KichThuoc idKichThuoc, ThuongHieu idThuongHieu, SanPham idSanPham) {
+    public SanPhamChiTiet(Long idSPCT, DotGiamGia_M idDGG, String maSPCT, int soLuong, BigDecimal giaBan, BigDecimal giaNiemYet, MauSac idMau, KichThuoc idKichThuoc, ThuongHieu idThuongHieu, SanPham idSanPham) {
         this.idSPCT = idSPCT;
         this.idDGG = idDGG;
         this.maSPCT = maSPCT;
@@ -139,19 +134,19 @@ public class SanPhamChiTiet {
         this.soLuong = soLuong;
     }
 
-    public Float getGiaBan() {
+    public BigDecimal getGiaBan() {
         return giaBan;
     }
 
-    public void setGiaBan(Float giaBan) {
+    public void setGiaBan(BigDecimal giaBan) {
         this.giaBan = giaBan;
     }
 
-    public Float getGiaNiemYet() {
+    public BigDecimal getGiaNiemYet() {
         return giaNiemYet;
     }
 
-    public void setGiaNiemYet(Float giaNiemYet) {
+    public void setGiaNiemYet(BigDecimal giaNiemYet) {
         this.giaNiemYet = giaNiemYet;
     }
 
@@ -203,39 +198,49 @@ public class SanPhamChiTiet {
         this.idSanPham = idSanPham;
     }
 
-    public Float tinhGiaBan() {
-        if(this.idDGG== null){
+    public BigDecimal tinhGiaBan() {
+        if (this.idDGG == null) {
             return giaBan;
         }
-        if (this.idDGG != null && idDGG.getTrangThai()==1) {
-//            System.out.println("iDDGG KO NULL : ");
-//            if (idDGG.getTrangThai() == 1) {
-//                System.out.println("iDDGG TRANG THAI 1 : ");
-                Integer checkLoai = this.idDGG.getHinhThucDGG();
-                if (checkLoai==0) {
-//                    System.out.println("LOAI 0 % ");
-//                    System.out.println("Model.SanPhamChiTiet. GT 0 "+(idDGG.getGiaTri() / (float) 100));
-//                    System.out.println("Model.SanPhamChiTiet. GT 1 "+((idDGG.getGiaTri() / (float) 100) * giaNiemYet));
-                    giaBan = giaNiemYet - ((idDGG.getGiaTri() / (float) 100) * giaNiemYet);
-                    System.out.println("loai 0 ... %: " + giaBan);
-                    return giaBan;
-                } else if(checkLoai==1) {
-                    giaBan = giaNiemYet - idDGG.getGiaTri();
-//                    System.out.println("loai 1: VND" + giaBan);
-                    return giaBan;
-                }
+        if (this.idDGG != null && idDGG.getTrangThai() == 1) {
+            Integer checkLoai = this.idDGG.getHinhThucDGG();
+            if (checkLoai == 0) {
+                //  giaBan = giaNiemYet - ((idDGG.getGiaTri() / (float) 100) * giaNiemYet);
+                BigDecimal giaGiam = idDGG.getGiaTri().divide(giaNiemYet.multiply(BigDecimal.valueOf(Double.parseDouble("100"))));
+                giaBan = giaNiemYet.subtract(giaGiam);
+                System.out.println("loai 0 ... %: " + giaBan);
                 return giaBan;
-//            }
-//            System.out.println("KO VÀO TRANG THAI" + giaBan);
-//            return giaBan;
+            } else if (checkLoai == 1) {
+                giaBan = giaNiemYet.subtract(idDGG.getGiaTri());
+//                    System.out.println("loai 1: VND" + giaBan);
+                return giaBan;
+            }
+
+            return giaBan;
         } else {
             giaBan = giaNiemYet;
-    //        System.out.println("yet = ban");
+            //        System.out.println("yet = ban");
             return giaBan;
         }
     }
 
-    public Float khoiPhucGiaBan() {
+    public BigDecimal tinhGiaTriDGG() {
+        Integer checkLoai = this.idDGG.getHinhThucDGG();
+        if (checkLoai == 0) {
+
+            BigDecimal giaGiam = idDGG.getGiaTri().divide(giaNiemYet.multiply(BigDecimal.valueOf(Double.parseDouble("100"))));
+            giaBan = giaNiemYet.subtract(giaGiam);
+            System.out.println("loai 0 ... %: " + giaBan);
+            return giaBan;
+        } else if (checkLoai == 1) {
+            giaBan = giaNiemYet.subtract(idDGG.getGiaTri());
+            return giaBan;
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
+
+    public BigDecimal khoiPhucGiaBan() {
         if (this.idDGG == null) {
             giaBan = giaNiemYet;
         }
@@ -243,51 +248,55 @@ public class SanPhamChiTiet {
     }
 
     public int getLoaiDGG() {
-        if (null==idDGG.getHinhThucDGG()) {
+        if (null == idDGG.getHinhThucDGG()) {
             return 2;
-        } else switch (idDGG.getHinhThucDGG()) {
-            case 1:
-                return 1;
-            case 0:
-                return 0;
-            default:
-                return 2;
+        } else {
+            switch (idDGG.getHinhThucDGG()) {
+                case 1:
+                    return 1;
+                case 0:
+                    return 0;
+                default:
+                    return 2;
+            }
         }
     }
 
-    public Float getGiaTriDGG() {
+    public BigDecimal getGiaTriDGG() {
         if (this.idDGG != null) {
             return idDGG.getGiaTri();
         } else {
-            return -1.0f;
+            return BigDecimal.ZERO;
         }
     }
 
-    public Float getGiaGiam() {
-        return this.giaNiemYet - tinhGiaBan();
+    public BigDecimal getGiaGiam() {
+        //  return this.giaNiemYet - tinhGiaBan();
+        return this.giaNiemYet.subtract(tinhGiaBan());
     }
 
     public Object[] rowDataSPBH() {
-        
+
         return new Object[]{
             maSPCT, idSanPham.getTenSanpham(), idMau.getTenMau(), idKichThuoc.getTenSize(), idThuongHieu.getTenThuongHieu(), soLuong, giaNiemYet
         };
     }
-    
-    public Object [] rowDataViewDGG (){
-       return new Object[]{
-            maSPCT,idSanPham.getTenSanpham() , giaNiemYet , idThuongHieu.getTenThuongHieu() , idMau.getTenMau(), idKichThuoc.getTenSize() , false
-       };
-    }
 
-    public Object[] rowDataDGG (int index){
+    public Object[] rowDataViewDGG() {
         return new Object[]{
-     false, index,  maSPCT, idSanPham.getTenSanpham() , giaBan , idThuongHieu.getTenThuongHieu(), idMau.getTenMau() , idKichThuoc.getTenSize() 
+            maSPCT, idSanPham.getTenSanpham(), giaNiemYet, idThuongHieu.getTenThuongHieu(), idMau.getTenMau(), idKichThuoc.getTenSize(), false
         };
     }
+
+    public Object[] rowDataDGG(int index) {
+        return new Object[]{
+            false, index, maSPCT, idSanPham.getTenSanpham(), giaBan, idThuongHieu.getTenThuongHieu(), idMau.getTenMau(), idKichThuoc.getTenSize()
+        };
+    }
+
     @Override
     public String toString() {
-        return "ChiTietSanPham_M{" + "idSPCT=" + idSPCT + ", idDGG=" + idDGG + ", maSPCT=" + maSPCT + ", soLuong=" + soLuong + ", giaBan=" + giaBan + ", giaNiemYet=" + giaNiemYet + ", TrangThai=" + TrangThai + ", moTa=" + moTa + ", idMau="/* + idMau.getIdMau() + ", idKichThuoc=" + idKichThuoc.getIdSize() + ", idThuongHieu=" + idThuongHieu.getIdThuongHieu() + ", idSanPham=" + idSanPham.getIdSanPham() + */+'}';
+        return "ChiTietSanPham_M{" + "idSPCT=" + idSPCT + ", idDGG=" + idDGG + ", maSPCT=" + maSPCT + ", soLuong=" + soLuong + ", giaBan=" + giaBan + ", giaNiemYet=" + giaNiemYet + ", TrangThai=" + TrangThai + ", moTa=" + moTa + ", idMau="/* + idMau.getIdMau() + ", idKichThuoc=" + idKichThuoc.getIdSize() + ", idThuongHieu=" + idThuongHieu.getIdThuongHieu() + ", idSanPham=" + idSanPham.getIdSanPham() + */ + '}';
     }
 
 }

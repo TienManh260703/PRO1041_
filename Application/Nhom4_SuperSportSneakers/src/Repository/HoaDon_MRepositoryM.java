@@ -42,15 +42,15 @@ public class HoaDon_MRepositoryM {
             pstm.setLong(1, hoaDon.getIdNV().getId());
             pstm.setLong(2, hoaDon.getIdKH().getId());
             pstm.setInt(3, hoaDon.getCapBac());
-            pstm.setFloat(4, hoaDon.getTienPhieuGiam());
+            pstm.setBigDecimal(4, hoaDon.getTienPhieuGiam());
             pstm.setFloat(5, hoaDon.getPhanTramGG());
 
-            pstm.setFloat(6, hoaDon.getDiemDoi());
+            pstm.setBigDecimal(6, hoaDon.getDiemDoi());
             pstm.setInt(7, hoaDon.getPhuongThucTT());
-            pstm.setFloat(8, hoaDon.getTienKhDua());
-            pstm.setFloat(9, hoaDon.getTienKhChuyenKhoan());
-            pstm.setFloat(10, hoaDon.getTienThua());
-            pstm.setFloat(11, hoaDon.getThanhTien());
+            pstm.setBigDecimal(8, hoaDon.getTienKhDua());
+            pstm.setBigDecimal(9, hoaDon.getTienKhChuyenKhoan());
+            pstm.setBigDecimal(10, hoaDon.getTienThua());
+            pstm.setBigDecimal(11, hoaDon.getThanhTien());
             pstm.setString(12, XDate.toString(hoaDon.getNgayThanhToan(), "yyyy-MM-dd HH:mm:ss.SSS"));
 
             pstm.setString(13, hoaDon.getMaHoaDon());
@@ -172,24 +172,16 @@ public class HoaDon_MRepositoryM {
                         rs.getLong("IdKH"),
                         rs.getString("MaKhachHang"),
                         rs.getString("TenKH"));
-//                PhieuGiamGia_M pggm = new PhieuGiamGia_M(
-//                        rs.getLong("IdPGG"),
-//                        rs.getString("MaPhieu"),
-//                        rs.getString("TenPhieu"),
-//                        rs.getBoolean("LoaiPhieu"),
-//                        rs.getFloat("GiaTri"),
-//                        rs.getInt("SoLuongPhieu"),
-//                        rs.getFloat("DonToiThieu"),
-//                        rs.getInt("TrangThaiPGG"));
+
 
                 PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
                 phieuGiamGia.setIdPGG(rs.getLong("IdPGG"));
                 phieuGiamGia.setMaPhieu(rs.getString("MaPhieu"));
                 phieuGiamGia.setTenPhieu(rs.getString("TenPhieu"));
                 phieuGiamGia.setLoaiPhieu(rs.getInt("LoaiPhieu"));
-                phieuGiamGia.setGiaTri(rs.getFloat("GiaTri"));
+                phieuGiamGia.setGiaTri(rs.getBigDecimal("GiaTri"));
                 phieuGiamGia.setSoLuongPhieu(rs.getInt("SoLuongPhieu"));
-                phieuGiamGia.setDonToiThieu(rs.getFloat("DonToiThieu"));
+                phieuGiamGia.setDonToiThieu(rs.getBigDecimal("DonToiThieu"));
                 phieuGiamGia.setTrangThai(rs.getInt("TrangThaiPGG"));
                 HoaDon hoaDon = new HoaDon(
                         rs.getLong("IdHD"),
@@ -251,9 +243,9 @@ public class HoaDon_MRepositoryM {
                 phieuGiamGia.setMaPhieu(rs.getString("MaPhieu"));
                 phieuGiamGia.setTenPhieu(rs.getString("TenPhieu"));
                 phieuGiamGia.setLoaiPhieu(rs.getInt("LoaiPhieu"));
-                phieuGiamGia.setGiaTri(rs.getFloat("GiaTri"));
+                phieuGiamGia.setGiaTri(rs.getBigDecimal("GiaTri"));
                 phieuGiamGia.setSoLuongPhieu(rs.getInt("SoLuongPhieu"));
-                phieuGiamGia.setDonToiThieu(rs.getFloat("DonToiThieu"));
+                phieuGiamGia.setDonToiThieu(rs.getBigDecimal("DonToiThieu"));
                 phieuGiamGia.setTrangThai(rs.getInt("TrangThaiPGG"));
                 HoaDon hoaDon = new HoaDon(
                         rs.getLong("IdHD"),

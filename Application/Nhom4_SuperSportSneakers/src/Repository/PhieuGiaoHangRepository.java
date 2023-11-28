@@ -59,7 +59,7 @@ public class PhieuGiaoHangRepository {
                 phieuGiaoHang.setMaVanDon(rs.getString("MaVanDon"));
                 phieuGiaoHang.setSdtShip(rs.getString("SDTShip"));
                 phieuGiaoHang.setTenShip(rs.getString("TenShip"));
-                phieuGiaoHang.setGiaShip(rs.getFloat("GiaShip"));
+                phieuGiaoHang.setGiaShip(rs.getBigDecimal("GiaShip"));
                 phieuGiaoHang.setSdtNNguoiNhan(rs.getString("SDTNguoiNhan"));
                 phieuGiaoHang.setNgayTao(rs.getDate("NgayTaoPhieu"));
                 phieuGiaoHang.setNgayHoanThanh(rs.getDate("NgayHoanThanhDon"));
@@ -88,7 +88,7 @@ public class PhieuGiaoHangRepository {
             pstm.setString(5, phieuGiaoHang.getSdtShip());
             pstm.setString(6, phieuGiaoHang.getDonViVanChuyen());
             pstm.setString(7, XDate.toString(phieuGiaoHang.getNgayHoanThanh(), "MM-dd-yyyy"));
-            pstm.setFloat(8, phieuGiaoHang.getGiaShip());
+            pstm.setBigDecimal(8, phieuGiaoHang.getGiaShip());
             pstm.setString(9, phieuGiaoHang.getMaVanDon());
             System.out.println("Repository.PhieuGiaoHangRepository.update()" + "      OKE");
             return pstm.executeUpdate();
@@ -145,7 +145,7 @@ public class PhieuGiaoHangRepository {
             pstm.setString(5, phieuGiaoHang.getDiaChi());
             pstm.setString(6, phieuGiaoHang.getTenShip());
             pstm.setString(7, phieuGiaoHang.getSdtShip());
-            pstm.setFloat(8, phieuGiaoHang.getGiaShip());
+            pstm.setBigDecimal(8, phieuGiaoHang.getGiaShip());
             pstm.setString(9, phieuGiaoHang.getMaVanDon());
             pstm.setString(10, phieuGiaoHang.getDonViVanChuyen());
             pstm.setDate(11, new java.sql.Date(phieuGiaoHang.getNgayHoanThanh().getTime()));

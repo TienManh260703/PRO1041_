@@ -16,9 +16,9 @@ public class PhieuGiamGia {
     private String maPhieu;
     private String tenPhieu;
     private int loaiPhieu;
-    private float giaTri;
+    private BigDecimal giaTri;
     private int soLuongPhieu;
-    private Float donToiThieu;
+    private BigDecimal donToiThieu;
     private Date ngayBatDau;
     private Date ngayKetThuc;
     private Date ngayTao;
@@ -28,7 +28,7 @@ public class PhieuGiamGia {
     public PhieuGiamGia() {
     }
 
-    public PhieuGiamGia(NhanVien idNV, String maPhieu, String tenPhieu, int loaiPhieu, float giaTri, int soLuongPhieu, Float donToiThieu, Date ngayBatDau, Date ngayKetThuc, String moTa, int trangThai) {
+    public PhieuGiamGia(NhanVien idNV, String maPhieu, String tenPhieu, int loaiPhieu, BigDecimal giaTri, int soLuongPhieu, BigDecimal donToiThieu, Date ngayBatDau, Date ngayKetThuc, String moTa, int trangThai) {
         this.idNV = idNV;
         this.maPhieu = maPhieu;
         this.tenPhieu = tenPhieu;
@@ -42,7 +42,7 @@ public class PhieuGiamGia {
         this.trangThai = trangThai;
     }
 
-    public PhieuGiamGia(NhanVien idNV, long idPGG, String maPhieu, String tenPhieu, int loaiPhieu, float giaTri, int soLuongPhieu, Float donToiThieu, Date ngayBatDau, Date ngayKetThuc, Date ngayTao, String moTa, int trangThai) {
+    public PhieuGiamGia(NhanVien idNV, long idPGG, String maPhieu, String tenPhieu, int loaiPhieu, BigDecimal giaTri, int soLuongPhieu, BigDecimal donToiThieu, Date ngayBatDau, Date ngayKetThuc, Date ngayTao, String moTa, int trangThai) {
         this.idNV = idNV;
         this.idPGG = idPGG;
         this.maPhieu = maPhieu;
@@ -100,11 +100,11 @@ public class PhieuGiamGia {
         this.loaiPhieu = loaiPhieu;
     }
 
-    public float getGiaTri() {
+    public BigDecimal getGiaTri() {
         return giaTri;
     }
 
-    public void setGiaTri(float giaTri) {
+    public void setGiaTri(BigDecimal giaTri) {
         this.giaTri = giaTri;
     }
 
@@ -116,11 +116,11 @@ public class PhieuGiamGia {
         this.soLuongPhieu = soLuongPhieu;
     }
 
-    public Float getDonToiThieu() {
+    public BigDecimal getDonToiThieu() {
         return donToiThieu;
     }
 
-    public void setDonToiThieu(Float donToiThieu) {
+    public void setDonToiThieu(BigDecimal donToiThieu) {
         this.donToiThieu = donToiThieu;
     }
 

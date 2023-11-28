@@ -4,6 +4,7 @@
  */
 package Model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -20,7 +21,7 @@ public class PhieuGiaoHang {
     private String diaChi;
     private String tenShip;
     private String sdtShip;
-    private Float giaShip;
+    private BigDecimal giaShip;
     private Date ngayTao;
     private String maVanDon;
     private String donViVanChuyen;
@@ -54,11 +55,11 @@ public class PhieuGiaoHang {
         this.id = id;
     }
 
-    public Float getGiaShip() {
+    public BigDecimal getGiaShip() {
         return giaShip;
     }
 
-    public void setGiaShip(Float giaShip) {
+    public void setGiaShip(BigDecimal giaShip) {
         this.giaShip = giaShip;
     }
 

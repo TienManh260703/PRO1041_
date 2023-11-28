@@ -12,6 +12,7 @@ import Utils.MsgBox;
 import Utils.Validate;
 import Utils.XDate;
 import Utils.XuLyString;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -131,8 +132,8 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         String ngayBD = XDate.toString(txtNgayBatDAu.getDate(), "dd-MM-yyyy");
         String ngayKetThuc = XDate.toString(txtNgayKetThuc.getDate(), "dd-MM-yyyy");
         String moTa = txtMoTa.getText().trim();
-        float giaTriF = 0;
-        float donDt = 0;
+        BigDecimal giaTriB = BigDecimal.ZERO;
+        BigDecimal donDt = BigDecimal.ZERO;
         int soLuongI = 0;
         if (tenPhieu.isEmpty()) {
             MsgBox.aleart(this, "Tên phiếu chưa có !");
@@ -151,9 +152,9 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
             return null;
         } else {
             try {
-                giaTriF = Float.parseFloat(giaTri);
+                giaTriB = new BigDecimal(giaTri);
                 if (cboLoaiPhieu.getSelectedIndex() == 0) {
-                    if (giaTriF >= 100.0) {
+                    if (giaTriB.compareTo(new BigDecimal("100.0")) >= 0) {
                         MsgBox.aleart(this, "Giá trị % nhở hơn 100 !");
                         txtGiaTri.requestFocus();
                         return null;
@@ -240,7 +241,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         phieuGiamGia.setMaPhieu(maPhieu);
         phieuGiamGia.setTenPhieu(tenPhieu);
         phieuGiamGia.setLoaiPhieu(loaiPhieu);
-        phieuGiamGia.setGiaTri(giaTriF);
+        phieuGiamGia.setGiaTri(giaTriB);
         phieuGiamGia.setSoLuongPhieu(soLuongI);
         phieuGiamGia.setDonToiThieu(donDt);
         phieuGiamGia.setNgayBatDau(sqlDate1);

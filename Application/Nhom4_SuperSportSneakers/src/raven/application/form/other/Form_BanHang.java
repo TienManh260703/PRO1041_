@@ -20,6 +20,7 @@ import Repository.KhachHangRepositoryM;
 import Utils.MsgBox;
 import Utils.XDate;
 import java.awt.Color;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -143,8 +144,8 @@ public class Form_BanHang extends javax.swing.JPanel {
         setLblCapBac(defaultKhachHang);
         int khachHang = defaultKhachHang.getCapBac();
         // Float giaTriGiam = 0f;
-        Float thanhTien = 0f;
-        Float thanhTienKhLe = 0f;
+        BigDecimal thanhTien = BigDecimal.ZERO;
+        BigDecimal thanhTienKhLe = BigDecimal.ZERO;
         String maHD = tblHD.getValueAt(indexHD, 0).toString();
         String tenNhanVien = "Nguyễn Tiến Mạnh";
         txtMHD.setText(maHD);
@@ -154,24 +155,25 @@ public class Form_BanHang extends javax.swing.JPanel {
         for (ChiTietHoaDon cthd : listGH) {
             if (defaultKhachHang.getCapBac() != 3) {
                 // giaTriGiam += cthd.getIdCTSP().tinhGiaBan();
-                thanhTien += cthd.setThanhTien2();
+                thanhTien = thanhTien.add(cthd.setThanhTien2());
             } else {
                 System.out.println(tblGH.getValueAt(i, 6).toString() + "0-----------------");
-                thanhTien += Float.parseFloat(tblGH.getValueAt(i, 6).toString());
+                thanhTien = thanhTien.add(BigDecimal.valueOf(Double.parseDouble(tblGH.getValueAt(i, 6).toString())));
+//Float.parseFloat(tblGH.getValueAt(i, 6).toString());
             }
             i++;
 
         }
         txtTongTien.setText(thanhTien + "");
-        Float capBac = 0f;
+        BigDecimal capBac = BigDecimal.ZERO;
         if (defaultKhachHang.getCapBac() == 0 || defaultKhachHang.getCapBac() == 3) {
-            capBac = 0f;
+            capBac = new BigDecimal(0);
             lblPhanTramHD.setText(capBac + " % ");
         } else if (defaultKhachHang.getCapBac() == 1) {
-            capBac = 3f;
+            capBac = new BigDecimal(3);
             lblPhanTramHD.setText(capBac + " % ");
         } else if (defaultKhachHang.getCapBac() == 2) {
-            capBac = 8f;
+            capBac = new BigDecimal(8);
             lblPhanTramHD.setText(capBac + " % ");
         }
         if (cboHTTT.getSelectedIndex() == 0) {
@@ -179,18 +181,20 @@ public class Form_BanHang extends javax.swing.JPanel {
         } else {
             txtChuyenKhoan.setEditable(true);
         }
-        float diemDoi = 0;
-        float tienKhachDua = 0;
+        BigDecimal diemDoi = BigDecimal.ZERO;
+        BigDecimal tienKhachDua = BigDecimal.ZERO;
         try {
             if (khachHang != 3) {
-                tienKhachDua = Float.parseFloat(txtThua.getText().trim());
+                tienKhachDua =new BigDecimal(txtThua.getText().trim());
+                //Float.parseFloat(txtThua.getText().trim());
             }
 
         } catch (Exception e) {
         }
 
-        float tongTien2 = 0;
-        tongTien2 = (((capBac / (float) 100) * thanhTien) + diemDoi);
+        BigDecimal tongTien2 = BigDecimal.ZERO;
+        //tongTien2 = (((capBac / (float) 100) * thanhTien) + diemDoi);
+        tongTien2 = capBac.multiply(thanhTien.divide(BigDecimal.valueOf(100))).add(diemDoi);
 
         txtThua.setText(tienKhachDua + "");
         if (defaultKhachHang.getCapBac() != 3) {
@@ -280,11 +284,11 @@ public class Form_BanHang extends javax.swing.JPanel {
                         Integer.parseInt(soLuong),
                         "",
                         2,
-                        0.0f,
-                        0.0f,
+                        BigDecimal.ZERO,
+                        BigDecimal.ZERO,
                         chiTietSanPham.getGiaBan(),
                         chiTietSanPham.getGiaNiemYet(),
-                        chiTietSanPham.getGiaBan() * chiTietSanPham.getGiaNiemYet());
+                        chiTietSanPham.getGiaBan().multiply(chiTietSanPham.getGiaNiemYet()));
                 chiTietHoaDon_Repository.insertCTHD(chiTietHoaDon);
                 tblHD.setRowSelectionInterval(indexHD, indexHD);
                 String maHD = "";
@@ -323,7 +327,7 @@ public class Form_BanHang extends javax.swing.JPanel {
                     chiTietSanPham.getGiaGiam(),
                     chiTietSanPham.getGiaBan(),
                     chiTietSanPham.getGiaNiemYet(),
-                    chiTietSanPham.getGiaBan() * chiTietSanPham.getGiaNiemYet());
+                    chiTietSanPham.getGiaBan().multiply(chiTietSanPham.getGiaNiemYet()));
             chiTietHoaDon_Repository.insertCTHD(chiTietHoaDon);
             tblHD.setRowSelectionInterval(indexHD, indexHD);
             String maHD = "";
@@ -1348,38 +1352,39 @@ public class Form_BanHang extends javax.swing.JPanel {
     }//GEN-LAST:event_cboHTTTItemStateChanged
 
     private void btnThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThanhToanActionPerformed
-        System.out.println(defaultKhachHang.toString());
-        String maHD = txtMHD.getText();
-        int capBac = defaultKhachHang.getCapBac();
-        int phuongThucTT = cboHTTT.getSelectedIndex();
-        float tienThua = Float.parseFloat(txtThua.getText());
-        float tienCK = Float.parseFloat(txtChuyenKhoan.getText());
-        float thanhTien = Float.parseFloat(txtThanhTien.getText());
-        float tienKhachDua = Float.parseFloat(txtTienKhachDua.getText());
-        int hinhThucMua = tab.getSelectedIndex();
-        float diemDoi = Integer.parseInt(lblGiamDiem.getText());
-        Date date = new Date();
-        NhanVien nhanVien_M = new NhanVien(1L);
-        HoaDon hoaDon = new HoaDon();
-        hoaDon.setIdNV(nhanVien_M);
-        hoaDon.setMaHoaDon(maHD);
-        hoaDon.setIdKH(defaultKhachHang);
-        hoaDon.setCapBac(capBac);
-        hoaDon.setDiemDoi(diemDoi);
-        hoaDon.setTienPhieuGiam(0f);
-        hoaDon.setPhanTramGG(0f);
-        hoaDon.setPhuongThucTT(phuongThucTT);
-        hoaDon.setTienThua(tienThua);
-        hoaDon.setThanhTien(thanhTien);
-        hoaDon.setTienKhChuyenKhoan(tienCK);
-        hoaDon.setTienKhDua(tienKhachDua);
-        System.out.println(XDate.toString(date, "yyyy-MM-dd HH:mm:ss.SSS"));
-
-        hoaDon.setNgayThanhToan(date);
-
-        hoaDon.setHinhThucMua(hinhThucMua == 0 ? false : true);
-        //   (nhanVien_M, defaultKhachHang, maHD, capBac, 0f, 0f, diemDoi, phuongThucTT, tienKhachDua, tienCK, tienThua, thanhTien, date, hinhThucMua, capBac)
-        hoaDon_MRepository.updateHD(hoaDon);
+//        System.out.println(defaultKhachHang.toString());
+//        String maHD = txtMHD.getText();
+//        int capBac = defaultKhachHang.getCapBac();
+//        int phuongThucTT = cboHTTT.getSelectedIndex();
+//       
+//        float tienCK = Float.parseFloat(txtChuyenKhoan.getText());
+//        float thanhTien = Float.parseFloat(txtThanhTien.getText());
+//        float tienKhachDua = Float.parseFloat(txtTienKhachDua.getText());
+//        int hinhThucMua = tab.getSelectedIndex();
+//         float tienThua = Float.parseFloat(txtThua.getText());
+//        float diemDoi = Integer.parseInt(lblGiamDiem.getText());
+//        Date date = new Date();
+//        NhanVien nhanVien_M = new NhanVien(1L);
+//        HoaDon hoaDon = new HoaDon();
+//        hoaDon.setIdNV(nhanVien_M);
+//        hoaDon.setMaHoaDon(maHD);
+//        hoaDon.setIdKH(defaultKhachHang);
+//        hoaDon.setCapBac(capBac);
+//        hoaDon.setDiemDoi(diemDoi);
+//        hoaDon.setTienPhieuGiam(0f);
+//        hoaDon.setPhanTramGG(0f);
+//        hoaDon.setPhuongThucTT(phuongThucTT);
+//        hoaDon.setTienThua(tienThua);
+//        hoaDon.setThanhTien(thanhTien);
+//        hoaDon.setTienKhChuyenKhoan(tienCK);
+//        hoaDon.setTienKhDua(tienKhachDua);
+//        System.out.println(XDate.toString(date, "yyyy-MM-dd HH:mm:ss.SSS"));
+//
+//        hoaDon.setNgayThanhToan(date);
+//
+//        hoaDon.setHinhThucMua(hinhThucMua == 0 ? false : true);
+//        //   (nhanVien_M, defaultKhachHang, maHD, capBac, 0f, 0f, diemDoi, phuongThucTT, tienKhachDua, tienCK, tienThua, thanhTien, date, hinhThucMua, capBac)
+//        hoaDon_MRepository.updateHD(hoaDon);
     }//GEN-LAST:event_btnThanhToanActionPerformed
 
     private void ckbAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ckbAllActionPerformed
