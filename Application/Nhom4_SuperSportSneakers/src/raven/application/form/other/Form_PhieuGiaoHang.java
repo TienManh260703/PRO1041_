@@ -10,7 +10,9 @@ import Model.KhachHang;
 import Model.NhanVien;
 import Model.PhieuGiaoHang;
 import Repository.DotGiamGia_MRpository;
+import Repository.HoaDon_MRepositoryM;
 import Repository.PhieuGiaoHangRepository;
+import Repository.SanPhamCT_Repository;
 import Utils.MsgBox;
 import Utils.Validate;
 import java.awt.Graphics;
@@ -32,22 +34,30 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
     private List<HoaDon> lisHD = new ArrayList<>();
     private List<Object> listCTPG = new ArrayList<>();
     private static PhieuGiaoHangRepository phieuGiaoHangRepository = new PhieuGiaoHangRepository();
+    private static SanPhamCT_Repository sanPhamCT_Repository = new SanPhamCT_Repository();
+    private static HoaDon_MRepositoryM hoaDon_MRepositoryM = new HoaDon_MRepositoryM();
     private static int page = 1;
-   
     private static int lmit = 4;
     private static int gioiHanPage = (int) ((Math.ceil(phieuGiaoHangRepository.getRowCount() / lmit))) + 1;
     private KhachHang khachHang = new KhachHang();
+
+    private static int indexPGH = -1;
 
     /**
      * Creates new form Form_PhieuGiaoHang
      */
     public Form_PhieuGiaoHang() {
         initComponents();
+        init();
+    }
+
+    void init() {
         list = pghr.getAll(page, lmit);
         filfToTablePGH(list);
         lisHD = phieuGiaoHangRepository.listDSHD();
         fillToTableHD(lisHD);
         txtNgayTao.setDate(new Date());
+        setBtn();
     }
 
     private void filfToTablePGH(List<PhieuGiaoHang> list) {
@@ -69,7 +79,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
     }
 
     private void fillToTableCTPH(List<Object> list) {
-        DefaultTableModel dtm = (DefaultTableModel) this.tblPGH1.getModel();
+        DefaultTableModel dtm = (DefaultTableModel) this.tblCTPGH.getModel();
         dtm.setRowCount(0);
         for (int i = 0; i < list.size(); i++) {
             dtm.addRow((Object[]) list.get(i));
@@ -279,6 +289,34 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         filfToTablePGH(list);
     }
 
+    private void clearForm() {
+        txtDiaChi.setText("");
+        txtDonViVC.setText("");
+        txtGiaShip.setText("");
+        txtMaPhieu.setText("");
+        txtNgayThanhToanDK1.setDate(null);
+        txtSDTKh.setText("");
+        txtSdtShip.setText("");
+        txtTenKh.setText("");
+        txtTenShip.setText("");
+        indexPGH = -1;
+        setBtn();
+    }
+
+    private void setBtn() {
+        boolean ktr = (indexPGH == -1);
+        boolean ktrHuy = false;
+        try {
+            ktrHuy = tblPGH.getValueAt(indexPGH, 11).toString().equals("Hủy");
+            btnHuy.setEnabled(!ktr && !ktrHuy);
+        } catch (Exception e) {
+            btnHuy.setEnabled(false);
+        }
+        btnThem.setEnabled(ktr);
+        btnSua.setEnabled(!ktr);
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -316,7 +354,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         tblHD = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnHuy = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
@@ -324,7 +362,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblPGH = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        cboTT = new javax.swing.JComboBox<>();
         btnDau = new javax.swing.JButton();
         btnLui = new javax.swing.JButton();
         lblPageTTKH = new javax.swing.JLabel();
@@ -332,7 +370,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         btnCuoi = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        tblPGH1 = new javax.swing.JTable();
+        tblCTPGH = new javax.swing.JTable();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -411,7 +449,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -442,7 +480,12 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
             }
         });
 
-        jButton3.setText("Hủy");
+        btnHuy.setText("Hủy");
+        btnHuy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHuyActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -501,7 +544,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
                         .addGap(91, 91, 91)
                         .addComponent(btnSua)
                         .addGap(51, 51, 51)
-                        .addComponent(jButton3)
+                        .addComponent(btnHuy)
                         .addGap(86, 86, 86)
                         .addComponent(jButton2)))
                 .addGap(28, 28, 28)
@@ -554,7 +597,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
                                     .addComponent(btnThem)
                                     .addComponent(btnSua)
                                     .addComponent(jButton2)
-                                    .addComponent(jButton3)))
+                                    .addComponent(btnHuy)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel3)
@@ -590,7 +633,15 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
             new String [] {
                 "STT", "Mã Phiếu", "Mã HD", "Tên Khách Hang", "SDT KH", "Địa Chỉ", "Giá Ship", "Tên Ship", "SDT Ship", "Ngày Tạo", "Ngày Hoàn Thanh", "Trạng thái"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tblPGH.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblPGHMouseClicked(evt);
@@ -604,7 +655,12 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
             }
         });
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-- Tất cả --", "Đang tạo", "Chờ Giao ", "Đang giao", "Hẹn Lại ", "Hủy" }));
+        cboTT.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-- Tất cả --", "Chờ Giao ", "Đang giao", "Hẹn Lại ", "Hủy" }));
+        cboTT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboTTActionPerformed(evt);
+            }
+        });
 
         btnDau.setText("<<");
         btnDau.addActionListener(new java.awt.event.ActionListener() {
@@ -650,7 +706,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(47, 47, 47)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cboTT, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(24, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -672,7 +728,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboTT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
@@ -687,26 +743,33 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("Danh dách phiếu", jPanel2);
 
-        tblPGH1.setModel(new javax.swing.table.DefaultTableModel(
+        tblCTPGH.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Mã HD", "Tên KH", "Ngày Tạo", "Tên SP", "Số Lượng", "Giá Bán", "Thành Tiền"
+                "STT", "Mã HD", "Tên KH", "Ngày Tạo", "Mã SPCT", "Tên SP", "Số Lượng", "Giá Bán", "Thành Tiền"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
-        jScrollPane4.setViewportView(tblPGH1);
+        jScrollPane4.setViewportView(tblCTPGH);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -773,6 +836,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
             lisHD = phieuGiaoHangRepository.listDSHD();
             fillToTableHD(lisHD);
         }
+        clearForm();
 
 
     }//GEN-LAST:event_btnThemActionPerformed
@@ -784,6 +848,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
             MsgBox.aleart(this, "Update thành công Mã Phiếu : " + phieuGiaoHang.getMaVanDon());
             list = phieuGiaoHangRepository.getAll(page, lmit);
             filfToTablePGH(list);
+            clearForm();
         } else {
             MsgBox.aleart(this, "Update không thành công Mã Phiếu : " + phieuGiaoHang.getMaVanDon());
         }
@@ -800,15 +865,16 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
     }//GEN-LAST:event_tblHDMouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        clearForm();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void tblPGHMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPGHMouseClicked
-        int index = tblPGH.getSelectedRow();
-        showData(index);
+        indexPGH = tblPGH.getSelectedRow();
+        showData(indexPGH);
         String ma = txtMaPhieu.getText();
         listCTPG = phieuGiaoHangRepository.listPGHCT(ma);
         fillToTableCTPH(listCTPG);
+        setBtn();
     }//GEN-LAST:event_tblPGHMouseClicked
 
     private void btnDauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDauActionPerformed
@@ -828,20 +894,50 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCuoiActionPerformed
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
-        System.out.println("raven.application.form.other.Form_PhieuGiaoHang.jTextField1KeyReleased()");
+
     }//GEN-LAST:event_jTextField1KeyReleased
+
+    private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed
+        // HD 4 hủy : GH 3 hủy
+        indexPGH = tblPGH.getSelectedRow();
+        String maVanDon = tblPGH.getValueAt(indexPGH, 1).toString();
+        if (indexPGH != -1) {
+            for (int i = 0; i < tblCTPGH.getRowCount(); i++) {
+                String maHD = tblCTPGH.getValueAt(i, 1).toString();
+                String maCTSP = tblCTPGH.getValueAt(i, 4).toString();
+                int soLuongTra = Integer.parseInt(tblCTPGH.getValueAt(i, 6).toString());
+                int soLuongTon = sanPhamCT_Repository.getSoLuongTonByMaCTSP(maCTSP);
+                int tongSoLuong = soLuongTon + soLuongTra;
+                System.out.println("maVD " + maVanDon + "  maHD " + maHD + " sp " + maCTSP + " " + tongSoLuong);
+                // tra hang
+                sanPhamCT_Repository.updateSLSP(tongSoLuong, maCTSP);
+                // huy phieu giao
+                phieuGiaoHangRepository.huyDon(maVanDon, 3);
+                // 
+                hoaDon_MRepositoryM.updateTTHD(maHD, 4);
+
+            }
+            MsgBox.aleart(this, "Phiếu giao hàng đã được hủy");
+            clearForm();
+        }
+    }//GEN-LAST:event_btnHuyActionPerformed
+
+    private void cboTTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTTActionPerformed
+        int tt = cboTT.getSelectedIndex() - 1;
+        // tim
+    }//GEN-LAST:event_cboTTActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCuoi;
     private javax.swing.JButton btnDau;
+    private javax.swing.JButton btnHuy;
     private javax.swing.JButton btnLui;
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnTien;
+    private javax.swing.JComboBox<String> cboTT;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -865,9 +961,9 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblPageTTKH;
+    private javax.swing.JTable tblCTPGH;
     private javax.swing.JTable tblHD;
     private javax.swing.JTable tblPGH;
-    private javax.swing.JTable tblPGH1;
     private javax.swing.JTextArea txtDiaChi;
     private javax.swing.JTextField txtDonViVC;
     private javax.swing.JTextField txtGiaShip;

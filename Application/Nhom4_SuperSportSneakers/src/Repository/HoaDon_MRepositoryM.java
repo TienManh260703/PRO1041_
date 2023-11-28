@@ -173,7 +173,6 @@ public class HoaDon_MRepositoryM {
                         rs.getString("MaKhachHang"),
                         rs.getString("TenKH"));
 
-
                 PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
                 phieuGiamGia.setIdPGG(rs.getLong("IdPGG"));
                 phieuGiamGia.setMaPhieu(rs.getString("MaPhieu"));
@@ -278,6 +277,22 @@ public class HoaDon_MRepositoryM {
             Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
         }
         return id;
+    }
+
+    public void updateTTHD(String maHD , int trangThai) {
+        try {
+            query = "UPDATE HOADON\n"
+                    + "SET TrangThai = ?\n"
+                    + "WHERE MaHoaDon LIKE  ?";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, trangThai);
+            pstm.setString(2, maHD);
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
 }

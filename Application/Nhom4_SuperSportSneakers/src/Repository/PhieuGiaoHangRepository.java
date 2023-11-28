@@ -33,7 +33,8 @@ public class PhieuGiaoHangRepository {
     public List<PhieuGiaoHang> getAll(int page, int limt) {
         List<PhieuGiaoHang> list = new ArrayList<>();
         try {
-            query = "SELECT PGH.ID ,  HD.ID AS IDHD ,  MaVanDon , MaHoaDon , TenKhachHang , PGH.DiaChi , SDTNguoiNhan , GiaShip , TenShip , SDTShip , PGH.NgayTaoPhieu , ĐonViVanChuyen ,NgayHoanThanhDon , PGH.TrangThai FROM PHIEUGIAOHANG AS PGH\n"
+            query = "SELECT PGH.ID ,  HD.ID AS IDHD ,  MaVanDon , MaHoaDon , TenKhachHang , PGH.DiaChi , SDTNguoiNhan , GiaShip , TenShip , SDTShip , "
+                    + "PGH.NgayTaoPhieu , ĐonViVanChuyen ,NgayHoanThanhDon , PGH.TrangThai FROM PHIEUGIAOHANG AS PGH\n"
                     + "JOIN HOADON AS HD ON HD.ID = PGH.IdHoaDon\n"
                     + "JOIN KHACHHANG AS KH ON KH.ID = PGH.IdKH "
                     + "	order by PGH.NgayTaoPhieu DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -72,6 +73,23 @@ public class PhieuGiaoHangRepository {
             Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    public void huyDon(String maPGH, int trangThaiHuy) {
+        try {
+            con = DBConnection.getConnect();
+            query = "UPDATE PHIEUGIAOHANG\n"
+                    + "SET TrangThai = ?\n"
+                    + "WHERE MaVanDon LIKE ?";
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, trangThaiHuy);
+            pstm.setString(2, maPGH);
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+
     }
 
     public int update(PhieuGiaoHang phieuGiaoHang) {
@@ -159,11 +177,12 @@ public class PhieuGiaoHangRepository {
     public List<Object> listPGHCT(String maP) {
         List<Object> list = new ArrayList<>();
         try {
-            query = "SELECT MaHoaDon , TenNguoiNhan , PGH.NgayTaoPhieu , TenSP , SoLuong , HDCT.GiaBan , (SoLuong * HDCT.GiaBan) AS THANHTIEN  FROM HOADON\n"
+            query = "SELECT MaHoaDon, TenNguoiNhan, PGH.NgayTaoPhieu, MaCTSP, TenSP, SoLuong, HDCT.GiaBan, (SoLuong * HDCT.GiaBan) AS THANHTIEN\n"
+                    + "FROM HOADON\n"
                     + "JOIN PHIEUGIAOHANG AS PGH ON PGH.IdHoaDon = HOADON.ID\n"
                     + "JOIN HOADONCHITIET AS HDCT ON HDCT.IdHoaDon = HOADON.ID\n"
                     + "JOIN CHI_TIET_SAN_PHAM AS CTSP ON CTSP.ID = HDCT.IdCTSP\n"
-                    + "JOIN SANPHAM AS SP ON SP.ID = CTSP.IdSP\n"
+                    + "JOIN SANPHAM AS SP ON SP.ID = CTSP.IdSP "
                     + "WHERE MaVanDon LIKE ?";
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
@@ -172,9 +191,10 @@ public class PhieuGiaoHangRepository {
             int i = 1;
             while (rs.next()) {
                 Object[] ob = new Object[]{i, rs.getString("MaHoaDon"),
-                    rs.getString("TenNguoiNhan"), rs.getDate("NgayTaoPhieu"), rs.getString("TenSP"), rs.getInt("SoLuong"),
+                    rs.getString("TenNguoiNhan"), rs.getDate("NgayTaoPhieu"), rs.getString("MaCTSP"), rs.getString("TenSP"), rs.getInt("SoLuong"),
                     rs.getFloat("GiaBan"), rs.getFloat("THANHTIEN")};
                 list.add(ob);
+                i++;
             }
             return list;
         } catch (SQLException ex) {

@@ -174,15 +174,23 @@ public class PhieuGiaoHang {
     }
 
     public Object[] rowData(int iindex) {
-        
-        String result = (trangThai == null) ? "Giá trị null" :
-                (trangThai == 0 ? "Đang tạo" :
-                (trangThai == 1 ? "Chờ giao" :
-                (trangThai == 2 ? "Đang giao" :
-                (trangThai == 3 ? "Hẹn lại" :
-                "Hủy"))));
+
+        String result;
+        if (trangThai == null) {
+            result = "Giá trị null";
+        } else if (trangThai == 0) {
+            result = "Chờ giao";
+        } else if (trangThai == 1) {
+            result = "Đang giao";
+        } else if (trangThai == 2) {
+            result = "Hẹn lại";
+        } else if (trangThai == 3) {
+            result = "Hủy";
+        } else {
+            result = "Không xác định";
+        }
         return new Object[]{
-            iindex, maVanDon, idHD.getMaHoaDon(), idKH.getTenKhachHang(), idKH.getSdt(), idKH.getDiaChi(), giaShip, tenShip, sdtShip, ngayTao, ngayHoanThanh,result
+            iindex, maVanDon, idHD.getMaHoaDon(), idKH.getTenKhachHang(), idKH.getSdt(), idKH.getDiaChi(), giaShip, tenShip, sdtShip, ngayTao, ngayHoanThanh, result
         };
     }
 

@@ -239,7 +239,7 @@ public class SanPhamCT_Repository {
 
     public List<SanPhamChiTiet> getAll_M(int page, int limt) {
         List<SanPhamChiTiet> list = new ArrayList<>();
- 
+
         try {
             con = DBConnection.getConnect();
             query = ""
@@ -410,4 +410,20 @@ public class SanPhamCT_Repository {
         }
     }
 
+    public void updateSLSPByMa(String ma, int soLuong) {
+        try {
+            query = "UPDATE CHI_TIET_SAN_PHAM\n"
+                    + "SET SoLuongTon = ?\n"
+                    + "WHERE MaCTSP LIKE ?";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, soLuong);
+            pstm.setString(2, ma);
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(SanPhamCT_Repository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    
 }
