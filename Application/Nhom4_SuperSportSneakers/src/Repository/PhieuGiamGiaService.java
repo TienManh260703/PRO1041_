@@ -296,7 +296,7 @@ public class PhieuGiamGiaService {
             return list;
         } catch (SQLException ex) {
             Logger.getLogger(PhieuGiamGiaService.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+            return list;
         }
 
     }
