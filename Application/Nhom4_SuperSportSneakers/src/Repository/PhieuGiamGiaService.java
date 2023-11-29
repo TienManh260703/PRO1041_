@@ -213,25 +213,25 @@ public class PhieuGiamGiaService {
             pstm = con.prepareStatement(query);
             if (giamGia.getNgayBatDau() == null && giamGia.getNgayKetThuc() == null && giamGia.getLoaiPhieu() == -1 && (giamGia.getTrangThai() != -1)) {
                 System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 6);
-
                 pstm.setInt(1, giamGia.getTrangThai());
                 pstm.setInt(2, (page - 1) * limt);
                 pstm.setInt(3, limt);
             }
 
-            if (giamGia.getNgayBatDau() == null && giamGia.getNgayKetThuc() == null && giamGia.getLoaiPhieu() != -1 && (giamGia.getLoaiPhieu() == -1)) {
+            if (giamGia.getNgayBatDau() == null && giamGia.getNgayKetThuc() == null && giamGia.getLoaiPhieu() != -1 && giamGia.getTrangThai()== -1) {
                 System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 7);
                 pstm.setInt(1, giamGia.getLoaiPhieu());
                 pstm.setInt(2, (page - 1) * limt);
                 pstm.setInt(3, limt);
             }
             
-//            if (giamGia.getNgayBatDau() == null && giamGia.getNgayKetThuc() == null && giamGia.getLoaiPhieu() != -1 && (giamGia.getLoaiPhieu() == -1)) {
-//                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 8);
-//                pstm.setInt(1, giamGia.getLoaiPhieu());        
-//                pstm.setInt(2, (page - 1) * limt);
-//                pstm.setInt(3, limt);
-//            }
+            if (giamGia.getNgayBatDau() == null && giamGia.getNgayKetThuc() == null && giamGia.getLoaiPhieu() != -1 && giamGia.getTrangThai()!= -1) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 8);
+                pstm.setInt(1, giamGia.getLoaiPhieu()); 
+                pstm.setInt(2, giamGia.getLoaiPhieu()); 
+                pstm.setInt(3, (page - 1) * limt);
+                pstm.setInt(4, limt);
+            }
   
             if (giamGia.getNgayBatDau() != null && giamGia.getNgayKetThuc() != null && giamGia.getLoaiPhieu() != -1 && (giamGia.getTrangThai() != -1)) {
                 System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 1);

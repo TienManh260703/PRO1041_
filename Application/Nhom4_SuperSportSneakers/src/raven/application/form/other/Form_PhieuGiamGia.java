@@ -857,6 +857,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
 
         int loaiPhieu = cboLoaiPhieu1.getSelectedIndex() - 1;
         int trangThai = cboTrangThai1.getSelectedIndex() - 1;
+        System.out.println("raven.a"+trangThai);
         PhieuGiamGia gia = new PhieuGiamGia();
         gia.setNgayBatDau(txtNgayBDLoc.getDate());
         gia.setNgayKetThuc(txtNgayKTLoc.getDate());

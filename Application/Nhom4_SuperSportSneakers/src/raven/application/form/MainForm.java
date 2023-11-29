@@ -22,6 +22,7 @@ import raven.application.form.other.FormNhanVien;
 import raven.application.form.other.FormRead;
 import raven.application.form.other.Form_BanHang;
 import raven.application.form.other.Form_DotGiamGia;
+import raven.application.form.other.Form_HoaDon;
 import raven.application.form.other.Form_KhachHang;
 import raven.application.form.other.Form_PhieuGiamGia;
 import raven.application.form.other.Form_PhieuGiaoHang;
@@ -119,7 +120,9 @@ public class MainForm extends JLayeredPane {
                 } else {
 
                 }
-            } else if (index == 8) {
+            } else if (index == 6) {
+                Application.showForm(new Form_HoaDon());
+            }  else if (index == 8) {
                 Application.logout();
             } else {
                 action.cancel();
