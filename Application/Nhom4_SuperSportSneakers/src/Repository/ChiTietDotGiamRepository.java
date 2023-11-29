@@ -125,25 +125,32 @@ public class ChiTietDotGiamRepository {
     }
 
     public List<Object> listSPCTDGG(String maDGG) {
+        System.out.println("Repository.ChiTietDotGiamRepository.listSPCTDGG()"+maDGG);
         List<Object> list = new ArrayList<>();
         try {
-            query = "SELECT IdCTSP , IdDGG , MaDGG, CTDGG.DonGia , GiaTriGiam , GiaTri FROM CHI_TIET_DGG AS CTDGG\n"
-                    + "JOIN DOT_GIAM_GIA AS DGG ON DGG.ID = CTDGG.IdDGG\n"
-                    + "WHERE MaDGG LIKE '" + maDGG + "'";
+            query = "SELECT IdCTSP , IdDGG , MaDGG, CTDGG.DonGia , GiaTriGiam , GiaTri FROM CHI_TIET_DGG AS CTDGG \n"
+                    + " JOIN DOT_GIAM_GIA AS DGG ON DGG.ID = CTDGG.IdDGG \n"
+                    + " WHERE MaDGG LIKE '" + maDGG.trim() + "'";
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
             rs = pstm.executeQuery();
             int i = 1;
             while (rs.next()) {
                 SanPhamChiTiet spct = this.getProductByID(rs.getLong("IdCTSP"));
-                BigDecimal donGia = rs.getBigDecimal("DonGia");
+                System.out.println("ID "+ spct.getIdSPCT());
+                BigDecimal donGia = BigDecimal.ONE; //rs.getBigDecimal("DonGia");
                 Object[] ob = new Object[]{
-                    i, spct.getMaSPCT(), spct.getIdSanPham().getTenSanpham(), spct.getIdThuongHieu().getTenThuongHieu(),
-                    spct.getIdMau().getTenMau(), spct.getIdKichThuoc().getTenSize(),
-                    donGia, rs.getFloat("GiaTriGiam")
+                    i, spct.getMaSPCT(), 
+                    spct.getIdSanPham().getTenSanpham(),
+                    spct.getIdThuongHieu().getTenThuongHieu(),
+                    spct.getIdMau().getTenMau(), 
+                    spct.getIdKichThuoc().getTenSize(),
+                    donGia,
+                    //rs.getBigDecimal("GiaTriGiam")
                 };
 
                 list.add(ob);
+                i++;
             }
             return list;
         } catch (Exception e) {

@@ -53,7 +53,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
 
     public void loadToTable(ArrayList<PhieuGiamGia> listPgg) {
         DefaultTableModel model = (DefaultTableModel) this.tblPhieuGG.getModel();
-        System.out.println(listPGG.size());
+ //       System.out.println(listPGG.size());
         model.setRowCount(0);
         int i = 1;
         for (PhieuGiamGia pgg : listPgg) {

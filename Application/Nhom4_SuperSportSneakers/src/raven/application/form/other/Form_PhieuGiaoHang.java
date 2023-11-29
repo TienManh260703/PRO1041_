@@ -449,7 +449,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -466,9 +466,6 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
             }
         });
         jScrollPane3.setViewportView(tblHD);
-        if (tblHD.getColumnModel().getColumnCount() > 0) {
-            tblHD.getColumnModel().getColumn(4).setResizable(false);
-        }
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel10.setText("Danh sách hóa đơn ");
@@ -820,10 +817,16 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         if (phieuGiaoHang == null) {
             return;
         }
-        if (getHD() == null) {
+        if ( getHD() ==null) {
             MsgBox.aleart(this, "Chưa có hóa đơn để giao");
             return;
         }
+        if (  getHD().isEmpty()) {
+            MsgBox.aleart(this, "Chưa có hóa đơn để giao");
+            return;
+        }
+       
+        
         int coutn = 0;
         for (HoaDon hd : getHD()) {
             phieuGiaoHang.setIdHD(hd);

@@ -121,12 +121,18 @@ public class PhieuGiaoHangRepository {
     public List<HoaDon> listDSHD() {
         List<HoaDon> list = new ArrayList<>();
         try {
-            query = "SELECT HD.ID AS IDHD, MaHoaDon, KH.ID AS IDKH, HD.NgayTao, TenKhachHang\n"
-                    + "FROM HOADON AS HD\n"
-                    + "JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH\n"
-                    + "WHERE HD.HinhThucMua = 1 AND HD.TrangThai = 1 AND NOT EXISTS (\n"
-                    + "    SELECT 1 FROM PHIEUGIAOHANG AS PGH WHERE PGH.IDHoaDon = HD.ID\n"
-                    + ");";
+//            query = "SELECT HD.ID AS IDHD, MaHoaDon, KH.ID AS IDKH, HD.NgayTao, TenKhachHang\n"
+//                    + "FROM HOADON AS HD\n"
+//                    + "JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH\n"
+//                    + "WHERE HD.HinhThucMua = 1 AND HD.TrangThai = 1 AND NOT EXISTS (\n"
+//                    + "    SELECT 1 FROM PHIEUGIAOHANG AS PGH WHERE PGH.IDHoaDon = HD.ID\n"
+//                    + ");";
+            query = "SELECT HD.ID AS IDHD, MaHoaDon, KH.ID AS IDKH, HD.NgayTao, TenKhachHang , hd.TrangThai\n"
+                    + "                    FROM HOADON AS HD\n"
+                    + "                    JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH\n"
+                    + "                    WHERE HD.TrangThai =3 or  HD.TrangThai = 0 AND NOT EXISTS (\n"
+                    + "                       SELECT 1 FROM PHIEUGIAOHANG AS PGH WHERE PGH.IDHoaDon = HD.ID\n"
+                    + "                    );";
             con = DBConnection.getConnect();
             stm = con.createStatement();
             rs = stm.executeQuery(query);
