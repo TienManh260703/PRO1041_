@@ -192,34 +192,35 @@ public class ChiTietHoaDon {
 //        }
 //        return 0f;
 //    }
-    public BigDecimal setThanhTien2() {
-        BigDecimal thanhTien = BigDecimal.valueOf(Long.parseLong(soLuong + "")).multiply(IdCTSP.tinhGiaBan());
-        //soLuong * IdCTSP.tinhGiaBan();
-        System.err.println("TT : " + thanhTien);
-        return thanhTien;
-    }
+//    public BigDecimal setThanhTien2() {
+//        BigDecimal thanhTien = BigDecimal.valueOf(Long.parseLong(soLuong + "")).multiply(IdCTSP.tinhGiaBan());
+//        //soLuong * IdCTSP.tinhGiaBan();
+//        System.err.println("TT : " + thanhTien);
+//        return thanhTien;
+//    }
 
     public Object[] rowDataGioHang(int i) {
         String str = "";
         if (loaiDGG != null ) {
-            if (IdCTSP.getIdDGG().getHinhThucDGG() == 0) {
+            if (loaiDGG == 0) {
                 str = " ( " +giaTriDGG + " %)  ";
             } else if (loaiDGG == 1) {//(IdCTSP.getGiaNiemYet() - IdCTSP.tinhGiaBan()) + 
                 str = " VND ";
             }
         }else{
-            str ="Khôn có";
+            str ="Không có";
         }
 
-        return new Object[]{i ,
+        return new Object[]{
+            i ,
             IdCTSP.getMaSPCT(),
             IdCTSP.getIdSanPham().getTenSanpham(),
-            IdCTSP.getGiaNiemYet(),
+            DonGia,
             soLuong,
              Format.format1((DonGia.subtract(GiaBan)))+ str,
-            IdCTSP.tinhGiaBan(),
-            setThanhTien2(),
-            id
+            GiaBan,
+          thanhTien
+            
         };
     }
 

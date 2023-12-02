@@ -212,7 +212,7 @@ public class SanPhamCT_Repository {
 
     public SanPhamChiTiet getProductByMa(String ma) {
         SanPhamChiTiet result = null;
-        String sql = "select CTSP.ID,CTSP.MaCTSP,SP.TenSP,TH.TenThuongHieu,S.TenSize,M.TenMau,CTSP.SoLuongTon, CTSP.GiaBan, CTSP.GiaNiemYet, CTSP.MoTa, CTSP.TrangThai  from CHI_TIET_SAN_PHAM as CTSP\n"
+        String sql = "select CTSP.ID ,CTSP.MaCTSP,SP.TenSP,TH.TenThuongHieu,S.TenSize,M.TenMau,CTSP.SoLuongTon, CTSP.GiaBan, CTSP.GiaNiemYet, CTSP.MoTa, CTSP.TrangThai  from CHI_TIET_SAN_PHAM as CTSP\n"
                 + "join MAU as M on M.ID = CTSP.IdMau\n"
                 + "join SIZE as S on S.ID = CTSP.IdSize\n"
                 + "join THUONGHIEU as TH on TH.ID = CTSP.IdThuongHieu\n"

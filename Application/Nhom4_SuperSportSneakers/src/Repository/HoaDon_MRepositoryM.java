@@ -145,59 +145,6 @@ public class HoaDon_MRepositoryM {
         }
     }
 
-    public List<HoaDon> getAllHDByTrangThai(int trangThai) {
-        List<HoaDon> listHD = new ArrayList<>();
-        try {
-            query = "SELECT \n"
-                    + "  HD.ID  AS IdHD , HD.MaHoaDon AS MaHoaDon  , HD.NgayTao AS NgayTao , HD.TrangThai AS TrangThaiHD ,\n"
-                    + " NV.ID AS IdNV , NV.HoVaTen AS TenNV ,  NV.MaNhanVien AS MaNhanVien , \n"
-                    + " KH.ID AS IdKH , KH.TenKhachHang AS TenKH , KH.MaKhachHang AS  MaKhachHang ,\n"
-                    + " PGG.ID AS IdPGG , PGG.MaPhieu AS  MaPhieu , PGG.TenPhieu AS TenPhieu , PGG.GiaTri AS GiaTri , PGG.LoaiPhieu AS  LoaiPhieu, PGG.SoLuongPhieu AS SoLuongPhieu  , PGG.DonToiThieu AS DonToiThieu  , PGG.TrangThai AS TrangThaiPGG \n"
-                    + " FROM HOADON AS HD\n"
-                    + " LEFT JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH \n"
-                    + " LEFT JOIN NHANVIEN AS NV ON NV.ID = HD.IdNV\n"
-                    + " LEFT JOIN PHIEU_GIAM_GIA AS PGG ON PGG.ID  = HD.IdPGG\n"
-                    + " WHERE HD.TrangThai = ? \n"
-                    + " ORDER BY HD.NgayTao DESC";
-            con = DBConnection.getConnect();
-            pstm = con.prepareStatement(query);
-            pstm.setInt(1, trangThai);
-            rs = pstm.executeQuery();
-            while (rs.next()) {
-                NhanVien nhanVien = new NhanVien(
-                        rs.getLong("IdNV"),
-                        rs.getString("MaNhanVien"),
-                        rs.getString("TenNV"));
-                KhachHang khachHang = new KhachHang(
-                        rs.getLong("IdKH"),
-                        rs.getString("MaKhachHang"),
-                        rs.getString("TenKH"));
-
-                PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
-                phieuGiamGia.setIdPGG(rs.getLong("IdPGG"));
-                phieuGiamGia.setMaPhieu(rs.getString("MaPhieu"));
-                phieuGiamGia.setTenPhieu(rs.getString("TenPhieu"));
-                phieuGiamGia.setLoaiPhieu(rs.getInt("LoaiPhieu"));
-                phieuGiamGia.setGiaTri(rs.getBigDecimal("GiaTri"));
-                phieuGiamGia.setSoLuongPhieu(rs.getInt("SoLuongPhieu"));
-                phieuGiamGia.setDonToiThieu(rs.getBigDecimal("DonToiThieu"));
-                phieuGiamGia.setTrangThai(rs.getInt("TrangThaiPGG"));
-                HoaDon hoaDon = new HoaDon(
-                        rs.getLong("IdHD"),
-                        phieuGiamGia,
-                        nhanVien,
-                        khachHang,
-                        rs.getString("MaHoaDon"),
-                        rs.getDate("NgayTao"),
-                        trangThai);
-                listHD.add(hoaDon);
-            }
-            return listHD;
-        } catch (SQLException ex) {
-            Logger.getLogger(ChiTietHoaDon_RepositoryM.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
-    }
 
     public List<HoaDon> getAllHDByTrangThai2(int trangThai) {
         List<HoaDon> listHD = new ArrayList<>();
