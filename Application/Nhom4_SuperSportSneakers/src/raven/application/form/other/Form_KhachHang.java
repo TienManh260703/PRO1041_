@@ -101,6 +101,8 @@ public class Form_KhachHang extends javax.swing.JPanel {
             } else {
                 maKH = "KH" + maxIDKH;
             }
+        }else{
+            maKH = txtMaKH.getText().trim();
         }
         if (tenKH.isEmpty()) {
             MsgBox.aleart(this, "Tên khách hàng chưa có !");

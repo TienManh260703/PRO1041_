@@ -27,6 +27,7 @@ public class PhieuGiaoHang {
     private String donViVanChuyen;
     private Date ngayHoanThanh;
     private Integer trangThai;
+    
 
     public PhieuGiaoHang() {
     }
@@ -192,6 +193,11 @@ public class PhieuGiaoHang {
         return new Object[]{
             iindex, maVanDon, idHD.getMaHoaDon(), idKH.getTenKhachHang(), idKH.getSdt(), idKH.getDiaChi(), giaShip, tenShip, sdtShip, ngayTao, ngayHoanThanh, result
         };
+    }
+
+    @Override
+    public String toString() {
+        return "PhieuGiaoHang{" + "id=" + id + ", idHD=" + idHD + ", idKH=" + idKH + ", tenNguoiNhan=" + tenNguoiNhan + ", sdtNNguoiNhan=" + sdtNNguoiNhan + ", diaChi=" + diaChi + ", tenShip=" + tenShip + ", sdtShip=" + sdtShip + ", giaShip=" + giaShip + ", ngayTao=" + ngayTao + ", maVanDon=" + maVanDon + ", donViVanChuyen=" + donViVanChuyen + ", ngayHoanThanh=" + ngayHoanThanh + ", trangThai=" + trangThai + '}';
     }
 
 }

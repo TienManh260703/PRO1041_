@@ -74,6 +74,55 @@ public class ChiTietDotGiamRepository {
 
     }
 
+    public List<ChiTietDotGiamGia> getAllCT_CTDGG() {
+        List<ChiTietDotGiamGia> list = new ArrayList<>();
+        try {
+
+            con = DBConnection.getConnect();
+            query = "SELECT IdDGG AS IDDGG , IdCTSP , MaCTSP , DonGia , DonGiaConLai , GiaTriGiam ,DGG.TrangThai FROM CHI_TIET_DGG AS CTDGG\n"
+                    + "                    LEFT JOIN DOT_GIAM_GIA AS DGG ON DGG.ID = CTDGG.IdDGG\n"
+                    + "					WHERE DGG.TrangThai =1";
+
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                ChiTietDotGiamGia ctdgg = new ChiTietDotGiamGia();
+                DotGiamGia_M dgg = new DotGiamGia_M();
+                dgg.setIdDGG(rs.getLong("IDDGG"));
+                dgg.setTrangThai(rs.getInt("TrangThai"));
+
+                ctdgg.setIdDGG(dgg);
+                ctdgg.setIdCTSP(rs.getLong("IdCTSP"));
+                ctdgg.setMsSP(rs.getString("MaCTSP"));
+                ctdgg.setDonGia(rs.getBigDecimal("DonGia"));
+                ctdgg.setDonGiaConLai(rs.getBigDecimal("DonGiaConLai"));
+                ctdgg.setGiaTriGiam(rs.getFloat("GiaTriGiam"));
+                list.add(ctdgg);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietDotGiamRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public void update_SP(ChiTietDotGiamGia ctdgg) {
+        try {
+            String sql = "UPDATE CHI_TIET_SAN_PHAM\n"
+                    + "	SET IdDGG = ? ,  GiaBan = ? \n"
+                    + "	WHERE ID = ? ";
+
+            Connection c = DBConnection.getConnect();
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setLong(1, ctdgg.getIdDGG().getIdDGG());
+            ps.setBigDecimal(2, ctdgg.getDonGiaConLai());
+            ps.setLong(3, ctdgg.getIdCTSP());
+            ps.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietDotGiamRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void update(DotGiamGia_M dgg, ChiTietDotGiamGia ctdgg) {
         try {
             query = "UPDATE CHI_TIET_DGG \n"
@@ -91,13 +140,30 @@ public class ChiTietDotGiamRepository {
 
         } catch (Exception ex) {
             Logger.getLogger(ChiTietDotGiamRepository.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null && !rs.isClosed()) {
+                    rs.close();
+                }
+                if (stm != null && !stm.isClosed()) {
+                    stm.close();
+                }
+                if (pstm != null && !pstm.isClosed()) {
+                    pstm.close();
+                }
+                if (con != null && !con.isClosed()) {
+                    con.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
-        return;
+
     }
 
     public SanPhamChiTiet getProductByID(Long id) {
-        con = DBConnection.getConnect();
-        SanPhamChiTiet result = null;
+
         String sql = "SELECT CTSP.ID, CTSP.MaCTSP, SP.TenSP, TH.TenThuongHieu, S.TenSize, M.TenMau, CTSP.SoLuongTon, CTSP.GiaBan, CTSP.GiaNiemYet, CTSP.MoTa, CTSP.TrangThai \n"
                 + "FROM CHI_TIET_SAN_PHAM AS CTSP\n"
                 + "JOIN MAU AS M ON M.ID = CTSP.IdMau\n"
@@ -107,9 +173,11 @@ public class ChiTietDotGiamRepository {
                 + "WHERE CTSP.ID = ?;";
 
         try {
-            pstm = con.prepareStatement(sql);
+            SanPhamChiTiet result = null;
+            Connection con = DBConnection.getConnect();
+            PreparedStatement pstm = con.prepareStatement(sql);
             pstm.setLong(1, id);
-            rs = pstm.executeQuery();
+            ResultSet rs = pstm.executeQuery();
             if (rs.next()) {
                 SanPham sanPham = new SanPham(rs.getString("TenSP"));
                 MauSac mauSac = new MauSac(rs.getString("TenMau"));
@@ -118,40 +186,47 @@ public class ChiTietDotGiamRepository {
 
                 result = new SanPhamChiTiet(rs.getLong("ID"), rs.getString("MaCTSP"), rs.getInt("SoLuongTon"), rs.getBigDecimal("GiaBan"), rs.getBigDecimal("GiaNiemYet"), rs.getInt("TrangThai"), rs.getString("MoTa"), mauSac, kichThuoc, thuongHieu, sanPham);
             }
-        } catch (Exception e) {
-            System.out.println(e);
+            return result;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
         }
-        return result;
     }
 
     public List<Object> listSPCTDGG(String maDGG) {
-        System.out.println("Repository.ChiTietDotGiamRepository.listSPCTDGG()"+maDGG);
+        System.out.println("Repository.ChiTietDotGiamRepository.listSPCTDGG()" + maDGG);
         List<Object> list = new ArrayList<>();
         try {
-            query = "SELECT IdCTSP , IdDGG , MaDGG, CTDGG.DonGia , GiaTriGiam , GiaTri FROM CHI_TIET_DGG AS CTDGG \n"
+            query = "SELECT IdCTSP , IdDGG , MaDGG, CTDGG.DonGia , GiaTriGiam , loai ,GiaTri FROM CHI_TIET_DGG AS CTDGG \n"
                     + " JOIN DOT_GIAM_GIA AS DGG ON DGG.ID = CTDGG.IdDGG \n"
                     + " WHERE MaDGG LIKE '" + maDGG.trim() + "'";
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
             rs = pstm.executeQuery();
             int i = 1;
+            SanPhamChiTiet spct;
+
             while (rs.next()) {
-                SanPhamChiTiet spct = this.getProductByID(rs.getLong("IdCTSP"));
-                System.out.println("ID "+ spct.getIdSPCT());
+                spct = null;
+                spct = this.getProductByID(rs.getLong("IdCTSP"));
+//                System.out.println("ID "+ spct.getIdSPCT());
                 BigDecimal donGia = BigDecimal.ONE; //rs.getBigDecimal("DonGia");
                 Object[] ob = new Object[]{
-                    i, spct.getMaSPCT(), 
+                    i,
+                    spct.getMaSPCT(),
                     spct.getIdSanPham().getTenSanpham(),
                     spct.getIdThuongHieu().getTenThuongHieu(),
-                    spct.getIdMau().getTenMau(), 
+                    spct.getIdMau().getTenMau(),
                     spct.getIdKichThuoc().getTenSize(),
                     donGia,
-                    //rs.getBigDecimal("GiaTriGiam")
+                    rs.getInt("loai") == 0 ? rs.getBigDecimal("GiaTriGiam") + " ( % )" : rs.getBigDecimal("GiaTriGiam") + " ( VND )"
+
                 };
 
                 list.add(ob);
                 i++;
             }
+
             return list;
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,7 +235,6 @@ public class ChiTietDotGiamRepository {
 
     }
 
-    
     public int insert(ChiTietDotGiamGia cTDGG, DotGiamGia_M dgg, SanPhamChiTiet spct) {
 
         try {

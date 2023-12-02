@@ -12,7 +12,7 @@ public class PhieuGiamGia {
 
     
     private NhanVien idNV;
-    private long idPGG;
+    private Long idPGG;
     private String maPhieu;
     private String tenPhieu;
     private int loaiPhieu;
@@ -68,11 +68,11 @@ public class PhieuGiamGia {
 
    
 
-    public long getIdPGG() {
+    public Long getIdPGG() {
         return idPGG;
     }
 
-    public void setIdPGG(long idPGG) {
+    public void setIdPGG(Long idPGG) {
         this.idPGG = idPGG;
     }
 

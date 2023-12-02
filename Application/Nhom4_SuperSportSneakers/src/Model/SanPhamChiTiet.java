@@ -4,6 +4,7 @@
  */
 package Model;
 
+import Utils.Format;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
@@ -278,7 +279,7 @@ public class SanPhamChiTiet {
     public Object[] rowDataSPBH() {
 
         return new Object[]{
-            maSPCT, idSanPham.getTenSanpham(), idMau.getTenMau(), idKichThuoc.getTenSize(), idThuongHieu.getTenThuongHieu(), soLuong, giaNiemYet
+            maSPCT, idSanPham.getTenSanpham(), idMau.getTenMau(), idKichThuoc.getTenSize(), idThuongHieu.getTenThuongHieu(), soLuong, Format.format(giaNiemYet), Format.format(giaBan)
         };
     }
 

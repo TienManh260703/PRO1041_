@@ -851,6 +851,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
 
         Long id = servicePGG.getPGGByMa(maPhieu).getIdPGG();
         listHF = servicePGG.getAllHDByMaPhieu(id);
+        loadToTableHD((ArrayList<Object>) listHF);
     }//GEN-LAST:event_tblPhieuGGMouseClicked
 
     private void btnLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocActionPerformed

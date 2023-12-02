@@ -75,7 +75,7 @@ public class MainForm extends JLayeredPane {
         menuButton.setIcon(new FlatSVGIcon("raven/icon/svg/" + icon, 0.8f));
     }
 
-    private void initMenuEvent() {
+    public void initMenuEvent() {
         menu.addMenuEvent((int index, int subIndex, MenuAction action) -> {
             // Application.mainForm.showForm(new DefaultForm("Form : " + index + " " + subIndex));
             if (index == 0) {
