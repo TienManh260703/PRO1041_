@@ -189,6 +189,12 @@ public class PhieuGiamGia {
             giaTri , soLuongPhieu, donToiThieu , ngayBatDau , ngayKetThuc , ngayTao, moTa , getTrangThaiString()
         };
     }
+    
+    public Object [] rowDataKH_BH (int i){
+        return new Object[]{
+            i , maPhieu , tenPhieu , loaiPhieu , donToiThieu
+        };
+    }
 
     @Override
     public String toString() {

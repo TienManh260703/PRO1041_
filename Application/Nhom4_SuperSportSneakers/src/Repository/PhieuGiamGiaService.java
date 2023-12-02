@@ -4,10 +4,12 @@
  */
 package Repository;
 
+import Model.DotGiamGia_M;
 import Model.HoaDon;
 import Model.NhanVien;
 import Model.PhieuGiamGia;
 import Utils.XDate;
+import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.sql.*;
@@ -70,6 +72,33 @@ public class PhieuGiamGiaService {
             e.printStackTrace();
         }
         return listPGG;
+    }
+
+    public List<PhieuGiamGia> getALL(BigDecimal donToiThieu) {
+        List<PhieuGiamGia> list = new ArrayList<>();
+        try {
+            query = " SELECT ID , MaPhieu , TenPhieu , LoaiPhieu , GiaTri , SoLuongPhieu , DonToiThieu , TrangThai  FROM PHIEU_GIAM_GIA \n"
+                    + " WHERE TrangThai = 1 AND SoLuongPhieu >0 AND DonToiThieu <= ?";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setBigDecimal(1, donToiThieu);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                PhieuGiamGia giamGia = new PhieuGiamGia();
+                giamGia.setIdPGG(rs.getLong("ID"));
+                giamGia.setMaPhieu(rs.getString("MaPhieu"));
+                giamGia.setTenPhieu(rs.getString("TenPhieu"));
+                giamGia.setLoaiPhieu(rs.getInt("LoaiPhieu"));
+                giamGia.setGiaTri(rs.getBigDecimal("GiaTri"));
+                giamGia.setSoLuongPhieu(rs.getInt("SoLuongPhieu"));
+                giamGia.setDonToiThieu(rs.getBigDecimal("DonToiThieu"));
+                giamGia.setTrangThai(rs.getInt("TrangThai"));
+                list.add(giamGia);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiamGiaService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
     }
 
     public ArrayList<PhieuGiamGia> getLoc(Date NgayBatDau, Date NgayKetThuc, int LoaiPhieu, int TrangThai) {
