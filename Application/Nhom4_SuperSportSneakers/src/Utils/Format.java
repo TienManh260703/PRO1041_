@@ -17,4 +17,9 @@ public class Format {
         DecimalFormat currencyFormatter = new DecimalFormat("###,###,###,##0");
         return currencyFormatter.format(number) + " VNĐ ";
     }
+    
+     public static String format1(BigDecimal number) {
+        DecimalFormat currencyFormatter = new DecimalFormat("###,###,###,##0");
+        return currencyFormatter.format(number) ;
+    }
 }

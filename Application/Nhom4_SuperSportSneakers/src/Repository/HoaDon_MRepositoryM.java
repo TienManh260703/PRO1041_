@@ -199,6 +199,47 @@ public class HoaDon_MRepositoryM {
         }
     }
 
+    public List<HoaDon> getAllHDByTrangThai2(int trangThai) {
+        List<HoaDon> listHD = new ArrayList<>();
+        try {
+
+            query = "SELECT HD.ID AS IDHD , KH.ID AS IDKH , NV.ID AS IDNV ,\n"
+                    + "HD.NgayTao , HD.TrangThai , HD.MaHoaDon ,  \n"
+                    + "NV.HoVaTen , NV.MaNhanVien , \n"
+                    + "KH.TenKhachHang , KH.MaKhachHang\n"
+                    + "FROM HOADON AS HD\n"
+                    + "JOIN NHANVIEN AS NV ON NV.ID = HD.IdNV\n"
+                    + "JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH\n"
+                    + "WHERE HD.TrangThai = " + trangThai + " " + " ORDER BY HD.NgayTao DESC";;
+            con = DBConnection.getConnect();
+            pstm = con.prepareCall(query);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                KhachHang khachHang = new KhachHang();
+                khachHang.setId(rs.getLong("IDKH"));
+                khachHang.setTenKhachHang(rs.getString("TenKhachHang"));
+                khachHang.setMaKhachHang(rs.getString("MaKhachHang"));
+                NhanVien nhanVien = new NhanVien();
+                nhanVien.setId(rs.getLong("IDNV"));
+                nhanVien.setTenNhanVien(rs.getString("HoVaTen"));
+                nhanVien.setMaNhanVien(rs.getString("MaNhanVien"));
+
+                HoaDon hoaDon = new HoaDon();
+                hoaDon.setId(rs.getLong("IDHD"));
+                hoaDon.setIdKH(khachHang);
+                hoaDon.setIdNV(nhanVien);
+                hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+                hoaDon.setNgayTao(rs.getDate("NgayTao"));
+                hoaDon.setTrangThai(rs.getInt("TrangThai"));
+                listHD.add(hoaDon);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietHoaDon_RepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+        return listHD;
+    }
+
     public List<HoaDon> getAllHDByHTM(int pttt) {
         List<HoaDon> listHD = new ArrayList<>();
         try {
@@ -279,7 +320,7 @@ public class HoaDon_MRepositoryM {
         return id;
     }
 
-    public void updateTTHD(String maHD , int trangThai) {
+    public void updateTTHD(String maHD, int trangThai) {
         try {
             query = "UPDATE HOADON\n"
                     + "SET TrangThai = ?\n"
@@ -292,7 +333,23 @@ public class HoaDon_MRepositoryM {
         } catch (SQLException ex) {
             Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
+    public int getIDHDByMaHD(String maHD) {
+        try {
+            query = "SELECT ID FROM HoaDon \n"
+                    + " where MaHoaDon Like  '" + maHD + "'";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("ID");
+            }
+            return -1;
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
 }

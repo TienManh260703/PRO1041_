@@ -83,7 +83,7 @@ public class Form_BanHang extends javax.swing.JPanel {
         lblPageTTKH.setText(1 + " / " + gioiHanPage);
         setLblCapBac(defaultKhachHang);
         cboTrangThaiHD.setSelectedIndex(0);
-        listHD = hoaDon_MRepository.getAllHDByTrangThai(0);
+        listHD = hoaDon_MRepository.getAllHDByTrangThai2(0);
         fillToTableHD(listHD);
         listCTDGG = chiTietDotGiamRepository.getAllCT_CTDGG();
         for (ChiTietDotGiamGia ctdgg : listCTDGG) {
@@ -135,37 +135,43 @@ public class Form_BanHang extends javax.swing.JPanel {
     private void fillToTableSP(List<SanPhamChiTiet> list) {
         DefaultTableModel dtm = (DefaultTableModel) this.tblSP.getModel();
         dtm.setRowCount(0);
+
         for (SanPhamChiTiet ctspm : list) {
             dtm.addRow(ctspm.rowDataSPBH());
+
         }
     }
 
     private void fillToTableGH(List<ChiTietHoaDon> list) {
         dtm = (DefaultTableModel) this.tblGH.getModel();
         dtm.setRowCount(0);
+        int i = 1;
         for (ChiTietHoaDon chiTietHoaDon : list) {
-            dtm.addRow(chiTietHoaDon.rowDataGioHang());
+            dtm.addRow(chiTietHoaDon.rowDataGioHang(i));
             //setFormTT();
+            i++;
         }
     }
 
     private void fillToTableHD(List<HoaDon> list) {
         DefaultTableModel dtm = (DefaultTableModel) this.tblHD.getModel();
         dtm.setRowCount(0);
+        int i = 1;
         for (HoaDon don : list) {
-            dtm.addRow(don.rowDataHDBH());
+            dtm.addRow(don.rowDataHDBH(i));
+            i++;
         }
     }
 
     private void setFormTT(int index) {
-        String maKH = tblHD.getValueAt(index, 3).toString();
+        String maKH = tblHD.getValueAt(index, 4).toString();
         defaultKhachHang = khachHangRepositoryM.findKHByMaKH(maKH);
         setLblCapBac(defaultKhachHang);
         int khachHang = defaultKhachHang.getCapBac();
         // Float giaTriGiam = 0f;
         BigDecimal thanhTien = BigDecimal.ZERO;
         BigDecimal thanhTienKhLe = BigDecimal.ZERO;
-        String maHD = tblHD.getValueAt(indexHD, 0).toString();
+        String maHD = tblHD.getValueAt(indexHD, 1).toString();
         String tenNhanVien = "Nguyễn Tiến Mạnh";
         txtMHD.setText(maHD);
 
@@ -420,9 +426,9 @@ public class Form_BanHang extends javax.swing.JPanel {
             chiTietHoaDon_Repository.deleteHDCT(chiTietHoaDon.getIdCTSP().getIdSPCT(), idHD);
         }
         if (maHD.isEmpty()) {
-            maHD = tblHD.getValueAt(indexHD, 0).toString();
+            maHD = tblHD.getValueAt(indexHD, 1).toString();
         }
-        fillToTableGH(chiTietHoaDon_Repository.getAllHDCT(maHD));
+//        fillToTableGH(chiTietHoaDon_Repository.getAllHDCT(maHD));
 
     }
 
@@ -502,7 +508,7 @@ public class Form_BanHang extends javax.swing.JPanel {
 
         indexHD = tblHD.getSelectedRow();
         if (indexHD != -1) {
-            String maHD = tblHD.getValueAt(indexHD, 0).toString();
+            String maHD = tblHD.getValueAt(indexHD, 1).toString();
             hoaDon_MRepository.updateHDBy(defaultKhachHang, maHD);
             listHD = hoaDon_MRepository.getAllHDByTrangThai(0);
             fillToTableHD(listHD);
@@ -1390,7 +1396,7 @@ public class Form_BanHang extends javax.swing.JPanel {
         defaultKhachHang = form_KhachHangJDialog.getSelectedKhachHang();
         indexHD = tblHD.getSelectedRow();
         if (indexHD != -1) {
-            String maHD = tblHD.getValueAt(indexHD, 0).toString();
+            String maHD = tblHD.getValueAt(indexHD, 1).toString();
             hoaDon_MRepository.updateHDBy(defaultKhachHang, maHD);
             listHD = hoaDon_MRepository.getAllHDByTrangThai(0);
             fillToTableHD(listHD);
@@ -1404,10 +1410,61 @@ public class Form_BanHang extends javax.swing.JPanel {
 
     private void tblSPMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSPMouseClicked
         int index = tblSP.getSelectedRow();
+        int soLuongTbl = Integer.parseInt(tblSP.getValueAt(index, 5).toString());
+        String maSp = tblSP.getValueAt(index, 0).toString();
+        indexHD = tblHD.getSelectedRow();
+        SanPhamChiTiet sanPhamChiTiet = list.get(index);
+        System.out.println(" " + sanPhamChiTiet.getMaSPCT());
+        String maHD = "";
 
-        listHD = hoaDon_MRepository.getAllHDByTrangThai(0);
-        fillToTableHD(listHD);
+        maHD = tblHD.getValueAt(indexHD, 1).toString();
+        int soLuong = 0;
+        String soLuongStr = JOptionPane.showInputDialog("Nhập số lượng !!!");
 
+        try {
+            soLuong = Integer.parseInt(soLuongStr);
+            if (soLuong > soLuongTbl) {
+                MsgBox.aleart(this, "Số lượng sản phẩm không đủ !!!");
+                return;
+            }
+        } catch (Exception e) {
+            MsgBox.aleart(this, "Số lượng sản phải là số !!!");
+            return;
+        }
+
+        long idHD = hoaDon_MRepository.getIDHDByMaHD(maHD);
+        HoaDon hd = new HoaDon();
+        hd.setId(idHD);
+
+        DotGiamGia_M dgg = dotGiamGia_MRpository.getDGG_BH(maSp);
+        BigDecimal quyDoi = BigDecimal.ZERO, giaBanB = BigDecimal.ZERO, donGiaB = BigDecimal.ZERO;
+        giaBanB = sanPhamChiTiet.getGiaBan();
+        donGiaB = sanPhamChiTiet.getGiaNiemYet();
+        quyDoi = donGiaB.subtract(giaBanB);
+        ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon();
+        chiTietHoaDon.setIdHoaDon(hd);
+        chiTietHoaDon.setIdCTSP(sanPhamChiTiet);
+        chiTietHoaDon.setSoLuong(soLuong);
+        chiTietHoaDon.setMaDGG(dgg.getMaDGG());
+        chiTietHoaDon.setLoaiDGG(dgg.getHinhThucDGG());
+        chiTietHoaDon.setQuyDoiDGGTT(quyDoi);
+        chiTietHoaDon.setGiaTriDGG(dgg.getGiaTri());
+        chiTietHoaDon.setDonGia(donGiaB);
+        chiTietHoaDon.setGiaBan(giaBanB);
+
+        BigDecimal tt = BigDecimal.ZERO;
+        tt = sanPhamChiTiet.getGiaBan().multiply(new BigDecimal(soLuong));
+        chiTietHoaDon.setThanhTien(tt);
+        chiTietHoaDon_Repository.insertCTHD(chiTietHoaDon);
+        listGH = chiTietHoaDon_Repository.getAllHDCT(maHD);
+        fillToTableGH(listGH);
+        int slTru = soLuongTbl - soLuong;
+        chiTietSanPham_Repository.updateSLSPByMa(maSp, slTru);
+        list = chiTietSanPham_Repository.getAll_M(page, lmit);
+        fillToTableSP(list);
+        
+//        listHD = hoaDon_MRepository.getAllHDByTrangThai(0);
+//        fillToTableHD(listHD);
 
     }//GEN-LAST:event_tblSPMouseClicked
 
@@ -1416,7 +1473,7 @@ public class Form_BanHang extends javax.swing.JPanel {
         if (indexHD == -1) {
             return;
         }
-        String maHD = tblHD.getValueAt(indexHD, 0).toString();
+        String maHD = tblHD.getValueAt(indexHD, 1).toString();
         listGH = chiTietHoaDon_Repository.getAllHDCT(maHD);
         fillToTableGH(listGH);
         setFormTT(indexHD);
@@ -1484,11 +1541,11 @@ public class Form_BanHang extends javax.swing.JPanel {
 
     private void btnXoaHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaHDActionPerformed
         indexHD = tblHD.getSelectedRow();
-        String maHD = tblHD.getValueAt(indexHD, 0).toString();
+        String maHD = tblHD.getValueAt(indexHD, 1).toString();
         // update lai sol
         Long idHD = hoaDon_MRepository.findIDByMaHD(maHD);
         chiTietHoaDon_Repository.deleteAll(idHD);
-        listGH = chiTietHoaDon_Repository.getAllHDCT(maHD);
+//        listGH = chiTietHoaDon_Repository.getAllHDCT(maHD);
         fillToTableGH(listGH);
         setLblCapBac(defaultKhachHang);
     }//GEN-LAST:event_btnXoaHDActionPerformed
@@ -1581,7 +1638,7 @@ public class Form_BanHang extends javax.swing.JPanel {
         hd.setIdKH(defaultKhachHang);
         hd.setIdNV(nhanVien);
         hd.setIdPGG(phieuGiamGia);
-hd.setMaHoaDon(maHD);
+        hd.setMaHoaDon(maHD);
         int kq = hoaDon_MRepository.create(hd);
         if (kq != -1) {
             MsgBox.aleart(this, "Tạo thành công hóa đơn : " + maHD);

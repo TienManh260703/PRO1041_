@@ -6,6 +6,7 @@ package Model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import Utils.Format;
 
 /**
  *
@@ -129,6 +130,10 @@ public class ChiTietHoaDon {
         return loaiDGG;
     }
 
+    public void setLoaiDGG(Integer loaiDGG) {
+        this.loaiDGG = loaiDGG;
+    }
+
     public BigDecimal getGiaTriDGG() {
         return giaTriDGG;
     }
@@ -194,22 +199,24 @@ public class ChiTietHoaDon {
         return thanhTien;
     }
 
-    public Object[] rowDataGioHang() {
+    public Object[] rowDataGioHang(int i) {
         String str = "";
-        if (IdCTSP.getIdDGG() != null && IdCTSP.getIdDGG().getTrangThai() == 1) {
+        if (loaiDGG != null ) {
             if (IdCTSP.getIdDGG().getHinhThucDGG() == 0) {
-                str = " ( " + IdCTSP.getIdDGG().getGiaTri() + " %)  ";
-            } else if (IdCTSP.getIdDGG().getHinhThucDGG() == 1) {//(IdCTSP.getGiaNiemYet() - IdCTSP.tinhGiaBan()) + 
+                str = " ( " +giaTriDGG + " %)  ";
+            } else if (loaiDGG == 1) {//(IdCTSP.getGiaNiemYet() - IdCTSP.tinhGiaBan()) + 
                 str = " VND ";
             }
+        }else{
+            str ="Khôn có";
         }
 
-        return new Object[]{
+        return new Object[]{i ,
             IdCTSP.getMaSPCT(),
             IdCTSP.getIdSanPham().getTenSanpham(),
             IdCTSP.getGiaNiemYet(),
             soLuong,
-            (IdCTSP.getGiaBan().subtract(IdCTSP.tinhGiaBan())) + str,
+             Format.format1((DonGia.subtract(GiaBan)))+ str,
             IdCTSP.tinhGiaBan(),
             setThanhTien2(),
             id

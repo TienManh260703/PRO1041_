@@ -185,4 +185,9 @@ public class DotGiamGia_M {
                 , trangThai ==0 ? "Sắp đến" : (trangThai ==1 ? "Đang áp dụng" : (trangThai ==2 ?"Hết hạn": ""))};
     }
 
+    @Override
+    public String toString() {
+        return "DotGiamGia_M{" + "idDGG=" + idDGG + ", idNV=" + idNV + ", maDGG=" + maDGG + ", tenDGG=" + tenDGG + ", hinhThucDGG=" + hinhThucDGG + ", giaTri=" + giaTri + ", ngayBatDau=" + ngayBatDau + ", ngayKetThuc=" + ngayKetThuc + ", moTa=" + moTa + ", ngayTao=" + ngayTao + ", trangThai=" + trangThai + '}';
+    }
+
 }

@@ -308,9 +308,9 @@ public class HoaDon {
         }
     }
 
-    public Object[] rowDataHDBH() {
+    public Object[] rowDataHDBH(int i) {
         return new Object[]{
-            maHoaDon, ngayTao, IdNV.getMaNhanVien(), IdKH.getMaKhachHang(), this.setTrangThaiHD(trangThai)
+            i ,maHoaDon, ngayTao, IdNV.getMaNhanVien(), IdKH.getMaKhachHang(), this.setTrangThaiHD(trangThai)
         };
     }
 

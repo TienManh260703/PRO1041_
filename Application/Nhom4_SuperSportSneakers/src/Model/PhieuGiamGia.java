@@ -42,7 +42,7 @@ public class PhieuGiamGia {
         this.trangThai = trangThai;
     }
 
-    public PhieuGiamGia(NhanVien idNV, long idPGG, String maPhieu, String tenPhieu, int loaiPhieu, BigDecimal giaTri, int soLuongPhieu, BigDecimal donToiThieu, Date ngayBatDau, Date ngayKetThuc, Date ngayTao, String moTa, int trangThai) {
+    public PhieuGiamGia(NhanVien idNV, Long idPGG, String maPhieu, String tenPhieu, int loaiPhieu, BigDecimal giaTri, int soLuongPhieu, BigDecimal donToiThieu, Date ngayBatDau, Date ngayKetThuc, Date ngayTao, String moTa, int trangThai) {
         this.idNV = idNV;
         this.idPGG = idPGG;
         this.maPhieu = maPhieu;

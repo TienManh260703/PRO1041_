@@ -38,49 +38,30 @@ public class ChiTietHoaDon_RepositoryM {
     public List<ChiTietHoaDon> getAllHDCT(String maHD) {
         List<ChiTietHoaDon> list = new ArrayList<>();
         try {
-            query = "SELECT \n"
-                    + "             HDCT.ID AS IdHDCT , HD.ID  AS IdHD , HD.MaHoaDon AS MaHoaDon  , HD.NgayTao AS NgayTao , HD.TrangThai AS TrangThaiHD , HD.CapBac AS CAPBAC , HD.PhanTramGia AS PhanTramGia, HD.TienPhieuGiam AS TienPhieuGiam , HD.DiemDoi AS DiemDoi , HD.PhuongThucTT AS PhuongThucTT , \n"
-                    + "             HD.TienKhDua AS TienKhDua , HD.TienKhChuyenKhoan AS TienKhChuyenKhoan ,HD.TienThua AS TienThua , HD.ThanhTien AS ThanhTien , HD.HinhThucMua AS  HinhThucMua , HD.TrangThai AS TrangThaiHD ,\n"
-                    + "             CTSP.ID AS IdCTSP,CTSP.MaCTSP AS MaCTSP , CTSP.GiaBan AS GiaBan ,  CTSP.GiaNiemYet  AS GiaNiemYet,\n"
-                    + "             SP.ID AS IDSP ,SP.MaSP AS MASP , SP.TenSP AS TENSP ,\n"
-                    + "             DGG.ID AS IDDGG , DGG.MaDGG AS MADGG ,  DGG.TenDGG AS TENDGG , DGG.Loai AS LOAIDGG , DGG.GiaTri AS GIATRI , DGG.NgayBatDau AS NGAYBD , DGG.NgayKetThuc AS NGAYKT , DGG.MoTa AS MOTA , DGG.TrangThai TRANGTHAIDGG,\n"
-                    + "             NV.ID AS IdNV , NV.HoVaTen AS TenNV , NV.MaNhanVien AS MaNhanVien , \n"
-                    + "             KH.ID AS IdKH , KH.TenKhachHang AS TenKH , KH.MaKhachHang AS  MaKhachHang ,\n"
-                    + "             PGG.ID AS IdPGG , PGG.MaPhieu AS  MaPhieu , PGG.TenPhieu AS TenPhieu , PGG.GiaTri AS GiaTri  , PGG.LoaiPhieu AS  LoaiPhieu, PGG.SoLuongPhieu AS SoLuongPhieu  , PGG.DonToiThieu AS DonToiThieu  , PGG.TrangThai AS TrangThaiPGG ,\n"
-                    + "             HDCT.IdCTSP AS IdCTSP , HDCT.SoLuong AS SoLuongHDCT , HDCT.MaDGG AS MaDGGHDCT , HDCT.LoaiDGG AS LoaiGGHDCT , HDCT.GiaTriDGG AS GiaTriHDCT , HDCT.QuyDoiDGGTT AS QuyDoiDGGTT , HDCT.GiaBan AS GiaBanHDCT , HDCT.DonGia AS DonGiaHDCT , HDCT.ThanhTien AS ThanhtIENHDCT \n"
-                    + "              FROM HOADONCHITIET AS HDCT\n"
-                    + "			LEFT JOIN HOADON AS HD ON HD.ID = HDCT.IdHoaDon\n"
-                    + "			LEFT JOIN CHI_TIET_SAN_PHAM AS CTSP ON CTSP.ID = HDCT.IdCTSP\n"
-                    + "			LEFT JOIN SANPHAM AS SP  ON SP.ID = CTSP.ID\n"
-                    + "			LEFT JOIN DOT_GIAM_GIA AS DGG ON DGG.ID = CTSP.IdDGG\n"
-                    + "			LEFT JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH \n"
-                    + "                 LEFT JOIN NHANVIEN AS NV ON NV.ID = HD.IdNV\n"
-                    + "			LEFT JOIN PHIEU_GIAM_GIA AS PGG ON PGG.ID  = HD.IdPGG \n"
-                    + " WHERE HD.MaHoaDon LIKE '" + maHD + "' "
-                    + "              ORDER BY HDCT.NgayTao  DESC";
+            query = "SELECT HDCT.ID , MaCTSP , TenSP , HDCT.DonGia , HDCT.GiaBan , HDCT.SoLuong , HDCT.LoaiDGG ,"
+                    + " HDCT.GiaTriDGG , HDCT.ThanhTien FROM HOADONCHITIET AS HDCT \n"
+                    + "JOIN HOADON AS HD ON HD.ID = HDCT.IdHoaDon\n"
+                    + "JOIN CHI_TIET_SAN_PHAM AS SPCT ON SPCT.ID = HDCT.IdCTSP\n"
+                    + "JOIN SANPHAM AS SP ON SP.ID = SPCT.IdSP \n"
+                    + "WHERE HD.MaHoaDon LIKE '" + maHD + "'";
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
             rs = pstm.executeQuery();
             while (rs.next()) {
-                NhanVien nhanVien = new NhanVien(rs.getLong("IdNV"), rs.getString("MaNhanVien"), rs.getString("TenNV"));
-                KhachHang khachHang = new KhachHang(rs.getLong("IdKH"), rs.getString("MaKhachHang"), rs.getString("TenKH"));
-                SanPham sanPham = new SanPham(rs.getLong("IDSP"), rs.getString("MASP"), rs.getString("TENSP"));
-                DotGiamGia_M dotGiamGia = new DotGiamGia_M(rs.getLong("IDDGG"), nhanVien, rs.getString("MADGG"), rs.getString("TENDGG"), rs.getInt("LOAIDGG"), rs.getBigDecimal("GIATRI"), rs.getDate("NGAYBD"), rs.getDate("NGAYKT"), rs.getString("MOTA"), rs.getInt("TRANGTHAIDGG"));
+                ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon();
+                SanPham sanPham = new SanPham(rs.getString("TenSP"));
+                SanPhamChiTiet sanPhamChiTiet = new SanPhamChiTiet();
+                sanPhamChiTiet.setIdSanPham(sanPham);
+                sanPhamChiTiet.setMaSPCT(rs.getString("MaCTSP"));
+                chiTietHoaDon.setIdCTSP(sanPhamChiTiet);
+                chiTietHoaDon.setId(rs.getLong("ID"));
+                chiTietHoaDon.setDonGia(rs.getBigDecimal("DonGia"));
+                chiTietHoaDon.setGiaBan(rs.getBigDecimal("GiaBan"));
+                chiTietHoaDon.setSoLuong(rs.getInt("SoLuong"));
+                chiTietHoaDon.setLoaiDGG(rs.getInt("LoaiDGG"));
+                chiTietHoaDon.setGiaTriDGG(rs.getBigDecimal("GiaTriDGG"));
+                chiTietHoaDon.setThanhTien(rs.getBigDecimal("ThanhTien"));
 
-                //  DotGiamGia_M dotGiamGia = dotGiamGia_MRpository.getDGGByMaCTSP(rs.getString("MaCTSP"));
-                System.out.println("GG :" + dotGiamGia);
-                SanPhamChiTiet chiTietSanPham = new SanPhamChiTiet(rs.getLong("IdCTSP"), dotGiamGia, rs.getString("MaCTSP"), rs.getBigDecimal("GiaBan"), rs.getBigDecimal("GiaNiemYet"), sanPham);
-                PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
-                phieuGiamGia.setIdPGG(rs.getLong("IdPGG"));
-                phieuGiamGia.setMaPhieu(rs.getString("MaPhieu"));
-                phieuGiamGia.setTenPhieu(rs.getString("TenPhieu"));
-                phieuGiamGia.setLoaiPhieu(rs.getInt("LoaiPhieu"));
-                phieuGiamGia.setGiaTri(rs.getBigDecimal("GiaTri"));
-                phieuGiamGia.setSoLuongPhieu(rs.getInt("SoLuongPhieu"));
-                phieuGiamGia.setDonToiThieu(rs.getBigDecimal("DonToiThieu"));
-                phieuGiamGia.setTrangThai(rs.getInt("TrangThaiPGG"));
-                HoaDon hoaDon = new HoaDon(phieuGiamGia, nhanVien, khachHang, rs.getString("MaHoaDon"), rs.getInt("CAPBAC"), rs.getFloat("PhanTramGia"), rs.getBigDecimal("TienPhieuGiam"), rs.getBigDecimal("DiemDoi"), rs.getInt("PhuongThucTT"), rs.getBigDecimal("TienKhDua"), rs.getBigDecimal("TienKhChuyenKhoan"), rs.getBigDecimal("TienThua"), rs.getBigDecimal("ThanhTien"), rs.getBoolean("HinhThucMua"), rs.getInt("TrangThaiHD"));
-                ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(hoaDon, chiTietSanPham, rs.getInt("SoLuongHDCT"), rs.getString("MaDGGHDCT"), rs.getInt("LoaiGGHDCT"), rs.getBigDecimal("GiaTriHDCT"), rs.getBigDecimal("QuyDoiDGGTT"), rs.getBigDecimal("GiaBanHDCT"), rs.getBigDecimal("DonGiaHDCT"), rs.getBigDecimal("ThanhtIENHDCT"));
                 list.add(chiTietHoaDon);
             }
             return list;

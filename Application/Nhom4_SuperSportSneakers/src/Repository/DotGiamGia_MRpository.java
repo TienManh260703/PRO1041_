@@ -328,4 +328,25 @@ public class DotGiamGia_MRpository {
             return 0;
         }
     }
+
+    public DotGiamGia_M getDGG_BH(String maCTSP) {
+        DotGiamGia_M dgg = new DotGiamGia_M();
+        try {
+            query = "SELECT MaDGG , Loai , GiaTri  FROM DOT_GIAM_GIA\n"
+                    + "JOIN CHI_TIET_SAN_PHAM  AS CTSP ON CTSP.IdDGG = DOT_GIAM_GIA.ID\n"
+                    + "WHERE MaCTSP LIKE '" + maCTSP + "'";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                dgg.setMaDGG(rs.getString("MaDGG"));
+                dgg.setHinhThucDGG(rs.getInt("Loai"));
+                dgg.setGiaTri(rs.getBigDecimal("GiaTri"));
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dgg;
+    }
 }
