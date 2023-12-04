@@ -4,7 +4,7 @@
  */
 package Repository;
 
-import Model.DotGiamGia_M;
+
 import Model.HoaDon;
 import Model.NhanVien;
 import Model.PhieuGiamGia;
@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import javax.swing.JOptionPane;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -387,7 +386,7 @@ public class PhieuGiamGiaService {
         return nv;
     }
 
-    public List<Object> getAllHDByMaPhieu(long ma) {
+    public List<Object> getAllHDByMaPhieu(String ma) {
         List<Object> list = new ArrayList<>();
         try {
             query = "SELECT HOADON.MaHoaDon , PHIEU_GIAM_GIA.MaPhieu , HOADON.NgayTao , PHIEU_GIAM_GIA.LoaiPhieu , PHIEU_GIAM_GIA.GiaTri FROM PHIEU_GIAM_GIA\n"
@@ -395,7 +394,7 @@ public class PhieuGiamGiaService {
                     + "WHERE MaPhieu LIKE ?";
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
-            pstm.setLong(1, ma);
+            pstm.setString(1, ma);
             rs = pstm.executeQuery();
             int i = 1;
             while (rs.next()) {
@@ -409,6 +408,7 @@ public class PhieuGiamGiaService {
                     i, rs.getString("MaHoaDon"), rs.getString("MaPhieu"), rs.getDate("NgayTao"), rs.getInt("LoaiPhieu") == 0 ? rs.getFloat("GiaTri") + " % "
                     : rs.getFloat("GiaTri") + " VND "
                 };
+                i++;
                 list.add(ob);
             }
             return list;
@@ -662,5 +662,22 @@ public class PhieuGiamGiaService {
             Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
+    }
+
+    public Integer updateSoLuongPhieu(Long idPGG, Integer soLuong) {
+        try {
+            con = DBConnection.getConnect();
+            query = "UPDATE PHIEU_GIAM_GIA\n"
+                    + "SET SoLuongPhieu = ?\n"
+                    + "WHERE ID = ?";
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, soLuong);
+            pstm.setLong(2, idPGG);
+            return pstm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiamGiaService.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+
     }
 }

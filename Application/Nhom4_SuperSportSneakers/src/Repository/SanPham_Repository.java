@@ -27,7 +27,7 @@ public class SanPham_Repository {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                listSanPham.add(new SanPham(rs.getLong(1), rs.getString(2), rs.getString(3),rs.getInt(4)));
+                listSanPham.add(new SanPham(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getInt(4)));
             }
         } catch (Exception e) {
             System.out.println("Error at get to all sanPham");
@@ -126,8 +126,8 @@ public class SanPham_Repository {
         }
         return false;
     }
-    
-     public List<SanPham> get(int page, int limt) {
+
+    public List<SanPham> get1(int page, int limt) {
         List<SanPham> list = new ArrayList<>();
         String sql = "Select ID,MaSP, TenSP, TrangThai From SANPHAM " + "ORDER BY ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
 
@@ -163,10 +163,10 @@ public class SanPham_Repository {
             return 0;
         }
     }
-    
+
     public List<SanPham> search_SanPhamByTrangThai(int n) {
         List<SanPham> listSearch = new ArrayList<>();
-        String query = "SELECT  MaSP, TenSP, TrangThai FROM MAU WHERE TrangThai = ?";
+        String query = "SELECT  MaSP, TenSP, TrangThai FROM SANPHAM WHERE TrangThai = ?";
         try {
             PreparedStatement ps = connect.prepareCall(query);
             ps.setInt(1, n);
@@ -182,17 +182,19 @@ public class SanPham_Repository {
 
     public SanPham findSanPhamByName(String sanPhamStr) {
         SanPham th = null;
-        String query = "SELECT  MaSP, TenSP, TrangThai FROM MAU WHERE TenSP = ?";
+        String query = "SELECT ID, MaSP, TenSP, TrangThai FROM SANPHAM WHERE TenSP LIKE ?";
         try {
             PreparedStatement ps = connect.prepareCall(query);
-            ps.setString(1,sanPhamStr);
+            ps.setString(1, sanPhamStr);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                 th = new SanPham(rs.getString(1), rs.getString(2), rs.getInt(3));
+                th = new SanPham(rs.getLong("ID"), rs.getString("MaSP"), rs.getString("TenSP"), rs.getInt("TrangThai"));
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error while searching for SanPham", e);
+            System.out.println(e);
         }
+        System.out.println(th);
         return th;
     }
+
 }

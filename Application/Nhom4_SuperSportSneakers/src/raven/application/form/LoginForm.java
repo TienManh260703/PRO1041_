@@ -1,5 +1,7 @@
 package raven.application.form;
 
+import Model.NhanVien;
+import Repository.NhanVienRepository;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.util.UIScale;
 import java.awt.Component;
@@ -7,13 +9,17 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import javax.swing.JOptionPane;
 import raven.application.Application;
+import raven.toast.Notifications;
 
 /**
  *
  * @author Raven
  */
 public class LoginForm extends javax.swing.JPanel {
+
+    private NhanVienRepository nhanVienRepository = new NhanVienRepository();
 
     public LoginForm() {
         initComponents();
@@ -96,6 +102,9 @@ public class LoginForm extends javax.swing.JPanel {
                 .addComponent(cmdLogin)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        loginLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {txtPass, txtUser});
+
         loginLayout.setVerticalGroup(
             loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginLayout.createSequentialGroup()
@@ -133,7 +142,19 @@ public class LoginForm extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmdLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdLoginActionPerformed
-        Application.login();
+        if (txtUser.getText().isEmpty() || txtPass.getPassword().length == 0) {
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Bạn đã bỏ trống Tài Khoản hoặc Mật Khẩu.");
+        } else {
+            NhanVien nv = nhanVienRepository.findNhanVien(txtUser.getText(), txtPass.getText());
+            System.out.println(nv.getId());
+            if (nv.getEmail() == null) {
+                Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Login Faild.");
+            } else if (nv.getEmail() != null) {
+                Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Login Successfull.");
+                Application.login();
+            }
+        }
+     //   Application.login();
     }//GEN-LAST:event_cmdLoginActionPerformed
 
     private class LoginFormLayout implements LayoutManager {

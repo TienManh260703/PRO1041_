@@ -81,32 +81,36 @@ public class Form_KichThuoc extends javax.swing.JPanel {
 
         jPanel2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        btnThem.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
-        btnThem.setText("THÊM");
+        btnThem.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        btnThem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/raven/icon/png/add.png"))); // NOI18N
+        btnThem.setText("ADD");
         btnThem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnThemActionPerformed(evt);
             }
         });
 
-        btnSua.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
-        btnSua.setText("SỬA");
+        btnSua.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        btnSua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/raven/icon/png/update.png"))); // NOI18N
+        btnSua.setText("UPDATE");
         btnSua.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSuaActionPerformed(evt);
             }
         });
 
-        btnClean.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
-        btnClean.setText("LÀM MỚI");
+        btnClean.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        btnClean.setIcon(new javax.swing.ImageIcon(getClass().getResource("/raven/icon/png/reset.png"))); // NOI18N
+        btnClean.setText("RESET");
         btnClean.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCleanActionPerformed(evt);
             }
         });
 
-        btnClean1.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
-        btnClean1.setText("SPCT");
+        btnClean1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        btnClean1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/raven/icon/png/return.png"))); // NOI18N
+        btnClean1.setText("RETURN");
         btnClean1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClean1ActionPerformed(evt);
@@ -119,13 +123,16 @@ public class Form_KichThuoc extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSua, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnThem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnClean, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
-                    .addComponent(btnClean1, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                    .addComponent(btnClean, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnClean1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
+
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnClean, btnClean1, btnSua, btnThem});
+
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -332,7 +339,7 @@ public class Form_KichThuoc extends javax.swing.JPanel {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 49, Short.MAX_VALUE))))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -538,7 +545,7 @@ private void fillToTable(List<KichThuoc> listKT) {
     }//GEN-LAST:event_btnSauCuoiActionPerformed
 
     private void btnClean1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClean1ActionPerformed
-        Application.showForm(new Form_SanPhamChiTiet());
+        Application.showForm(new Form_SPCT());
     }//GEN-LAST:event_btnClean1ActionPerformed
 
 

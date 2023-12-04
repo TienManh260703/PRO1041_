@@ -23,10 +23,12 @@ public class HoaDon {
     private BigDecimal tienPhieuGiam;
     private BigDecimal diemDoi; //	DiemDoi INT NULL, -- tiền khách hàng từ đó lấy ra tiền 1 diem = 10k => MONEY
     private Integer phuongThucTT;
+    private BigDecimal tongTienSP;
     private BigDecimal tienKhDua;
     private BigDecimal tienKhChuyenKhoan;
     private BigDecimal tienThua;
     private BigDecimal thanhTien;
+    private Integer loai;
     private Date ngayTao;
     private Date ngayThanhToan;
     private boolean hinhThucMua;
@@ -151,8 +153,24 @@ public class HoaDon {
         return id;
     }
 
+    public BigDecimal getTongTienSP() {
+        return tongTienSP;
+    }
+
+    public void setTongTienSP(BigDecimal tongTienSP) {
+        this.tongTienSP = tongTienSP;
+    }
+
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getLoai() {
+        return loai;
+    }
+
+    public void setLoai(Integer loai) {
+        this.loai = loai;
     }
 
     public PhieuGiamGia getIdPGG() {
@@ -291,7 +309,7 @@ public class HoaDon {
         this.hinhThucMua = hinhThucMua;
     }
 
-    private String setTrangThaiHD(int trangThaiIP) {
+    public String setTrangThaiHD(int trangThaiIP) {
         switch (trangThaiIP) {
             case 0:
                 return "Chờ thanh toán";
@@ -317,6 +335,13 @@ public class HoaDon {
     public Object[] rowDataPGH (int i){
         return new Object[]{
             i , maHoaDon ,ngayTao , IdKH.getTenKhachHang()
+        };
+    }
+    
+    public Object [] rowData_HD (int i){
+        
+        return new Object[]{
+            i , maHoaDon , IdNV.getMaNhanVien() , IdKH.getMaKhachHang() , thanhTien , loai== 0 ? "Tại quầy" :"Đặt hàng" , ngayTao , ngayThanhToan, setTrangThaiHD(trangThai)
         };
     }
     @Override

@@ -7,6 +7,7 @@ package Model;
 import java.math.BigDecimal;
 import java.util.Date;
 import Utils.Format;
+import java.util.List;
 
 /**
  *
@@ -198,29 +199,34 @@ public class ChiTietHoaDon {
 //        System.err.println("TT : " + thanhTien);
 //        return thanhTien;
 //    }
-
     public Object[] rowDataGioHang(int i) {
         String str = "";
-        if (loaiDGG != null ) {
+        if (loaiDGG != null) {
             if (loaiDGG == 0) {
-                str = " ( " +giaTriDGG + " %)  ";
+                str = " ( " + (giaTriDGG == null ? 0 : giaTriDGG) + " %)  ";
             } else if (loaiDGG == 1) {//(IdCTSP.getGiaNiemYet() - IdCTSP.tinhGiaBan()) + 
                 str = " VND ";
             }
-        }else{
-            str ="Không có";
+        } else {
+            str = "Không có";
         }
 
         return new Object[]{
-            i ,
+            i,
             IdCTSP.getMaSPCT(),
             IdCTSP.getIdSanPham().getTenSanpham(),
             DonGia,
             soLuong,
-             Format.format1((DonGia.subtract(GiaBan)))+ str,
-            GiaBan,
-          thanhTien
-            
+            Format.format1((DonGia.subtract(GiaBan))) + str,
+            Format.format(GiaBan),
+            Format.format(thanhTien)
+
+        };
+    }
+
+    public Object[] rowDataHD(int index) {
+        return new Object[]{
+            index, IdCTSP.getMaSPCT(), IdCTSP.getIdSanPham().getTenSanpham(), soLuong, GiaBan, thanhTien
         };
     }
 

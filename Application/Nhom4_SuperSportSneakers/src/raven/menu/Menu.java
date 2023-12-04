@@ -30,7 +30,7 @@ public class Menu extends JPanel {
         {"Bán Hàng"},
         //1
         {"~SẢN PHẨM~"},
-        {"Sản Phẩm", "Sản Phẩm", "Chi Tiết Sản Phẩm", "Thuộc Tính Sản Phẩm"},
+         {"Chi Tiết Sản Phẩm"},
        
         //2
         {"~Nhân Viên~"},

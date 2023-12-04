@@ -170,18 +170,22 @@ public class KichThuoc_Repository {
     }
 
     public KichThuoc findKichCoByName(Float kichCoStr) {
-        KichThuoc th = null;
-        String query = "SELECT  MaSize, TenSize,TrangThai FROM SIZE WHERE TenSize = ?";
-        try {
-            PreparedStatement ps = connect.prepareCall(query);
-            ps.setFloat(1, kichCoStr );
-            ResultSet rs = ps.executeQuery();
+    KichThuoc kichThuoc = null;
+    String query = "SELECT ID, MaSize, TenSize, TrangThai FROM SIZE WHERE TenSize = ?";
+    
+    try (PreparedStatement ps = connect.prepareCall(query)) {
+        ps.setFloat(1, kichCoStr);
+        
+        try (ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                 th = new KichThuoc(rs.getString(1), rs.getFloat(2), rs.getInt(3));
+                kichThuoc = new KichThuoc(rs.getLong(1), rs.getString(2), rs.getFloat(3), rs.getInt(4));
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Error while searching for SanPham", e);
         }
-        return th;
+    } catch (SQLException e) {
+        throw new RuntimeException("Error while searching for KichThuoc", e);
     }
+    
+    return kichThuoc;
+}
+
 }

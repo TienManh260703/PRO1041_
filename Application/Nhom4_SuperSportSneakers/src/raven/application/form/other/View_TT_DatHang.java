@@ -7,6 +7,7 @@ package raven.application.form.other;
 import Model.HoaDon;
 import Model.KhachHang;
 import Model.PhieuGiaoHang;
+import Repository.HoaDon_MRepositoryM;
 import Repository.PhieuGiaoHangRepository;
 import Utils.MsgBox;
 import Utils.Validate;
@@ -24,6 +25,7 @@ public class View_TT_DatHang extends javax.swing.JDialog {
     PhieuGiaoHang phieuGiaoHang_ = new PhieuGiaoHang();
     long idHD = -1;
     long idKh = -1;
+    private HoaDon_MRepositoryM hoaDon_MRepositoryM = new HoaDon_MRepositoryM();
 
     /**
      * Creates new form View_TT_DatHang
@@ -350,6 +352,8 @@ public class View_TT_DatHang extends javax.swing.JDialog {
         phieuGiaoHang_ = getForm();
         if (phieuGiaoHang_ != null) {
             int kq = phieuGiaoHangRepository.insert(phieuGiaoHang_);
+              
+        hoaDon_MRepositoryM.updateLoaiHD(idHD, 1);
             if (kq != -1) {
                 System.out.println(phieuGiaoHang_);
                 MsgBox.aleart(this, "Tạo thành công 1 phiếu giao hàng : " + phieuGiaoHang_.getMaVanDon());

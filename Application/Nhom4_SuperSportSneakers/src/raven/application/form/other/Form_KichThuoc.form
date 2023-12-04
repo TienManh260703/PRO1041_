@@ -36,7 +36,7 @@
                       <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="49" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -120,13 +120,13 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="btnSua" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnThem" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnClean" alignment="0" pref="129" max="32767" attributes="0"/>
-                      <Component id="btnClean1" alignment="0" pref="129" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="btnThem" linkSize="1" min="-2" pref="129" max="-2" attributes="0"/>
+                      <Component id="btnSua" linkSize="1" alignment="0" max="32767" attributes="0"/>
+                      <Component id="btnClean" linkSize="1" alignment="0" max="32767" attributes="0"/>
+                      <Component id="btnClean1" linkSize="1" alignment="0" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="20" max="32767" attributes="0"/>
+                  <EmptySpace pref="14" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -150,9 +150,12 @@
         <Component class="javax.swing.JButton" name="btnThem">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="18" style="3"/>
+              <Font name="Segoe UI" size="12" style="2"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="TH&#xca;M"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/raven/icon/png/add.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="ADD"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnThemActionPerformed"/>
@@ -161,9 +164,12 @@
         <Component class="javax.swing.JButton" name="btnSua">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="18" style="3"/>
+              <Font name="Segoe UI" size="12" style="2"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="S&#x1eec;A"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/raven/icon/png/update.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="UPDATE"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSuaActionPerformed"/>
@@ -172,9 +178,12 @@
         <Component class="javax.swing.JButton" name="btnClean">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="18" style="3"/>
+              <Font name="Segoe UI" size="12" style="2"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="L&#xc0;M M&#x1eda;I"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/raven/icon/png/reset.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="RESET"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCleanActionPerformed"/>
@@ -183,9 +192,12 @@
         <Component class="javax.swing.JButton" name="btnClean1">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="18" style="3"/>
+              <Font name="Segoe UI" size="12" style="2"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="SPCT"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/raven/icon/png/return.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="RETURN"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClean1ActionPerformed"/>

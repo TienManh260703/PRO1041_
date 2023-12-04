@@ -27,7 +27,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
     private static List<KhachHang> list = new ArrayList<>();
     private static List<Object> listLSGD = new ArrayList<>();
     private static int page = 1;
-    private static  int page2 = 1;
+    private static int page2 = 1;
     private static int lmit = 4;
     private static int gioiHanPage = (int) ((Math.ceil(khachHangRepository.getRowCountKH() / lmit))) + 1;
 
@@ -46,6 +46,13 @@ public class Form_KhachHang extends javax.swing.JPanel {
         list = khachHangRepository.getAll(page, lmit);
         fillToTableKH(list);
         lblPageTTKH.setText(1 + " / " + gioiHanPage);
+        setBtn();
+    }
+
+    private void setBtn() {
+        boolean ktr = (this.index >= 0);
+        btnInsert.setEnabled(!ktr);
+        btnUpdate.setEnabled(ktr);
     }
 
     private void fillToTableKH(List<KhachHang> list) {
@@ -101,7 +108,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
             } else {
                 maKH = "KH" + maxIDKH;
             }
-        }else{
+        } else {
             maKH = txtMaKH.getText().trim();
         }
         if (tenKH.isEmpty()) {
@@ -215,6 +222,8 @@ public class Form_KhachHang extends javax.swing.JPanel {
     }
 
     private void clearForm() {
+        index=-1;
+        setBtn();
         txtMaKH.setText("");
         txtHoTen.setText("");
         txtSDT.setText("");
@@ -729,6 +738,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
 
     private void tblKHMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKHMouseClicked
         index = tblKH.getSelectedRow();
+        setBtn();
         showData(index);
         String maKH = txtMaKH.getText().trim();
         listLSGD = khachHangRepository.listLSGDByMaKH(maKH, page2, lmit);

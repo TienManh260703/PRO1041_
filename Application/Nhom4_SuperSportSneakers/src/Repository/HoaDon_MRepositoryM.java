@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -113,14 +114,14 @@ public class HoaDon_MRepositoryM {
 
     public int create(HoaDon hoaDon) {
         try {
-            query = " INSERT INTO HOADON(IdPGG , IdNV , IdKH, MaHoaDon) VALUES \n"
-                    + "	(? ,? , ? , ?) ";
+            query = " INSERT INTO HOADON( IdNV , IdKH, MaHoaDon) VALUES \n"
+                    + "	(? , ? , ?) ";
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
-            pstm.setObject(1, hoaDon.getIdPGG().getIdPGG());
-            pstm.setLong(2, hoaDon.getIdNV().getId());
-            pstm.setLong(3, hoaDon.getIdKH().getId());
-            pstm.setString(4, hoaDon.getMaHoaDon());
+            // pstm.setObject(1, hoaDon.getIdPGG().getIdPGG());
+            pstm.setLong(1, hoaDon.getIdNV().getId());
+            pstm.setLong(2, hoaDon.getIdKH().getId());
+            pstm.setString(3, hoaDon.getMaHoaDon());
             return pstm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
@@ -144,7 +145,6 @@ public class HoaDon_MRepositoryM {
             }
         }
     }
-
 
     public List<HoaDon> getAllHDByTrangThai2(int trangThai) {
         List<HoaDon> listHD = new ArrayList<>();
@@ -187,70 +187,7 @@ public class HoaDon_MRepositoryM {
         return listHD;
     }
 
-    public List<HoaDon> getAllHDByHTM(int pttt) {
-        List<HoaDon> listHD = new ArrayList<>();
-        try {
-            query = "SELECT \n"
-                    + "  HD.ID  AS IdHD , HD.MaHoaDon AS MaHoaDon  , HD.NgayTao AS NgayTao , HD.TrangThai AS TrangThaiHD ,\n"
-                    + " NV.ID AS IdNV , NV.HoVaTen AS TenNV ,  NV.MaNhanVien AS MaNhanVien , \n"
-                    + " KH.ID AS IdKH , KH.TenKhachHang AS TenKH , KH.MaKhachHang AS  MaKhachHang ,\n"
-                    + " PGG.ID AS IdPGG , PGG.MaPhieu AS  MaPhieu , PGG.TenPhieu AS TenPhieu , PGG.GiaTri AS GiaTri , PGG.LoaiPhieu AS  LoaiPhieu, PGG.SoLuongPhieu AS SoLuongPhieu  , PGG.DonToiThieu AS DonToiThieu  , PGG.TrangThai AS TrangThaiPGG \n"
-                    + " FROM HOADON AS HD\n"
-                    + " LEFT JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH \n"
-                    + " LEFT JOIN NHANVIEN AS NV ON NV.ID = HD.IdNV\n"
-                    + " LEFT JOIN PHIEU_GIAM_GIA AS PGG ON PGG.ID  = HD.IdPGG\n"
-                    + " WHERE HD.HinhThucMua = ? \n"
-                    + " ORDER BY HD.NgayTao DESC";
-            con = DBConnection.getConnect();
-            pstm = con.prepareStatement(query);
-            pstm.setInt(1, pttt);
-            rs = pstm.executeQuery();
-            while (rs.next()) {
-                NhanVien nhanVien = new NhanVien(
-                        rs.getLong("IdNV"),
-                        rs.getString("MaNhanVien"),
-                        rs.getString("TenNV"));
-                KhachHang khachHang = new KhachHang(
-                        rs.getLong("IdKH"),
-                        rs.getString("MaKhachHang"),
-                        rs.getString("TenKH"));
-//                PhieuGiamGia_M pggm = new PhieuGiamGia_M(
-//                        rs.getLong("IdPGG"),
-//                        rs.getString("MaPhieu"),
-//                        rs.getString("TenPhieu"),
-//                        rs.getBoolean("LoaiPhieu"),
-//                        rs.getFloat("GiaTri"),
-//                        rs.getInt("SoLuongPhieu"),
-//                        rs.getFloat("DonToiThieu"),
-//                        rs.getInt("TrangThaiPGG"));
-//                
-
-                PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
-                phieuGiamGia.setIdPGG(rs.getLong("IdPGG"));
-                phieuGiamGia.setMaPhieu(rs.getString("MaPhieu"));
-                phieuGiamGia.setTenPhieu(rs.getString("TenPhieu"));
-                phieuGiamGia.setLoaiPhieu(rs.getInt("LoaiPhieu"));
-                phieuGiamGia.setGiaTri(rs.getBigDecimal("GiaTri"));
-                phieuGiamGia.setSoLuongPhieu(rs.getInt("SoLuongPhieu"));
-                phieuGiamGia.setDonToiThieu(rs.getBigDecimal("DonToiThieu"));
-                phieuGiamGia.setTrangThai(rs.getInt("TrangThaiPGG"));
-                HoaDon hoaDon = new HoaDon(
-                        rs.getLong("IdHD"),
-                        phieuGiamGia,
-                        nhanVien,
-                        khachHang,
-                        rs.getString("MaHoaDon"),
-                        rs.getDate("NgayTao"),
-                        pttt);
-                listHD.add(hoaDon);
-            }
-            return listHD;
-        } catch (SQLException ex) {
-            Logger.getLogger(ChiTietHoaDon_RepositoryM.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
-    }
-
+//   
     public Long findIDByMaHD(String maHoaDon) {
         Long id = 0L;
         try {
@@ -298,5 +235,463 @@ public class HoaDon_MRepositoryM {
             Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             return -1;
         }
+    }
+
+    public Long getPPGByMaHD(String ma) {
+        Long tt = null;
+        try {
+            query = "SELECT IdPGG FROM HOADON\n"
+                    + "	WHERE MaHoaDon LIKE '" + ma + "'";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                tt = rs.getLong("IdPGG");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return tt;
+    }
+
+    public void updateIdDGGInHDByMaHD(String maHd, PhieuGiamGia giamGia) {
+        try {
+            query = "UPDATE HOADON\n"
+                    + "SET IdPGG = ? , PhanTramGia = ? , TienPhieuGiam = ?\n"
+                    + "WHERE MaHoaDon LIKE ? ";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setLong(1, giamGia.getIdPGG());
+            if (giamGia.getLoaiPhieu() == 0) {
+                pstm.setObject(2, giamGia.getGiaTri());
+                pstm.setObject(3, 0);
+            } else if (giamGia.getLoaiPhieu() == 1) {
+
+                pstm.setObject(2, 0);
+                pstm.setObject(3, giamGia.getGiaTri());
+
+            }
+            pstm.setObject(4, maHd);
+
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public int thanh_toanHD(HoaDon hoaDon) {
+        try {
+            query = "UPDATE HOADON\n"
+                    + "SET  CapBac = ?  ,\n"
+                    + "DiemDoi = ? , PhuongThucTT = ? , TienKhDua = ? , TienKhChuyenKhoan = ? ,\n"
+                    + "TienThua = ? , HinhThucMua = ? , NgayThanhToan = ? , TrangThai = ? , ThanhTien = ?, TongTienSP = ?  \n"
+                    + " WHERE MaHoaDon LIKE ? ";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+
+            pstm.setObject(1, hoaDon.getCapBac());
+            pstm.setObject(2, hoaDon.getDiemDoi());
+            pstm.setObject(3, hoaDon.getPhuongThucTT());
+            pstm.setObject(4, hoaDon.getTienKhDua());
+            pstm.setObject(5, hoaDon.getTienKhChuyenKhoan());
+            pstm.setObject(6, hoaDon.getTienThua());
+            pstm.setObject(7, hoaDon.getLoai());
+            pstm.setObject(8, hoaDon.getNgayThanhToan());
+            pstm.setObject(9, hoaDon.getTrangThai());
+            pstm.setObject(10, hoaDon.getThanhTien());
+            pstm.setObject(11, hoaDon.getTongTienSP());
+            pstm.setObject(12, hoaDon.getMaHoaDon());
+            return pstm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
+
+    public PhieuGiamGia getPGGByID_BH(Long id) {
+        PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
+        try {
+            con = DBConnection.getConnect();
+            query = "SELECT ID , MaPhieu , TenPhieu , LoaiPhieu , GiaTri , SoLuongPhieu , DonToiThieu  FROM PHIEU_GIAM_GIA\n"
+                    + "WHERE ID = " + id + " ";
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                phieuGiamGia.setIdPGG(rs.getLong("ID"));
+                phieuGiamGia.setMaPhieu(rs.getString("MaPhieu"));
+                phieuGiamGia.setTenPhieu(rs.getString("TenPhieu"));
+                phieuGiamGia.setLoaiPhieu(rs.getInt("LoaiPhieu"));
+                phieuGiamGia.setGiaTri(rs.getBigDecimal("GiaTri"));
+                phieuGiamGia.setSoLuongPhieu(rs.getInt("SoLuongPhieu"));
+                phieuGiamGia.setDonToiThieu(rs.getBigDecimal("DonToiThieu"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return phieuGiamGia;
+    }
+
+    public void updateLoaiHD(Long ma, int htt) {
+        try {
+            query = "UPDATE HOADON\n"
+                    + "SET HinhThucMua = ?\n"
+                    + "WhERE ID = ?";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, htt);
+            pstm.setLong(2, ma);
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public List<HoaDon> getAlHD_HD(String tt, int page, int limt) {
+        List<HoaDon> list = new ArrayList<>();
+        try {
+            query = "SELECT HD.ID , MaHoaDon , MaNhanVien , KH.MaKhachHang ,  KH.SDT , HD.ThanhTien , HD.HinhThucMua  , HD.NgayTao , HD.TrangThai , HD.NgayThanhToan FROM HOADON AS HD \n"
+                    + "JOIN NHANVIEN AS NV ON NV.ID = HD.IdNV\n"
+                    + "JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH \n"
+                    + " WHERE MaKhachHang like ? or MaNhanVien like ? or kh.SDT like ? or  HD.MaHoaDon like  ? "
+                    + " order by HD.ID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setString(1, "%" + tt + "%");
+            pstm.setString(2, "%" + tt + "%");
+            pstm.setString(3, "%" + tt + "%");
+            pstm.setString(4, "%" + tt + "%");
+            pstm.setInt(5, (page - 1) * limt);
+            pstm.setInt(6, limt);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                NhanVien nhanVien = new NhanVien();
+                nhanVien.setMaNhanVien(rs.getString("MaNhanVien"));
+                KhachHang khachHang = new KhachHang();
+                khachHang.setMaKhachHang(rs.getString("MaKhachHang"));
+                HoaDon hoaDon = new HoaDon();
+                hoaDon.setId(rs.getLong("ID"));
+                hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+                hoaDon.setThanhTien(rs.getBigDecimal("ThanhTien"));
+                hoaDon.setLoai(rs.getInt("HinhThucMua"));
+                hoaDon.setNgayTao(rs.getDate("NgayTao"));
+                hoaDon.setNgayThanhToan(rs.getDate("NgayThanhToan"));
+                hoaDon.setTrangThai(rs.getInt("TrangThai"));
+                hoaDon.setIdKH(khachHang);
+                hoaDon.setIdNV(nhanVien);
+                list.add(hoaDon);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public List<HoaDon> getAll_Loc(Date ngayBD, Date ngayKT, int loaiHD, int trangThai, int page, int lmit) {
+        List<HoaDon> list = new ArrayList<>();
+
+        List<String> wheres = new ArrayList<>();
+        String where = "";
+        try {
+            query = "SELECT HD.id AS IdHD, NV.id AS IdNV, KH.ID AS IdKH, KH.MaKhachHang,\n"
+                    + "NV.MaNhanVien , MaHoaDon , ThanhTien , HinhThucMua , HD.NgayTao , NgayThanhToan , HD.TrangThai\n"
+                    + "      \n"
+                    + "FROM HoaDon AS HD\n"
+                    + "JOIN NhanVien AS NV ON NV.id = HD.IdNV\n"
+                    + "JOIN KhachHang AS KH ON KH.ID = HD.IdKH ";
+            con = DBConnection.getConnect();
+
+            if (ngayBD == null && ngayKT == null && loaiHD == -1 && trangThai == -1) {
+                query += "order by IdHD DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+                pstm = con.prepareStatement(query);
+                pstm.setInt(1, (page - 1) * lmit);
+                pstm.setInt(2, lmit);
+                rs = pstm.executeQuery();
+                while (rs.next()) {
+                    NhanVien nhanVien = new NhanVien();
+                    nhanVien.setId(rs.getLong("IdNV"));
+                    nhanVien.setMaNhanVien(rs.getString("MaNhanVien"));
+
+                    KhachHang khachHang = new KhachHang();
+                    khachHang.setId(rs.getLong("IdKH"));
+
+                    khachHang.setMaKhachHang(rs.getString("MaKhachHang"));
+                    HoaDon hoaDon = new HoaDon();
+                    hoaDon.setId(rs.getLong("IdHD"));
+                    hoaDon.setIdKH(khachHang);
+                    hoaDon.setIdNV(nhanVien);
+                    hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+                    hoaDon.setThanhTien(rs.getBigDecimal("ThanhTien"));
+                    hoaDon.setLoai(rs.getInt("HinhThucMua"));
+                    hoaDon.setNgayTao(rs.getDate("NgayTao"));
+                    hoaDon.setNgayThanhToan(rs.getDate("NgayThanhToan"));
+                    hoaDon.setTrangThai(rs.getInt("TrangThai"));
+                    list.add(hoaDon);
+                }
+                return list;
+
+            }
+
+            if (ngayBD != null && ngayKT != null) {
+                wheres.add("( HD.NgayTao BETWEEN  ? AND ?  ) ");
+            }
+            if (loaiHD != -1) {
+                wheres.add(" HinhThucMua  = ?");
+            }
+            if (trangThai != -1) {
+                wheres.add("HD.TrangThai = ? ");
+            }
+            int count = 0;
+            for (int i = 0; i < wheres.size(); i++) {
+                int checkLast = (wheres.size() - 1);
+                where += wheres.get(i);
+                if (i != checkLast && wheres.size() != 1) {
+                    where += " AND ";
+                }
+                count++;
+            }
+
+            query += "WHERE " + where + " order by IdHD DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";;
+            System.out.println(query);
+            pstm = con.prepareStatement(query);
+
+            if (ngayBD == null && ngayKT == null && loaiHD == -1 && (trangThai != -1)) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 6);
+                pstm.setInt(1, trangThai);
+                pstm.setInt(2, (page - 1) * lmit);
+                pstm.setInt(3, lmit);
+
+            }
+
+            if (ngayBD == null && ngayKT == null && loaiHD != -1 && trangThai == -1) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 7);
+                pstm.setInt(1, loaiHD);
+                pstm.setInt(2, (page - 1) * lmit);
+                pstm.setInt(3, lmit);
+
+            }
+
+            if (ngayBD == null && ngayKT == null && loaiHD != -1 && trangThai != -1) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 8);
+                pstm.setInt(1, loaiHD);
+                pstm.setInt(2, trangThai);
+                pstm.setInt(3, (page - 1) * lmit);
+                pstm.setInt(4, lmit);
+
+            }
+
+            if (ngayBD != null && ngayKT != null && loaiHD != -1 && (trangThai != -1)) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 1);
+                pstm.setString(1, XDate.toString(ngayBD, "MM-dd-yyyy"));
+                pstm.setString(2, XDate.toString(ngayKT, "MM-dd-yyyy"));
+                pstm.setInt(3, loaiHD);
+                pstm.setInt(4, trangThai);
+                pstm.setInt(5, (page - 1) * lmit);
+                pstm.setInt(6, lmit);
+
+            }
+            if (ngayBD != null && ngayKT != null && loaiHD != -1 && trangThai == -1) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 2);
+                pstm.setString(1, XDate.toString(ngayBD, "MM-dd-yyyy"));
+                pstm.setString(2, XDate.toString(ngayKT, "MM-dd-yyyy"));
+                pstm.setInt(3, loaiHD);
+                pstm.setInt(4, (page - 1) * lmit);
+                pstm.setInt(5, lmit);
+
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 2);
+            }
+            if (ngayBD != null && ngayKT != null && trangThai != -1 && loaiHD == -1) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 3);
+                pstm.setString(1, XDate.toString(ngayBD, "MM-dd-yyyy"));
+                pstm.setString(2, XDate.toString(ngayKT, "MM-dd-yyyy"));
+                pstm.setInt(3, trangThai);
+                pstm.setInt(4, (page - 1) * lmit);
+                pstm.setInt(5, lmit);
+
+            }
+            if (ngayBD != null && ngayKT != null && loaiHD == -1 && (trangThai == -1)) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 4);
+
+                pstm.setString(1, XDate.toString(ngayBD, "MM-dd-yyyy"));
+                pstm.setString(2, XDate.toString(ngayKT, "MM-dd-yyyy"));
+                pstm.setInt(3, (page - 1) * lmit);
+                pstm.setInt(4, lmit);
+
+            }
+
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                NhanVien nhanVien = new NhanVien();
+                nhanVien.setId(rs.getLong("IdNV"));
+                nhanVien.setMaNhanVien(rs.getString("MaNhanVien"));
+
+                KhachHang khachHang = new KhachHang();
+                khachHang.setId(rs.getLong("IdKH"));
+
+                khachHang.setMaKhachHang(rs.getString("MaKhachHang"));
+                HoaDon hoaDon = new HoaDon();
+                hoaDon.setId(rs.getLong("IdHD"));
+                hoaDon.setIdKH(khachHang);
+                hoaDon.setIdNV(nhanVien);
+                hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+                hoaDon.setThanhTien(rs.getBigDecimal("ThanhTien"));
+                hoaDon.setLoai(rs.getInt("HinhThucMua"));
+                hoaDon.setNgayTao(rs.getDate("NgayTao"));
+                hoaDon.setTrangThai(rs.getInt("TrangThai"));
+                list.add(hoaDon);
+            }
+            return list;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public List<HoaDon> getAll_Loc_ALL(Date ngayBD, Date ngayKT, int loaiHD, int trangThai) {
+        List<HoaDon> list = new ArrayList<>();
+
+        List<String> wheres = new ArrayList<>();
+        String where = "";
+        try {
+            query = "SELECT HD.id AS IdHD, NV.id AS IdNV, KH.ID AS IdKH, KH.MaKhachHang,\n"
+                    + "NV.MaNhanVien , MaHoaDon , ThanhTien , HinhThucMua , HD.NgayTao , NgayThanhToan , HD.TrangThai\n"
+                    + "      \n"
+                    + "FROM HoaDon AS HD\n"
+                    + "JOIN NhanVien AS NV ON NV.id = HD.IdNV\n"
+                    + "JOIN KhachHang AS KH ON KH.ID = HD.IdKH ";
+            con = DBConnection.getConnect();
+
+            if (ngayBD == null && ngayKT == null && loaiHD == -1 && trangThai == -1) {
+                //  query += "order by IdHD DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+                pstm = con.prepareStatement(query);
+//                pstm.setInt(1, (page - 1) * lmit);
+//                pstm.setInt(2, lmit);
+                rs = pstm.executeQuery();
+                while (rs.next()) {
+                    NhanVien nhanVien = new NhanVien();
+                    nhanVien.setId(rs.getLong("IdNV"));
+                    nhanVien.setMaNhanVien(rs.getString("MaNhanVien"));
+
+                    KhachHang khachHang = new KhachHang();
+                    khachHang.setId(rs.getLong("IdKH"));
+
+                    khachHang.setMaKhachHang(rs.getString("MaKhachHang"));
+                    HoaDon hoaDon = new HoaDon();
+                    hoaDon.setId(rs.getLong("IdHD"));
+                    hoaDon.setIdKH(khachHang);
+                    hoaDon.setIdNV(nhanVien);
+                    hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+                    hoaDon.setThanhTien(rs.getBigDecimal("ThanhTien"));
+                    hoaDon.setLoai(rs.getInt("HinhThucMua"));
+                    hoaDon.setNgayTao(rs.getDate("NgayTao"));
+                    hoaDon.setNgayThanhToan(rs.getDate("NgayThanhToan"));
+                    hoaDon.setTrangThai(rs.getInt("TrangThai"));
+                    list.add(hoaDon);
+                }
+                return list;
+
+            }
+
+            if (ngayBD != null && ngayKT != null) {
+                wheres.add("( HD.NgayTao BETWEEN  ? AND ?  ) ");
+            }
+            if (loaiHD != -1) {
+                wheres.add(" HinhThucMua  = ?");
+            }
+            if (trangThai != -1) {
+                wheres.add("HD.TrangThai = ? ");
+            }
+            int count = 0;
+            for (int i = 0; i < wheres.size(); i++) {
+                int checkLast = (wheres.size() - 1);
+                where += wheres.get(i);
+                if (i != checkLast && wheres.size() != 1) {
+                    where += " AND ";
+                }
+                count++;
+            }
+
+            query += "WHERE " + where;
+            System.out.println(query);
+            pstm = con.prepareStatement(query);
+
+            if (ngayBD == null && ngayKT == null && loaiHD == -1 && (trangThai != -1)) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 6);
+                pstm.setInt(1, trangThai);
+
+            }
+
+            if (ngayBD == null && ngayKT == null && loaiHD != -1 && trangThai == -1) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 7);
+                pstm.setInt(1, loaiHD);
+
+            }
+
+            if (ngayBD == null && ngayKT == null && loaiHD != -1 && trangThai != -1) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 8);
+                pstm.setInt(1, loaiHD);
+                pstm.setInt(2, trangThai);
+
+            }
+
+            if (ngayBD != null && ngayKT != null && loaiHD != -1 && (trangThai != -1)) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 1);
+                pstm.setString(1, XDate.toString(ngayBD, "MM-dd-yyyy"));
+                pstm.setString(2, XDate.toString(ngayKT, "MM-dd-yyyy"));
+                pstm.setInt(3, loaiHD);
+                pstm.setInt(4, trangThai);
+
+            }
+            if (ngayBD != null && ngayKT != null && loaiHD != -1 && trangThai == -1) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 2);
+                pstm.setString(1, XDate.toString(ngayBD, "MM-dd-yyyy"));
+                pstm.setString(2, XDate.toString(ngayKT, "MM-dd-yyyy"));
+                pstm.setInt(3, loaiHD);
+
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 2);
+            }
+            if (ngayBD != null && ngayKT != null && trangThai != -1 && loaiHD == -1) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 3);
+                pstm.setString(1, XDate.toString(ngayBD, "MM-dd-yyyy"));
+                pstm.setString(2, XDate.toString(ngayKT, "MM-dd-yyyy"));
+                pstm.setInt(3, trangThai);
+
+            }
+            if (ngayBD != null && ngayKT != null && loaiHD == -1 && (trangThai == -1)) {
+                System.out.println("Repository.PhieuGiamGiaService.getListLoc()" + 4);
+
+                pstm.setString(1, XDate.toString(ngayBD, "MM-dd-yyyy"));
+                pstm.setString(2, XDate.toString(ngayKT, "MM-dd-yyyy"));
+
+            }
+
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                NhanVien nhanVien = new NhanVien();
+                nhanVien.setId(rs.getLong("IdNV"));
+                nhanVien.setMaNhanVien(rs.getString("MaNhanVien"));
+
+                KhachHang khachHang = new KhachHang();
+                khachHang.setId(rs.getLong("IdKH"));
+
+                khachHang.setMaKhachHang(rs.getString("MaKhachHang"));
+                HoaDon hoaDon = new HoaDon();
+                hoaDon.setId(rs.getLong("IdHD"));
+                hoaDon.setIdKH(khachHang);
+                hoaDon.setIdNV(nhanVien);
+                hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+                hoaDon.setThanhTien(rs.getBigDecimal("ThanhTien"));
+                hoaDon.setLoai(rs.getInt("HinhThucMua"));
+                hoaDon.setNgayTao(rs.getDate("NgayTao"));
+                hoaDon.setTrangThai(rs.getInt("TrangThai"));
+                list.add(hoaDon);
+            }
+            return list;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
     }
 }

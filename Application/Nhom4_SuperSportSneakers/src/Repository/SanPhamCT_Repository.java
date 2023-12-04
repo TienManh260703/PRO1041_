@@ -185,30 +185,7 @@ public class SanPhamCT_Repository {
         }
     }
 
-    public String MaTuDongSanPham() {
-        String ma = "SP";
-        int newTotal = 0;
-        try {
-            PreparedStatement ps = connect.prepareCall("SELECT COUNT(*) FROM SANPHAM");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                newTotal = rs.getInt(1) + 1;
-            }
-            // Sử dụng vòng lặp for để tạo mã sản phẩm tự động
-            String[] prefixes = {"0000", "000", "00", "0"};
-            int index = 0;
-            for (int limit : new int[]{10, 100, Integer.MAX_VALUE}) {
-                if (newTotal < limit) {
-                    ma = ma + prefixes[index] + newTotal;
-                    break;
-                }
-                index++;
-            }
-        } catch (Exception e) {
-            System.out.println("Error at Key");
-        }
-        return ma;
-    }
+    
 
     public SanPhamChiTiet getProductByMa(String ma) {
         SanPhamChiTiet result = null;
@@ -424,6 +401,222 @@ public class SanPhamCT_Repository {
             Logger.getLogger(SanPhamCT_Repository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+///////////////////////////////////////////////
+    
 
+
+    public ArrayList<SanPham> getToAllSanPham() {
+        ArrayList<SanPham> listSanPham = new ArrayList<>();
+        String query = "Select ID,MaSP, TenSP, TrangThai From SANPHAM";
+        try {
+            PreparedStatement ps = connect.prepareCall(query);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                listSanPham.add(new SanPham(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getInt(4)));
+            }
+        } catch (Exception e) {
+            System.out.println("Error at get to all sanPham");
+        }
+        return listSanPham;
+    }
+
+    public String MaTuDongSanPham() {
+        String ma = "SP";
+        int newTotal = 0;
+
+        try {
+            PreparedStatement ps = connect.prepareCall("SELECT COUNT(*) FROM SANPHAM");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                newTotal = rs.getInt(1) + 1;
+            }
+
+            // Sử dụng vòng lặp for để tạo mã sản phẩm tự động
+            String[] prefixes = {"0000", "000", "00", "0"};
+            int index = 0;
+
+            for (int limit : new int[]{10, 100, Integer.MAX_VALUE}) {
+                if (newTotal < limit) {
+                    ma = ma + prefixes[index] + newTotal;
+                    break;
+                }
+                index++;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error at Key");
+        }
+
+        return ma;
+    }
+
+    public void addSanPham(SanPham sp) {
+
+        String sql = "INSERT INTO SANPHAM (MaSP, TenSP,TrangThai) VALUES (?,?,?)";
+        try {
+            PreparedStatement ps = connect.prepareCall(sql);
+            ps.setString(1, sp.getMaSanPham());
+            ps.setString(2, sp.getTenSanpham());
+            ps.setInt(3, sp.getTrangThai());
+            ps.execute();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public void updateSanPham(SanPham sp, String ma) {
+
+        String sql = "UPDATE SANPHAM set TenSP = ?, TrangThai = ? where MaSP = ?";
+        try {
+            PreparedStatement ps = connect.prepareCall(sql);
+            ps.setString(1, sp.getTenSanpham());
+            ps.setInt(2, sp.getTrangThai());
+            ps.setString(3, ma);
+            ps.execute();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public List<SanPham> search_SanPham(String text) {
+        List<SanPham> listSearch = new ArrayList<>();
+        String query = "SELECT  ID,MaSP, TenSP FROM SANPHAM WHERE MaSP LIKE ? OR TenSP LIKE ?";
+        try {
+            PreparedStatement ps = connect.prepareCall(query);
+            ps.setString(1, "%" + text + "%");
+            ps.setString(2, "%" + text + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                listSearch.add(new SanPham(rs.getLong(1), rs.getString(2), rs.getString(3)));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error while searching for SanPham", e);
+        }
+        return listSearch;
+    }
+
+    public Boolean check(String ma) {
+        String sql = "Select * From SANPHAM Where MaSP = ?";
+        try {
+            PreparedStatement pstm = connect.prepareCall(sql);
+            pstm.setString(1, ma);
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("Error at check");
+            return false;
+        }
+        return false;
+    }
+
+    public List<SanPham> get1(int page, int limt) {
+        List<SanPham> list = new ArrayList<>();
+        String sql = "Select ID,MaSP, TenSP, TrangThai From SANPHAM " + "ORDER BY ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
+
+        try {
+            PreparedStatement pstm = connect.prepareStatement(sql);
+            // Công thức chỉ cần ghi như vậy
+            pstm.setInt(1, (page - 1) * limt);
+            pstm.setInt(2, limt);
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+                list.add(new SanPham(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getInt(4)));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+    public List<SanPhamChiTiet> searchItem(Long idMau, Long idSize, Long idThuongHieu, Long idSanPham, int trangThai) {
+        List<SanPhamChiTiet> list = new ArrayList<>();
+        if (connect != null) {
+            try {
+                StringBuilder query = new StringBuilder("SELECT CTSP.ID, CTSP.MaCTSP, SP.TenSP, TH.TenThuongHieu, S.TenSize, M.TenMau, CTSP.SoLuongTon, CTSP.GiaBan, CTSP.GiaNiemYet, CTSP.MoTa, CTSP.TrangThai, CTSP.ID as ID FROM CHI_TIET_SAN_PHAM as CTSP\n"
+                        + "JOIN MAU as M ON M.ID = CTSP.IdMau\n"
+                        + "JOIN SIZE as S ON S.ID = CTSP.IdSize\n"
+                        + "JOIN THUONGHIEU as TH ON TH.ID = CTSP.IdThuongHieu\n"
+                        + "JOIN SANPHAM as SP ON SP.ID = CTSP.IdSP\n"
+                        + " WHERE 1=1"
+                );
+
+                // Màu Sắc
+                if (idMau != null) {
+                    query.append(" AND M.ID = " + idMau);
+                }
+                // Kích Thước
+                if (idSize != null) {
+                    query.append(" AND S.ID = " + idSize);
+                }
+                // Thương Hiệu
+                if (idThuongHieu != null) {
+                    query.append(" AND TH.ID = " + idThuongHieu);
+                }
+                // Sản Phẩm
+                if (idSanPham != null) {
+                    query.append(" AND SP.ID = " + idSanPham);
+                }
+
+                if (trangThai >= 0) {
+                    query.append("AND CTSP.TrangThai = " + trangThai);
+                }
+
+                String queryFinal = query.toString();
+
+                PreparedStatement ps = connect.prepareStatement(queryFinal);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    SanPham sanPham = new SanPham(rs.getString("TenSP"));
+                    MauSac mauSac = new MauSac(rs.getString("TenMau"));
+                    ThuongHieu thuongHieu = new ThuongHieu(rs.getString("TenThuongHieu"));
+                    KichThuoc kichThuoc = new KichThuoc(rs.getFloat("TenSize"));
+                    SanPhamChiTiet sanPhamChiTiet = new SanPhamChiTiet(rs.getLong("ID"), rs.getString("MaCTSP"), rs.getInt("SoLuongTon"), rs.getBigDecimal("GiaBan"), rs.getBigDecimal("GiaNiemYet"), rs.getInt("TrangThai"), rs.getString("MoTa"), mauSac, kichThuoc, thuongHieu, sanPham);
+                    list.add(sanPhamChiTiet);
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return list;
+    }
+// Đếm tổng số bản ghi 
+
+    
+
+    public List<SanPham> search_SanPhamByTrangThai(int n) {
+        List<SanPham> listSearch = new ArrayList<>();
+        String query = "SELECT  MaSP, TenSP, TrangThai FROM SANPHAM WHERE TrangThai = ?";
+        try {
+            PreparedStatement ps = connect.prepareCall(query);
+            ps.setInt(1, n);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                listSearch.add(new SanPham(rs.getString(1), rs.getString(2), rs.getInt(3)));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error while searching for SanPham", e);
+        }
+        return listSearch;
+    }
+
+    public SanPham findSanPhamByName(String sanPhamStr) {
+        SanPham th = null;
+        String query = "SELECT ID, MaSP, TenSP, TrangThai FROM SANPHAM WHERE TenSP LIKE ?";
+        try {
+            PreparedStatement ps = connect.prepareCall(query);
+            ps.setString(1, sanPhamStr);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                th = new SanPham(rs.getLong("ID"), rs.getString("MaSP"), rs.getString("TenSP"), rs.getInt("TrangThai"));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        System.out.println(th);
+        return th;
+    }
     
 }

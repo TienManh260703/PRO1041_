@@ -27,7 +27,6 @@ public class PhieuGiaoHang {
     private String donViVanChuyen;
     private Date ngayHoanThanh;
     private Integer trangThai;
-    
 
     public PhieuGiaoHang() {
     }
@@ -188,7 +187,7 @@ public class PhieuGiaoHang {
         } else if (trangThai == 3) {
             result = "Hủy";
         } else {
-            result = "Không xác định";
+            result = "Đã nhận hàng";
         }
         return new Object[]{
             iindex, maVanDon, idHD.getMaHoaDon(), idKH.getTenKhachHang(), idKH.getSdt(), idKH.getDiaChi(), giaShip, tenShip, sdtShip, ngayTao, ngayHoanThanh, result

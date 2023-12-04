@@ -172,18 +172,22 @@ public class MauSac_Reponsitory {
     }
 
     public MauSac findMauSacByName(String mauSacStr) {
-        MauSac th = null;
-        String query = "SELECT  MaMau, TenMau,TrangThai FROM MAU WHERE TenMau = ?";
-        try {
-            PreparedStatement ps = connect.prepareCall(query);
+        MauSac mauSac = null;
+        String query = "SELECT ID, MaMau, TenMau, TrangThai FROM MAU WHERE TenMau LIKE ?";
+
+        try (PreparedStatement ps = connect.prepareCall(query)) {
             ps.setString(1, "%" + mauSacStr + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                th = new MauSac(rs.getString(1), rs.getString(2), rs.getInt(3));
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    mauSac = new MauSac(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getInt(4));
+                }
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Error while searching for SanPham", e);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while searching for MauSac", e);
         }
-        return th;
+
+        return mauSac;
     }
+
 }

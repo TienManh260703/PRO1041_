@@ -849,8 +849,8 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         showData(index);
         String maPhieu = tblPhieuGG.getValueAt(index, 2).toString();
 
-        Long id = servicePGG.getPGGByMa(maPhieu).getIdPGG();
-        listHF = servicePGG.getAllHDByMaPhieu(id);
+        //Long id = servicePGG.getPGGByMa(maPhieu).getIdPGG();
+        listHF = servicePGG.getAllHDByMaPhieu(maPhieu);
         loadToTableHD((ArrayList<Object>) listHF);
     }//GEN-LAST:event_tblPhieuGGMouseClicked
 

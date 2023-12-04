@@ -1,5 +1,6 @@
 package raven.application;
 
+import Model.NhanVien;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
@@ -23,16 +24,17 @@ public class Application extends javax.swing.JFrame {
     private static Application app;
     private final MainForm mainForm;
     private final LoginForm loginForm;
+    NhanVien nv = new NhanVien();
 
     public Application() {
         initComponents();
         setSize(new Dimension(1500, 800));
         setLocationRelativeTo(null);
-        mainForm = new MainForm();
+        mainForm = new MainForm(nv);
         loginForm = new LoginForm();
         setContentPane(loginForm);
         Notifications.getInstance().setJFrame(this);
-         
+
     }
 
     public static void showForm(Component component) {

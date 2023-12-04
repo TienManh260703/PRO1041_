@@ -118,7 +118,7 @@ public class ThuongHieu_Repository {
 
     public List<ThuongHieu> search_MauSacByTrangThai(int n) {
         List<ThuongHieu> listSearch = new ArrayList<>();
-        String query = "SELECT  MaThuongHieu, TenThuongHieu FROM THUONGHIEU WHERE TrangThai = ?";
+        String query = "SELECT  MaThuongHieu, TenThuongHieu, TrangThai FROM THUONGHIEU WHERE TrangThai = ?";
         try {
             PreparedStatement ps = connect.prepareCall(query);
             ps.setInt(1, n);
@@ -169,18 +169,21 @@ public class ThuongHieu_Repository {
     }
 
     public ThuongHieu findThuongHieuByName(String name) {
-        ThuongHieu th = null;
-        String query = "SELECT  MaThuongHieu, TenThuongHieu FROM THUONGHIEU WHERE TenThuongHieu = ?";
-        try {
-            PreparedStatement ps = connect.prepareCall(query);
-            ps.setString(1, "%" + name + "%");
-            ResultSet rs = ps.executeQuery();
+    ThuongHieu th = null;
+    String query = "SELECT ID, MaThuongHieu, TenThuongHieu FROM THUONGHIEU WHERE TenThuongHieu LIKE ?";
+    
+    try (PreparedStatement ps = connect.prepareCall(query)) {
+        ps.setString(1, name);
+        try (ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                 th = new ThuongHieu(rs.getString(1), rs.getString(2), rs.getInt(3));
+                th = new ThuongHieu(rs.getLong(1), rs.getString(2), rs.getString(3));
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Error while searching for SanPham", e);
         }
-        return th;
+    } catch (SQLException e) {
+        throw new RuntimeException("Error while searching for SanPham", e);
     }
+    
+    return th;
+}
+
 }

@@ -7,6 +7,7 @@ package Repository;
 import Model.KhachHang;
 import Model.NhanVien;
 import Utils.XDate;
+import java.math.BigDecimal;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,13 +24,13 @@ import java.util.logging.Logger;
  * @author manhnt
  */
 public class KhachHangRepositoryM {
-    
+
     private String query = null;
     private Statement stm = null;
     private PreparedStatement pstm = null;
     private ResultSet rs = null;
     private Connection con = null;
-    
+
     public List<KhachHang> getAll(int page, int limt) {
         try {
             query = "select KH.ID as ID , NV.ID as IdNV , MaKhachHang , TenKhachHang , KH.GioiTinh as GioiTinh , KH.SDT as SDT  , KH.DiaChi as DiaChi, KH.Email as Email, KH.NgaySinh as NgaySinh , Diem  , CapBac from KHACHHANG as KH\n"
@@ -72,15 +73,15 @@ public class KhachHangRepositoryM {
             } catch (SQLException ex) {
                 Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
     }
-    
+
     public List<KhachHang> getAll2() {
         try {
             query = "select KH.ID as ID , NV.ID as IdNV , MaKhachHang , TenKhachHang , KH.GioiTinh as GioiTinh , KH.SDT as SDT  , KH.DiaChi as DiaChi, KH.Email as Email, KH.NgaySinh as NgaySinh , Diem  , CapBac from KHACHHANG as KH\n"
                     + "	join NHANVIEN as NV on NV.ID = KH.IdNV\n";
-            
+
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
             rs = pstm.executeQuery();
@@ -116,10 +117,10 @@ public class KhachHangRepositoryM {
             } catch (SQLException ex) {
                 Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
     }
-    
+
     public List<KhachHang> listSearch(String thongTin, int page, int limt) {
         try {
             query = "SELECT ID, IdNV , MaKhachHang , TenKhachHang  , SDT , GioiTinh , NgaySinh , Email , DiaChi , Diem , CapBac FROM KHACHHANG \n"
@@ -163,19 +164,19 @@ public class KhachHangRepositoryM {
             } catch (SQLException ex) {
                 Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
     }
-    
+
     public KhachHang findKHByMaKH(String maKH) {
         try {
             query = "SELECT ID, IdNV , MaKhachHang , TenKhachHang  , SDT , GioiTinh , NgaySinh , Email , DiaChi , Diem , CapBac FROM KHACHHANG \n"
                     + "    WHERE MaKhachHang LIKE ? ";
-            
+
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
             pstm.setString(1, "%" + maKH + "%");
-            
+
             rs = pstm.executeQuery();
             List<KhachHang> list = new ArrayList<>();
             if (rs.next()) {
@@ -213,10 +214,10 @@ public class KhachHangRepositoryM {
             } catch (SQLException ex) {
                 Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
     }
-    
+
     public List<KhachHang> listSearchCbo(int gioiTinh, int page, int limt) {
         try {
             query = "SELECT ID, IdNV , MaKhachHang , TenKhachHang  , SDT , GioiTinh , NgaySinh , Email , DiaChi , Diem , CapBac FROM KHACHHANG \n"
@@ -257,10 +258,10 @@ public class KhachHangRepositoryM {
             } catch (SQLException ex) {
                 Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
     }
-    
+
     public int getRowCountKH() {
         String countSql = "SELECT COUNT(*) AS totalRows FROM KHACHHANG";
         con = DBConnection.getConnect();
@@ -292,10 +293,10 @@ public class KhachHangRepositoryM {
             } catch (SQLException ex) {
                 Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
     }
-    
+
     public KhachHang findKhBySDT(String sdt) {
         KhachHang khachHang = new KhachHang();
         try {
@@ -319,7 +320,7 @@ public class KhachHangRepositoryM {
         }
         return khachHang;
     }
-    
+
     public int insertKH_BH(KhachHang khachHang) {
         try {
             query = "INSERT INTO  KHACHHANG  ( IdNV ,MaKhachHang , TenKhachHang , SDT) VALUES \n"
@@ -336,7 +337,7 @@ public class KhachHangRepositoryM {
             return -1;
         }
     }
-    
+
     public int insertAll(KhachHang khachHang) {
         try {
             query = "INSERT INTO KHACHHANG ( IdNV ,  MaKhachHang , TenKhachHang, SDT, NgaySinh , GioiTinh, Email , DiaChi ) \n"
@@ -372,10 +373,10 @@ public class KhachHangRepositoryM {
             } catch (SQLException ex) {
                 Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
     }
-    
+
     public int update(KhachHang khachHang) {
         try {
             query = "UPDATE KHACHHANG\n"
@@ -411,10 +412,10 @@ public class KhachHangRepositoryM {
             } catch (SQLException ex) {
                 Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
     }
-    
+
     public List<Object> listLSGDByMaKH(String maKh, int page, int limt) {
         try {
             query = "SELECT HD.ID AS ID , HD.MaHoaDon AS MaHoaDon , hd.NgayThanhToan AS NgayThanhToan , \n"
@@ -453,7 +454,7 @@ public class KhachHangRepositoryM {
             return null;
         } finally {
             try {
-                
+
                 if (rs != null && !rs.isClosed()) {
                     rs.close();
                 }
@@ -471,7 +472,7 @@ public class KhachHangRepositoryM {
             }
         }
     }
-    
+
     public int getRowCountHDByMaKH(String maKH) {
         query = "SELECT COUNT(*) AS totalRows FROM HOADON \n"
                 + "	JOIN KHACHHANG ON KHACHHANG.ID = HOADON.IdKH\n"
@@ -506,10 +507,10 @@ public class KhachHangRepositoryM {
             } catch (SQLException ex) {
                 Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
     }
-    
+
     public List<Object> formLSGD(String str, String ma) {
         try {
             query = "				 SELECT \n"
@@ -535,7 +536,7 @@ public class KhachHangRepositoryM {
                     + "			LEFT JOIN THUONGHIEU AS TH ON TH.ID = CTSP.IdThuongHieu  \n"
                     + "			LEFT JOIN MAU AS M ON M.ID = CTSP.IdMau "
                     + "			 WHERE KH.MaKhachHang LIKE '" + str + "' AND MaHoaDon like '" + ma + "' ";
-            
+
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
             rs = pstm.executeQuery();
@@ -565,14 +566,14 @@ public class KhachHangRepositoryM {
                 };
                 listLSGD.add(ls);
             }
-            
+
             return listLSGD;
         } catch (SQLException ex) {
             Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
-    
+
     public List<Object> fake() {
         try {
             query = "	 SELECT \n"
@@ -602,7 +603,7 @@ public class KhachHangRepositoryM {
             con = DBConnection.getConnect();
             stm = con.createStatement();
             rs = stm.executeQuery(query);
-            
+
             List<Object> l = new ArrayList<>();
             while (rs.next()) {
                 Object[] o = new Object[]{
@@ -617,7 +618,7 @@ public class KhachHangRepositoryM {
                     rs.getObject(""),
                     rs.getObject(""),
                     rs.getObject("")
-                
+
                 };
             }
             return null;
@@ -626,5 +627,53 @@ public class KhachHangRepositoryM {
             return null;
         }
     }
-    
+
+    public BigDecimal getTongTienKH(String ma) {
+        try {
+            query = "SELECT SUM(ThanhTien) as TT FROM KHACHHANG\n"
+                    + "JOIN HOADON AS HD ON HD.IdKH = KHACHHANG.ID\n"
+                    + "WHERE HD.TrangThai = 1 AND MaKhachHang LIKE '" + ma + "'";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                return rs.getBigDecimal("TT");
+            }
+            return BigDecimal.ZERO;
+        } catch (SQLException ex) {
+            Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+            return BigDecimal.ZERO;
+        }
+    }
+
+    public void updateCapBac(String maKH, int capBac) {
+        try {
+            query = "UPDATE KHACHHANG\n"
+                    + "SET CapBac = ?\n"
+                    + "WHERE MaKhachHang LIKE '" + maKH + "' ";
+
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, capBac);
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void updateDiem(String maKH, int diem) {
+        try {
+            query = "UPDATE KHACHHANG\n"
+                    + "SET Diem = ?\n"
+                    + "WHERE MaKhachHang LIKE '" + maKH + "' ";
+
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, diem);
+            pstm.execute();
+        } catch (SQLException ex) {
+
+            Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

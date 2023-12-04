@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static org.apache.poi.hssf.usermodel.HeaderFooter.page;
 
 /**
  *
@@ -38,6 +39,7 @@ public class PhieuGiaoHangRepository {
                     + "JOIN HOADON AS HD ON HD.ID = PGH.IdHoaDon\n"
                     + "JOIN KHACHHANG AS KH ON KH.ID = PGH.IdKH "
                     + "	order by PGH.NgayTaoPhieu DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
             pstm.setInt(1, (page - 1) * limt);
@@ -71,8 +73,117 @@ public class PhieuGiaoHangRepository {
             return list;
         } catch (SQLException ex) {
             Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+            return list;
         }
+    }
+
+    public List<PhieuGiaoHang> timTxt(String ma, int page, int limt) {
+        List<PhieuGiaoHang> list = new ArrayList<>();
+        try {
+
+            query = "SELECT PGH.ID ,  HD.ID AS IDHD ,  MaVanDon , MaHoaDon , TenKhachHang , PGH.DiaChi , SDTNguoiNhan , GiaShip , TenShip , SDTShip , "
+                    + "PGH.NgayTaoPhieu , ĐonViVanChuyen ,NgayHoanThanhDon , PGH.TrangThai FROM PHIEUGIAOHANG AS PGH\n"
+                    + "JOIN HOADON AS HD ON HD.ID = PGH.IdHoaDon\n"
+                    + "JOIN KHACHHANG AS KH ON KH.ID = PGH.IdKH "
+                    + " WHERE MaVanDon like ? OR MaHoaDon LIKE ? OR SDTNguoiNhan LIKE ? "
+                    + "	order by PGH.NgayTaoPhieu DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setString(1, "%" + ma + "%");
+            pstm.setString(2, "%" + ma + "%");
+            pstm.setString(3, "%" + ma + "%");
+            pstm.setInt(4, (page - 1) * limt);
+            pstm.setInt(5, limt);
+            rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                KhachHang khachHang = new KhachHang();
+                khachHang.setTenKhachHang(rs.getString("TenKhachHang"));
+                khachHang.setSdt(rs.getString("SDTNguoiNhan"));
+                khachHang.setDiaChi(rs.getString("DiaChi"));
+                HoaDon hoaDon = new HoaDon();
+                hoaDon.setId(rs.getLong("IDHD"));
+
+                hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+
+                PhieuGiaoHang phieuGiaoHang = new PhieuGiaoHang();
+                phieuGiaoHang.setId(rs.getLong("ID"));
+                phieuGiaoHang.setIdHD(hoaDon);
+                phieuGiaoHang.setIdKH(khachHang);
+                phieuGiaoHang.setMaVanDon(rs.getString("MaVanDon"));
+                phieuGiaoHang.setSdtShip(rs.getString("SDTShip"));
+                phieuGiaoHang.setTenShip(rs.getString("TenShip"));
+                phieuGiaoHang.setGiaShip(rs.getBigDecimal("GiaShip"));
+                phieuGiaoHang.setSdtNNguoiNhan(rs.getString("SDTNguoiNhan"));
+                phieuGiaoHang.setNgayTao(rs.getDate("NgayTaoPhieu"));
+                phieuGiaoHang.setNgayHoanThanh(rs.getDate("NgayHoanThanhDon"));
+                phieuGiaoHang.setDonViVanChuyen(rs.getString("ĐonViVanChuyen"));
+                phieuGiaoHang.setTrangThai(rs.getInt("TrangThai"));
+                list.add(phieuGiaoHang);
+            }
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public List<PhieuGiaoHang> timCbo(int ma, int page, int limt) {
+        List<PhieuGiaoHang> list = new ArrayList<>();
+        try {
+
+            query = "SELECT PGH.ID ,  HD.ID AS IDHD ,  MaVanDon , MaHoaDon , TenKhachHang , PGH.DiaChi , SDTNguoiNhan , GiaShip , TenShip , SDTShip , "
+                    + "PGH.NgayTaoPhieu , ĐonViVanChuyen ,NgayHoanThanhDon , PGH.TrangThai FROM PHIEUGIAOHANG AS PGH\n"
+                    + "JOIN HOADON AS HD ON HD.ID = PGH.IdHoaDon\n"
+                    + "JOIN KHACHHANG AS KH ON KH.ID = PGH.IdKH ";
+            if (ma >= 0) {
+                query += " WHERE PGH.TrangThai = ? ";
+            }
+
+            query += "	order by PGH.NgayTaoPhieu DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            if (ma < 0) {
+                pstm.setInt(1, (page - 1) * limt);
+                pstm.setInt(2, limt);
+                rs = pstm.executeQuery();
+            } else {
+                pstm.setInt(1, ma);
+                pstm.setInt(2, (page - 1) * limt);
+                pstm.setInt(3, limt);
+                rs = pstm.executeQuery();
+            }
+
+            while (rs.next()) {
+                KhachHang khachHang = new KhachHang();
+                khachHang.setTenKhachHang(rs.getString("TenKhachHang"));
+                khachHang.setSdt(rs.getString("SDTNguoiNhan"));
+                khachHang.setDiaChi(rs.getString("DiaChi"));
+                HoaDon hoaDon = new HoaDon();
+                hoaDon.setId(rs.getLong("IDHD"));
+
+                hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+
+                PhieuGiaoHang phieuGiaoHang = new PhieuGiaoHang();
+                phieuGiaoHang.setId(rs.getLong("ID"));
+                phieuGiaoHang.setIdHD(hoaDon);
+                phieuGiaoHang.setIdKH(khachHang);
+                phieuGiaoHang.setMaVanDon(rs.getString("MaVanDon"));
+                phieuGiaoHang.setSdtShip(rs.getString("SDTShip"));
+                phieuGiaoHang.setTenShip(rs.getString("TenShip"));
+                phieuGiaoHang.setGiaShip(rs.getBigDecimal("GiaShip"));
+                phieuGiaoHang.setSdtNNguoiNhan(rs.getString("SDTNguoiNhan"));
+                phieuGiaoHang.setNgayTao(rs.getDate("NgayTaoPhieu"));
+                phieuGiaoHang.setNgayHoanThanh(rs.getDate("NgayHoanThanhDon"));
+                phieuGiaoHang.setDonViVanChuyen(rs.getString("ĐonViVanChuyen"));
+                phieuGiaoHang.setTrangThai(rs.getInt("TrangThai"));
+                list.add(phieuGiaoHang);
+            }
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
     }
 
     public void huyDon(String maPGH, int trangThaiHuy) {
@@ -227,5 +338,21 @@ public class PhieuGiaoHangRepository {
             Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
+    }
+
+    public int updateTrangThaiPGH(String ma, int trangThai) {
+        try {
+            con = DBConnection.getConnect();
+            query = "UPDATE PHIEUGIAOHANG\n"
+                    + "SET TrangThai = ?\n"
+                    + "WHERE MaVanDon LIKE '" + ma + "' ";
+            pstm = con.prepareStatement(query);
+            pstm.setInt(1, trangThai);
+            return pstm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+
     }
 }

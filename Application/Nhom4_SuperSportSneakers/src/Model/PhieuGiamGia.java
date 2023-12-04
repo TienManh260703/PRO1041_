@@ -7,6 +7,7 @@ import Utils.PhieuGiamGia_TrangThai;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import Utils.Format;
 
 public class PhieuGiamGia {
 
@@ -192,7 +193,7 @@ public class PhieuGiamGia {
     
     public Object [] rowDataKH_BH (int i){
         return new Object[]{
-            i , maPhieu , tenPhieu , loaiPhieu , donToiThieu
+            i , maPhieu , tenPhieu , loaiPhieu== 0 ?"Phần trăm ( % )": " VNĐ ",   loaiPhieu== 0 ? giaTri + " ( % ) ":Format.format1(giaTri) +" VNĐ " , Format.format(donToiThieu)
         };
     }
 
