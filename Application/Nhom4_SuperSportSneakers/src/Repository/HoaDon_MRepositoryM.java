@@ -4,10 +4,16 @@
  */
 package Repository;
 
+import Model.ChiTietHoaDon;
 import Model.HoaDon;
 import Model.KhachHang;
+import Model.KichThuoc;
+import Model.MauSac;
 import Model.NhanVien;
 import Model.PhieuGiamGia;
+import Model.SanPham;
+import Model.SanPhamChiTiet;
+import Model.ThuongHieu;
 import Utils.XDate;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,6 +37,168 @@ public class HoaDon_MRepositoryM {
     private PreparedStatement pstm = null;
     private ResultSet rs = null;
     private Connection con = null;
+
+    public HoaDon pdfHD(String ma) {
+        HoaDon hoaDon = new HoaDon();
+        try {
+            query = "SELECT \n"
+                    + "\n"
+                    + "KH.MaKhachHang , KH.TenKhachHang , KH.SDT ,  KH.CapBac as cb , KH.ID AS IDKH , \n"
+                    + "NV.MaNhanVien , NV.HoVaTen , \n"
+                    + "SPCT.MaCTSP , SP.TenSP ,M.TenMau , S.TenSize , TH.TenThuongHieu ,\n"
+                    + "HDCT.DonGia , HDCT.GiaBan , HDCT.SoLuong , \n"
+                    + "HD.PhuongThucTT ,HD.TongTienSP  ,  HD.TienPhieuGiam , HD.PhanTramGia , \n"
+                    + "HD.CapBac , hd.QR , hd.DiemDoi , \n"
+                    + "HD.TienKhDua , HD.TienKhChuyenKhoan , HD.ThanhTien ,HD.TienThua ,HD.NgayThanhToan , \n"
+                    + "PGG.LoaiPhieu\n"
+                    + "\n"
+                    + "FROM HOADON AS HD\n"
+                    + "JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH\n"
+                    + "JOIN NHANVIEN AS NV ON NV.ID = HD.IdNV\n"
+                    + "JOIN HOADONCHITIET AS HDCT ON HDCT.IdHoaDon = HD.ID\n"
+                    + "JOIN CHI_TIET_SAN_PHAM AS SPCT ON SPCT.ID = HDCT.IdCTSP\n"
+                    + "JOIN SANPHAM AS SP on SP.ID = SPCT.IdSP\n"
+                    + "JOIN THUONGHIEU AS TH ON TH.ID = SPCT.IdThuongHieu\n"
+                    + "JOIN SIZE AS S ON S.ID = SPCT.IdSize\n"
+                    + "JOIN MAU AS M ON M.ID = SPCT.IdMau\n"
+                    + "LEFT JOIN PHIEU_GIAM_GIA AS PGG ON PGG.ID = HD.IdPGG\n"
+                    + "WHERE HD.MaHoaDon = '" + ma + "' ;";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                KhachHang khachHang = new KhachHang();
+                khachHang.setTenKhachHang(rs.getString("TenKhachHang"));
+                khachHang.setMaKhachHang(rs.getString("MaKhachHang"));
+                khachHang.setSdt(rs.getString("SDT"));
+                khachHang.setCapBac(rs.getInt("cb"));
+                khachHang.setId(rs.getLong("IDKH"));
+                System.out.println(khachHang.toString());
+                NhanVien nhanVien = new NhanVien();
+                nhanVien.setMaNhanVien(rs.getString("MaNhanVien"));
+                nhanVien.setTenNhanVien(rs.getString("HoVaTen"));
+                PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
+                phieuGiamGia.setLoaiPhieu(rs.getInt("LoaiPhieu"));
+                SanPham sanPham = new SanPham();
+                sanPham.setTenSanpham(rs.getString("TenSP"));
+                MauSac mauSac = new MauSac();
+                mauSac.setTenMau(rs.getString("TenMau"));
+                ThuongHieu thuongHieu = new ThuongHieu();
+                thuongHieu.setTenThuongHieu(rs.getString("TenThuongHieu"));
+                KichThuoc kichThuoc = new KichThuoc();
+                kichThuoc.setTenSize(rs.getFloat("TenSize"));
+
+                SanPhamChiTiet sanPhamChiTiet = new SanPhamChiTiet();
+                sanPhamChiTiet.setIdKichThuoc(kichThuoc);
+                sanPhamChiTiet.setIdMau(mauSac);
+                sanPhamChiTiet.setIdSanPham(sanPham);
+                sanPhamChiTiet.setIdThuongHieu(thuongHieu);
+                ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon();
+                chiTietHoaDon.setIdCTSP(sanPhamChiTiet);
+                hoaDon.setIdKH(khachHang);
+                hoaDon.setIdNV(nhanVien);
+                hoaDon.setIdPGG(phieuGiamGia);
+                hoaDon.setMaHoaDon((ma));
+                hoaDon.setQr(rs.getString("QR"));
+                hoaDon.setTienThua(rs.getBigDecimal("TienThua"));
+                hoaDon.setDiemDoi(rs.getBigDecimal("DiemDoi"));
+                hoaDon.setPhuongThucTT(rs.getInt("PhuongThucTT"));
+                hoaDon.setTongTienSP(rs.getBigDecimal("TongTienSP"));
+                hoaDon.setTienPhieuGiam(rs.getBigDecimal("TienPhieuGiam"));
+                hoaDon.setPhanTramGG(rs.getFloat("PhanTramGia"));
+                hoaDon.setCapBac(rs.getInt("CapBac"));
+                hoaDon.setTienKhDua(rs.getBigDecimal("TienKhDua"));
+                hoaDon.setTienKhChuyenKhoan(rs.getBigDecimal("TienKhChuyenKhoan"));
+                hoaDon.setThanhTien(rs.getBigDecimal("ThanhTien"));
+                hoaDon.setNgayThanhToan(rs.getDate("NgayThanhToan"));
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return hoaDon;
+    }
+
+    public List<ChiTietHoaDon> pdfHDCT(String ma) {
+        List<ChiTietHoaDon> list = new ArrayList<>();
+
+        try {
+            query = "SELECT \n"
+                    + "\n"
+                    + "KH.MaKhachHang , KH.TenKhachHang , KH.SDT ,  KH.CapBac as cb ,KH.ID AS IDKH ,  \n"
+                    + "NV.MaNhanVien , NV.HoVaTen , \n"
+                    + "SPCT.MaCTSP , SP.TenSP ,M.TenMau , S.TenSize , TH.TenThuongHieu ,\n"
+                    + "HDCT.DonGia , HDCT.GiaBan , HDCT.SoLuong , \n"
+                    + "HD.PhuongThucTT ,HD.TongTienSP  ,  HD.TienPhieuGiam , HD.PhanTramGia , \n"
+                    + "HD.CapBac , \n"
+                    + "HD.TienKhDua , HD.TienKhChuyenKhoan , HD.ThanhTien ,\n"
+                    + "PGG.LoaiPhieu\n"
+                    + "\n"
+                    + "FROM HOADON AS HD\n"
+                    + "JOIN KHACHHANG AS KH ON KH.ID = HD.IdKH\n"
+                    + "JOIN NHANVIEN AS NV ON NV.ID = HD.IdNV\n"
+                    + "JOIN HOADONCHITIET AS HDCT ON HDCT.IdHoaDon = HD.ID\n"
+                    + "JOIN CHI_TIET_SAN_PHAM AS SPCT ON SPCT.ID = HDCT.IdCTSP\n"
+                    + "JOIN SANPHAM AS SP on SP.ID = SPCT.IdSP\n"
+                    + "JOIN THUONGHIEU AS TH ON TH.ID = SPCT.IdThuongHieu\n"
+                    + "JOIN SIZE AS S ON S.ID = SPCT.IdSize\n"
+                    + "JOIN MAU AS M ON M.ID = SPCT.IdMau\n"
+                    + "LEFT JOIN PHIEU_GIAM_GIA AS PGG ON PGG.ID = HD.IdPGG\n"
+                    + "WHERE HD.MaHoaDon = '" + ma + "' ;";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                SanPhamChiTiet sanPhamChiTiet = new SanPhamChiTiet();
+                ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon();
+                KhachHang khachHang = new KhachHang();
+                khachHang.setTenKhachHang(rs.getString("TenKhachHang"));
+                khachHang.setMaKhachHang(rs.getString("MaKhachHang"));
+                khachHang.setSdt(rs.getString("SDT"));
+                khachHang.setCapBac(rs.getInt("cb"));
+                khachHang.setId(rs.getLong("IDKH"));
+                System.out.println(khachHang.toString());
+                NhanVien nhanVien = new NhanVien();
+                nhanVien.setMaNhanVien(rs.getString("MaNhanVien"));
+                nhanVien.setTenNhanVien(rs.getString("HoVaTen"));
+                PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
+                phieuGiamGia.setLoaiPhieu(rs.getInt("LoaiPhieu"));
+                SanPham sanPham = new SanPham();
+                sanPham.setTenSanpham(rs.getString("TenSP"));
+                MauSac mauSac = new MauSac();
+                mauSac.setTenMau(rs.getString("TenMau"));
+                ThuongHieu thuongHieu = new ThuongHieu();
+                thuongHieu.setTenThuongHieu(rs.getString("TenThuongHieu"));
+                KichThuoc kichThuoc = new KichThuoc();
+                kichThuoc.setTenSize(rs.getFloat("TenSize"));
+
+                sanPhamChiTiet.setMaSPCT(rs.getString("MaCTSP"));
+                sanPhamChiTiet.setIdKichThuoc(kichThuoc);
+                sanPhamChiTiet.setIdMau(mauSac);
+                sanPhamChiTiet.setIdSanPham(sanPham);
+                sanPhamChiTiet.setIdThuongHieu(thuongHieu);
+                chiTietHoaDon.setGiaBan(rs.getBigDecimal("GiaBan"));
+                chiTietHoaDon.setDonGia(rs.getBigDecimal("DonGia"));
+                chiTietHoaDon.setSoLuong(rs.getInt("SoLuong"));
+                chiTietHoaDon.setIdCTSP(sanPhamChiTiet);
+
+//                hoaDon.setPhuongThucTT(rs.getInt("PhuongThucTT"));
+//                hoaDon.setTongTienSP(rs.getBigDecimal("TongTienSP"));
+//                hoaDon.setTienPhieuGiam(rs.getBigDecimal("TienPhieuGiam"));
+//                hoaDon.setPhanTramGG(rs.getFloat("PhanTramGia"));
+//                hoaDon.setCapBac(rs.getInt("CapBac"));
+//                hoaDon.setTienKhDua(rs.getBigDecimal("TienKhDua"));
+//                hoaDon.setTienKhChuyenKhoan(rs.getBigDecimal("TienKhChuyenKhoan"));
+//                hoaDon.setThanhTien(rs.getBigDecimal("ThanhTien"));
+                list.add(chiTietHoaDon);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
 
     public int updateHD(HoaDon hoaDon) {
         try {

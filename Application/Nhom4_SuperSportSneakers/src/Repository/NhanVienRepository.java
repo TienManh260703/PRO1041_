@@ -16,42 +16,43 @@ import java.util.List;
  */
 public class NhanVienRepository {
 
-   private final String insert_sql = "insert into NHANVIEN(MaNhanVien,HoVaTen,MatKhau,NgaySinh,CCCD,Email,DiaChi,SDT,VaiTro,NgayTao,TrangThai)\n"
+    private final String Insert_sql = "insert into NHANVIEN(MaNhanVien,HoVaTen,MatKhau,NgaySinh,CCCD,Email,DiaChi,SDT,VaiTro,NgayTao,TrangThai)\n"
             + "values (?,?,?,?,?,?,?,?,?,?,?)";
-    private final String update_sql = "update NhanVien set HoVaTen=?,NgaySinh=?,CCCD=?,Email=?,DiaChi=?,SDT=?,VaiTro=? where MaNhanVien=?";
-    private final String thoiviec_sql = "update NhanVien set TrangThai=0 where MaNhanVien=?";
-    private final String getcreatedinvoicebymanv = "SELECT NHANVIEN.ID,NHANVIEN.HoVaTen, COUNT(*)  AS N'Số Hóa Đơn Đã Tạo'\n"
+    private final String Changpass_sql = "Update NHANVIEN set MatKhau = ? where Email like ? ";
+    private final String Update_sql = "update NhanVien set HoVaTen=?,NgaySinh=?,CCCD=?,Email=?,DiaChi=?,SDT=?,VaiTro=? where MaNhanVien=?";
+    private final String Thoiviec_sql = "update NhanVien set TrangThai=0 where MaNhanVien=?";
+    private final String getCreatedInvoiceByManv = "SELECT NHANVIEN.ID,NHANVIEN.HoVaTen, COUNT(*)  AS N'Số Hóa Đơn Đã Tạo'\n"
             + "FROM HOADON\n"
             + "JOIN NHANVIEN ON NHANVIEN.ID = HOADON.IdNV\n"
             + "where NHANVIEN.MaNhanVien=?\n"
             + "GROUP BY NHANVIEN.ID,NHANVIEN.HoVaTen\n"
             + "ORDER BY NHANVIEN.ID;";
-    private final String getdoanhsobymanv = "SELECT NHANVIEN.ID,NHANVIEN.HoVaTen,SUM(HOADON.ThanhTien) as N'Doanh Số'\n"
+    private final String getDoanhsoByManv = "SELECT NHANVIEN.ID,NHANVIEN.HoVaTen,SUM(HOADON.ThanhTien) as N'Doanh Số'\n"
             + "FROM  HOADON\n"
             + "JOIN NHANVIEN ON NHANVIEN.ID = HOADON.IdNV\n"
             + "where NHANVIEN.MaNhanVien=?\n"
             + "GROUP BY NHANVIEN.ID,NHANVIEN.HoVaTen\n"
             + "ORDER BY NHANVIEN.ID;";
-    private final String getcreatedcustomersbymanv = "SELECT NHANVIEN.ID,NHANVIEN.HoVaTen,Count(*) as N'Số khách hàng thêm mới'\n"
+    private final String getCreatedCustomersbymanv = "SELECT NHANVIEN.ID,NHANVIEN.HoVaTen,Count(*) as N'Số khách hàng thêm mới'\n"
             + "FROM  KHACHHANG\n"
             + "JOIN NHANVIEN ON NHANVIEN.ID = KHACHHANG.IdNV\n"
             + "where NHANVIEN.MaNhanVien=?\n"
             + "GROUP BY NHANVIEN.ID,NHANVIEN.HoVaTen\n"
             + "ORDER BY NHANVIEN.ID;";
-    private final String getcreatedpgg = "SELECT NHANVIEN.ID,NHANVIEN.HoVaTen,Count(*) as N'Số Phiếu Giảm Giá Đã Tạo'\n"
+    private final String getCreatedPgg = "SELECT NHANVIEN.ID,NHANVIEN.HoVaTen,Count(*) as N'Số Phiếu Giảm Giá Đã Tạo'\n"
             + "FROM  PHIEU_GIAM_GIA\n"
             + "JOIN NHANVIEN ON NHANVIEN.ID = PHIEU_GIAM_GIA.IdNV\n"
             + "where NHANVIEN.MaNhanVien=?\n"
             + "GROUP BY NHANVIEN.ID,NHANVIEN.HoVaTen\n"
             + "ORDER BY NHANVIEN.ID;";
-    private final String getcreateddgg = "SELECT NHANVIEN.ID,NHANVIEN.HoVaTen,Count(*) as N'Số Đợt Giảm Giá Đã Tạo'\n"
+    private final String getCreatedDgg = "SELECT NHANVIEN.ID,NHANVIEN.HoVaTen,Count(*) as N'Số Đợt Giảm Giá Đã Tạo'\n"
             + "FROM  DOT_GIAM_GIA\n"
             + "JOIN NHANVIEN ON NHANVIEN.ID = DOT_GIAM_GIA.IdNV\n"
             + "where NHANVIEN.MaNhanVien=?\n"
             + "GROUP BY NHANVIEN.ID,NHANVIEN.HoVaTen\n"
             + "ORDER BY NHANVIEN.ID;";
-    private final String totalnv_sql = "select Count(*) from NhanVien";
-    private final String select_all = "select * from NHANVIEN";
+    private final String totalNv_sql = "select Count(*) from NhanVien";
+    private final String Select_all = "select * from NHANVIEN";
 
     public List<NhanVien> getALLSQL(String sql) {
         List<NhanVien> lst = new ArrayList<>();
@@ -142,7 +143,7 @@ public class NhanVienRepository {
     public void ADDNhanVien(NhanVien nv) {
         try {
             Connection con = DBConnection.getConnect();
-            PreparedStatement stm = con.prepareStatement(insert_sql);
+            PreparedStatement stm = con.prepareStatement(Insert_sql);
             stm.setString(1, nv.getMaNhanVien());
             stm.setString(2, nv.getTenNhanVien());
             stm.setString(3, nv.getPassword());
@@ -165,7 +166,7 @@ public class NhanVienRepository {
     public void UpdateNhanVien(NhanVien nv) {
         try {
             Connection con = DBConnection.getConnect();
-            PreparedStatement stm = con.prepareStatement(update_sql);
+            PreparedStatement stm = con.prepareStatement(Update_sql);
             stm.setString(8, nv.getMaNhanVien());
             stm.setString(1, nv.getTenNhanVien());
             stm.setDate(2, XDate2.convertUtilDateToSqlDate(nv.getNgaysinh()));
@@ -185,7 +186,7 @@ public class NhanVienRepository {
     public void BuocThoiViecNhanVien(String manv) {
         try {
             Connection con = DBConnection.getConnect();
-            PreparedStatement stm = con.prepareStatement(thoiviec_sql);
+            PreparedStatement stm = con.prepareStatement(Thoiviec_sql);
             stm.setString(1, manv);
             stm.executeUpdate();
             stm.close();
@@ -196,14 +197,14 @@ public class NhanVienRepository {
     }
 
     public List<NhanVien> getALL() {
-        return getALLSQL(select_all);
+        return getALLSQL(Select_all);
     }
 
     public int gettotalNhanVien() {
         int total = 0;
         try {
             Connection con = DBConnection.getConnect();
-            PreparedStatement stm = con.prepareStatement(totalnv_sql);
+            PreparedStatement stm = con.prepareStatement(totalNv_sql);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 total = rs.getInt(1);
@@ -232,7 +233,7 @@ public class NhanVienRepository {
         int total = 0;
         try {
             Connection con = DBConnection.getConnect();
-            PreparedStatement stm = con.prepareStatement(getcreatedinvoicebymanv);
+            PreparedStatement stm = con.prepareStatement(getCreatedInvoiceByManv);
             stm.setString(1, manv);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
@@ -248,7 +249,7 @@ public class NhanVienRepository {
         int total = 0;
         try {
             Connection con = DBConnection.getConnect();
-            PreparedStatement stm = con.prepareStatement(getdoanhsobymanv);
+            PreparedStatement stm = con.prepareStatement(getDoanhsoByManv);
             stm.setString(1, manv);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
@@ -264,7 +265,7 @@ public class NhanVienRepository {
         int total = 0;
         try {
             Connection con = DBConnection.getConnect();
-            PreparedStatement stm = con.prepareStatement(getcreatedcustomersbymanv);
+            PreparedStatement stm = con.prepareStatement(getCreatedCustomersbymanv);
             stm.setString(1, manv);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
@@ -280,7 +281,7 @@ public class NhanVienRepository {
         int total = 0;
         try {
             Connection con = DBConnection.getConnect();
-            PreparedStatement stm = con.prepareStatement(getcreatedpgg);
+            PreparedStatement stm = con.prepareStatement(getCreatedPgg);
             stm.setString(1, manv);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
@@ -296,7 +297,7 @@ public class NhanVienRepository {
         int total = 0;
         try {
             Connection con = DBConnection.getConnect();
-            PreparedStatement stm = con.prepareStatement(getcreateddgg);
+            PreparedStatement stm = con.prepareStatement(getCreatedDgg);
             stm.setString(1, manv);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
@@ -308,6 +309,53 @@ public class NhanVienRepository {
         return total;
     }
 
+    public NhanVien login(String username) {
+        try {
+            String sql = "select * from NhanVien where MaNhanVien =?";
+            Connection con = DBConnection.getConnect();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setString(1, username);
+            ResultSet rs = stm.executeQuery();
+            List<NhanVien> lst = new ArrayList<>();
+            while (rs.next()) {
+                NhanVien nv = new NhanVien();
+                nv.setMaNhanVien(rs.getString("MaNhanVien"));
+                nv.setTenNhanVien(rs.getString("HoVaTen"));
+                nv.setPassword(rs.getString("MatKhau"));
+                nv.setNgaysinh((rs.getDate("NgaySinh")));
+                nv.setEmail(rs.getString("Email"));
+                nv.setCCCD(rs.getString("CCCD"));
+                nv.setSDT(rs.getString("SDT"));
+                nv.setDiaChi(rs.getString("DiaChi"));
+                nv.setNgaytao((rs.getDate("NgayTao")));
+                nv.setVaitro(rs.getBoolean("VaiTro"));
+                nv.setTrangthailamviec(rs.getBoolean("TrangThai"));
+                lst.add(nv);
+            }
+            if (lst.isEmpty()) {
+                return null;
+            } else {
+                return lst.get(0);
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public String ChangePassword(String Email, String Password) {
+        try {
+            Connection con = DBConnection.getConnect();
+            PreparedStatement stm = con.prepareStatement(Changpass_sql);
+            stm.setString(1, Password);
+            stm.setString(2, Email);
+            stm.executeUpdate();
+            return "Đổi MK thành công";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Đổi MK thất bại";
+        }
+    }
+
     public NhanVien findNhanVien(String userName, String passWord) {
         String query = "Select * From NHANVIEN where Email = ? AND MatKhau = ?";
         NhanVien nv = new NhanVien();
@@ -317,8 +365,9 @@ public class NhanVienRepository {
             ps.setString(1, userName);
             ps.setString(2, passWord);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
 
+            while (rs.next()) {
+                System.out.println("Re  chay      ndNhanVien()");
                 nv.setMaNhanVien(rs.getString("MaNhanVien"));
                 nv.setTenNhanVien(rs.getString("HoVaTen"));
                 nv.setPassword(rs.getString("MatKhau"));

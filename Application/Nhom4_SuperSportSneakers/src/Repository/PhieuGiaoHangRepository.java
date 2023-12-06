@@ -31,6 +31,29 @@ public class PhieuGiaoHangRepository {
     private ResultSet rs = null;
     private Connection con = null;
 
+    public PhieuGiaoHang getPGHByMaHD(String maHD) {
+        PhieuGiaoHang phieuGiaoHang = new PhieuGiaoHang();
+        try {
+            con = DBConnection.getConnect();
+            query = " SELECT PGH.IdHoaDon as idhd FROM HOADON\n"
+                    + "JOIN PHIEUGIAOHANG AS PGH ON PGH.IdHoaDon = HOADON.ID\n"
+                    + "WHERE HOADON.MaHoaDon LIKE '" + maHD + "'";
+
+            pstm = con.prepareCall(query);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                HoaDon hoaDon = new HoaDon();
+
+                hoaDon.setId(rs.getLong("idhd"));
+                phieuGiaoHang.setIdHD(hoaDon);
+                return phieuGiaoHang;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return phieuGiaoHang;
+    }
+
     public List<PhieuGiaoHang> getAll(int page, int limt) {
         List<PhieuGiaoHang> list = new ArrayList<>();
         try {

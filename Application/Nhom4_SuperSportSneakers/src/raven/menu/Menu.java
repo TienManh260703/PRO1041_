@@ -51,8 +51,12 @@ public class Menu extends JPanel {
         //7
         {"~Thống Kê~"},
         {"Thống Kê"},
-        
         //8
+        {"~Đổi Mật Khẩu~"},
+        {"Đổi Mật Khẩu"},
+        
+        
+        //9
         {"Logout"}
     };
 

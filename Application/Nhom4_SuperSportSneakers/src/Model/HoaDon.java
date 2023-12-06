@@ -32,6 +32,7 @@ public class HoaDon {
     private Date ngayTao;
     private Date ngayThanhToan;
     private boolean hinhThucMua;
+    private String qr;
     private Integer trangThai;
 
     public HoaDon() {
@@ -163,6 +164,14 @@ public class HoaDon {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getQr() {
+        return qr;
+    }
+
+    public void setQr(String qr) {
+        this.qr = qr;
     }
 
     public Integer getLoai() {

@@ -2,6 +2,7 @@ package raven.application.form;
 
 import Model.NhanVien;
 import Repository.NhanVienRepository;
+import Utils.Auth;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.util.UIScale;
 import java.awt.Component;
@@ -86,21 +87,21 @@ public class LoginForm extends javax.swing.JPanel {
                             .addGroup(loginLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(txtUser, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 36, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(loginLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lbTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(loginLayout.createSequentialGroup()
-                                .addGroup(loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lbPass)
-                                    .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(loginLayout.createSequentialGroup()
+                                        .addComponent(cmdLogin)
+                                        .addGap(124, 124, 124))
+                                    .addGroup(loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(lbPass)
+                                        .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
-            .addGroup(loginLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(cmdLogin)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         loginLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {txtPass, txtUser});
@@ -144,17 +145,19 @@ public class LoginForm extends javax.swing.JPanel {
     private void cmdLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdLoginActionPerformed
         if (txtUser.getText().isEmpty() || txtPass.getPassword().length == 0) {
             Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Bạn đã bỏ trống Tài Khoản hoặc Mật Khẩu.");
+            return;
         } else {
             NhanVien nv = nhanVienRepository.findNhanVien(txtUser.getText(), txtPass.getText());
-            System.out.println(nv.getId());
             if (nv.getEmail() == null) {
                 Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Login Faild.");
+                return;
             } else if (nv.getEmail() != null) {
                 Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Login Successfull.");
                 Application.login();
+                Auth.nv = nv;
             }
+
         }
-     //   Application.login();
     }//GEN-LAST:event_cmdLoginActionPerformed
 
     private class LoginFormLayout implements LayoutManager {
@@ -191,6 +194,7 @@ public class LoginForm extends javax.swing.JPanel {
                 int x = (width - loginWidth) / 2;
                 int y = (height - loginHeight) / 2;
                 login.setBounds(x, y, loginWidth, loginHeight);
+                //lblQuen.setBounds(x, y, loginWidth, loginHeight);
             }
         }
     }

@@ -45,6 +45,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import pro1041.team_3.swing.jnafilechooser.api.JnaFileChooser;
 import raven.application.Application;
+import static raven.application.form.other.Form_BanHang.indexWebcam;
 import raven.toast.Notifications;
 
 /**
@@ -174,7 +175,7 @@ public class Form_SPCT extends javax.swing.JPanel {
                     if (result != null) {
                         String resultText = result.getText();
                         String[] arrResult = resultText.split("\\n");
-                        txtSearch.setText(arrResult[1].substring(10));
+                        txtSearch.setText(arrResult[0].substring(17));
                         dlScanQr.setVisible(false);
                         searchSanPham();
                         webcam.close();
@@ -529,6 +530,7 @@ public class Form_SPCT extends javax.swing.JPanel {
         jButton18 = new javax.swing.JButton();
         jButton19 = new javax.swing.JButton();
         jButton20 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/raven/icon/png/plus.png"))); // NOI18N
 
@@ -587,6 +589,11 @@ public class Form_SPCT extends javax.swing.JPanel {
         });
 
         txtSearch.setText("Mã Sản Phẩn Chi Tiết");
+        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchActionPerformed(evt);
+            }
+        });
         txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtSearchKeyReleased(evt);
@@ -1010,6 +1017,14 @@ public class Form_SPCT extends javax.swing.JPanel {
             }
         });
         add(jButton20, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 620, 140, 40));
+
+        jButton1.setText("STOP");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 120, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
@@ -1309,7 +1324,7 @@ public class Form_SPCT extends javax.swing.JPanel {
         if (!jfc.showOpenDialog((JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this))) {
             return;
         }
-        SanPhamChiTiet spct = listSPCT.get(row);
+        SanPhamChiTiet spct = listSPCT1.get(row);
         String mess = null;
         if (chiTiet_Impl != null) {
             mess = chiTiet_Impl.exportQr(jfc.getSelectedFile().getAbsolutePath(), spct.getMaSPCT());
@@ -1423,6 +1438,39 @@ public class Form_SPCT extends javax.swing.JPanel {
         fillToTableSanPhamChiTiet(listSearch);
     }//GEN-LAST:event_txtSearchKeyReleased
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+         try {
+            if (indexWebcam == 0) {
+
+                indexWebcam = 1;
+                System.out.println("raven dong " + indexWebcam);
+                if (webcam != null) {
+                    if (webcam.isOpen()) {
+                        webcam.close();
+                        thread.stop();
+                    }
+                }
+            } else if (indexWebcam == 1) {
+                initWebcam();
+                captureThread();
+                indexWebcam = 0;
+                System.out.println("raven mơ " + indexWebcam);
+            }
+        } catch (Exception e) {
+            System.out.println("ra catch rformed()");
+            if (webcam != null) {
+                if (webcam.isOpen()) {
+                    webcam.close();
+                    thread.stop();
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd_SanPham;
@@ -1441,6 +1489,7 @@ public class Form_SPCT extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> cboTrangThai;
     private javax.swing.JComboBox<String> cboTrangThai1;
     private javax.swing.JComboBox<String> cboTrangThaiSanPham;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;

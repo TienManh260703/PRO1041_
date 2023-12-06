@@ -210,8 +210,10 @@ public class KhachHang {
 
     @Override
     public String toString() {
-        return "KhachHang{" + "id=" + id + ", maKhachHang=" + maKhachHang + ", tenKhachHang=" + tenKhachHang + '}';
+        return "KhachHang{" + "id=" + id + ", idNV=" + idNV + ", maKhachHang=" + maKhachHang + ", tenKhachHang=" + tenKhachHang + ", sdt=" + sdt + ", ngaySinh=" + ngaySinh + ", gioiTinh=" + gioiTinh + ", email=" + email + ", diaChi=" + diaChi + ", diem=" + diem + ", capBac=" + capBac + ", ngayTao=" + ngayTao + ", trangThai=" + trangThai + '}';
     }
+
+
 
     public KhachHang getThongTin() {
         return new KhachHang(id, maKhachHang, tenKhachHang, diem, capBac);

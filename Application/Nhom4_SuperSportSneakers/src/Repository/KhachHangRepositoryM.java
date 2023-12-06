@@ -676,4 +676,23 @@ public class KhachHangRepositoryM {
             Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public Float getTongChi(String ma) {
+        Float tt = 0f;
+        try {
+            con = DBConnection.getConnect();
+            query = "SELECT SUM(ThanhTien) AS TT FROM KHACHHANG\n"
+                    + "JOIN HOADON ON KHACHHANG.ID = HOADON.ID\n"
+                    + "WHERE MaKhachHang LIKE '" + ma + "' AND   HOADON.TrangThai = 1";
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                tt = rs.getFloat("TT");
+                return tt;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(KhachHangRepositoryM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return tt;
+    }
 }

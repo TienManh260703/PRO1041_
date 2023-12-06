@@ -24,6 +24,7 @@ import raven.application.form.other.FormInbox;
 import raven.application.form.other.FormNhanVien;
 import raven.application.form.other.FormRead;
 import raven.application.form.other.Form_BanHang;
+import raven.application.form.other.Form_DoiMatKhau;
 import raven.application.form.other.Form_DotGiamGia;
 import raven.application.form.other.Form_HoaDon;
 import raven.application.form.other.Form_KhachHang;
@@ -31,6 +32,7 @@ import raven.application.form.other.Form_PhieuGiamGia;
 import raven.application.form.other.Form_PhieuGiaoHang;
 import raven.application.form.other.Form_SPCT;
 import raven.application.form.other.Form_SPCT_NV;
+import raven.application.form.other.Form_ThongKe;
 
 import raven.menu.Menu;
 import raven.menu.MenuAction;
@@ -131,7 +133,9 @@ public class MainForm extends JLayeredPane {
 //        });
 //    }
     private void initMenuEvent() {
-        if (Auth.isLogin()) {
+        menu.addMenuEvent((int index, int subIndex, MenuAction action) -> {
+
+            if (Auth.isLogin()) {
 //                System.out.println(Auth.nv.isVaitro());
                 if (Auth.nv.isVaitro() == false) {
                     if (index == 0) {
@@ -161,7 +165,14 @@ public class MainForm extends JLayeredPane {
                         } else {
 
                         }
+                    } else if (index == 6) {
+
+                        Application.showForm(new Form_HoaDon());
+                    } else if (index == 7) {
+                        Application.showForm(new Form_ThongKe());
                     } else if (index == 8) {
+                        Application.showForm(new Form_DoiMatKhau());
+                    } else if (index == 9) {
                         Application.logout();
                     } else {
                         action.cancel();
@@ -188,9 +199,14 @@ public class MainForm extends JLayeredPane {
                         if (subIndex == 1) {
                             Application.showForm(new Form_PhieuGiaoHang());
                         } else {
-
                         }
+                    } else if (index == 6) {
+                        Application.showForm(new Form_HoaDon());
+                    } else if (index == 7) {
+                        Application.showForm(new Form_ThongKe());
                     } else if (index == 8) {
+                        Application.showForm(new Form_DoiMatKhau());
+                    } else if (index == 9) {
                         Application.logout();
                     } else {
                         action.cancel();

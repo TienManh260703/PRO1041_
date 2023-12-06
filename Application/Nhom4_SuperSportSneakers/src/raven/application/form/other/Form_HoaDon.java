@@ -11,6 +11,7 @@ import Repository.ChiTietDotGiamRepository;
 import Repository.ChiTietHoaDon_RepositoryM;
 import Repository.HoaDon_MRepositoryM;
 import Utils.MsgBox;
+import com.sun.nio.sctp.Notification;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -440,9 +441,9 @@ public class Form_HoaDon extends javax.swing.JPanel {
                                 .addComponent(btnTien, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(btnCuoi, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(196, 196, 196)
+                                .addGap(135, 135, 135)
                                 .addComponent(btnInHoaDon)
-                                .addGap(44, 44, 44)
+                                .addGap(105, 105, 105)
                                 .addComponent(jButton7)
                                 .addGap(65, 65, 65)
                                 .addComponent(jButton8)
@@ -477,8 +478,8 @@ public class Form_HoaDon extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(50, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -552,7 +553,25 @@ public class Form_HoaDon extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void btnInHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInHoaDonActionPerformed
-        // TODO add your handling code here:
+       int row = tblHD3.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Mời chọn một hóa đơn để xuất PDF");
+            return;
+        }
+//        JnaFileChooser jfc = new JnaFileChooser();
+//        jfc.setMode(JnaFileChooser.Mode.Directories);
+//        if (jfc.showOpenDialog((JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this))) {
+            String path = "src\\bill"; //jfc.getSelectedFile().getAbsolutePath();
+            System.out.println(path);
+            String ma = tblHD3.getValueAt(row, 1).toString();
+            if (Impl.Bill.exportPdf(path, ma)) {
+//                Notification panel = new Notification((JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this), Notification.Type.SUCCESS, Notification.Location.TOP_CENTER, "Xuất thành công");
+//                panel.showNotification();
+            } else {
+//                Notification panel = new Notification((JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this), Notification.Type.WARNING, Notification.Location.TOP_CENTER, "Lỗi hệ thống. Xuất thất bại");
+//                panel.showNotification();
+            }
+   //     }
     }//GEN-LAST:event_btnInHoaDonActionPerformed
 
     private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed

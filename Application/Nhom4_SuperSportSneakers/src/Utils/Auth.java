@@ -25,7 +25,7 @@ public class Auth {
         return Auth.nv != null;
     }
 
-//    public static boolean isManager() {
-//        return Auth.isLogin() && nv.isVaiTro();
-//    }
+    public static boolean isManager() {
+        return Auth.isLogin() && nv.isVaitro();
+    }
 }
