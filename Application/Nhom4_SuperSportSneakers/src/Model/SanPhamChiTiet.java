@@ -199,82 +199,82 @@ public class SanPhamChiTiet {
         this.idSanPham = idSanPham;
     }
 
-    public BigDecimal tinhGiaBan() {
-        if (this.idDGG == null) {
-            return giaBan;
-        }
-        if (this.idDGG != null && idDGG.getTrangThai() == 1) {
-            Integer checkLoai = this.idDGG.getHinhThucDGG();
-            if (checkLoai == 0) {
-                //  giaBan = giaNiemYet - ((idDGG.getGiaTri() / (float) 100) * giaNiemYet);
-                BigDecimal giaGiam = idDGG.getGiaTri().divide(giaNiemYet.multiply(BigDecimal.valueOf(Double.parseDouble("100"))));
-                giaBan = giaNiemYet.subtract(giaGiam);
-                System.out.println("loai 0 ... %: " + giaBan);
-                return giaBan;
-            } else if (checkLoai == 1) {
-                giaBan = giaNiemYet.subtract(idDGG.getGiaTri());
-//                    System.out.println("loai 1: VND" + giaBan);
-                return giaBan;
-            }
+//    public BigDecimal tinhGiaBan() {
+//        if (this.idDGG == null) {
+//            return giaBan;
+//        }
+//        if (this.idDGG != null && idDGG.getTrangThai() == 1) {
+//            Integer checkLoai = this.idDGG.getHinhThucDGG();
+//            if (checkLoai == 0) {
+//                //  giaBan = giaNiemYet - ((idDGG.getGiaTri() / (float) 100) * giaNiemYet);
+//                BigDecimal giaGiam = idDGG.getGiaTri().divide(giaNiemYet.multiply(BigDecimal.valueOf(Double.parseDouble("100"))));
+//                giaBan = giaNiemYet.subtract(giaGiam);
+//                System.out.println("loai 0 ... %: " + giaBan);
+//                return giaBan;
+//            } else if (checkLoai == 1) {
+//                giaBan = giaNiemYet.subtract(idDGG.getGiaTri());
+////                    System.out.println("loai 1: VND" + giaBan);
+//                return giaBan;
+//            }
+//
+//            return giaBan;
+//        } else {
+//            giaBan = giaNiemYet;
+//            //        System.out.println("yet = ban");
+//            return giaBan;
+//        }
+//    }
+//
+//    public BigDecimal tinhGiaTriDGG() {
+//        Integer checkLoai = this.idDGG.getHinhThucDGG();
+//        if (checkLoai == 0) {
+//
+//            BigDecimal giaGiam = idDGG.getGiaTri().divide(giaNiemYet.multiply(BigDecimal.valueOf(Double.parseDouble("100"))));
+//            giaBan = giaNiemYet.subtract(giaGiam);
+//            System.out.println("loai 0 ... %: " + giaBan);
+//            return giaBan;
+//        } else if (checkLoai == 1) {
+//            giaBan = giaNiemYet.subtract(idDGG.getGiaTri());
+//            return giaBan;
+//        } else {
+//            return BigDecimal.ZERO;
+//        }
+//    }
+//
+//    public BigDecimal khoiPhucGiaBan() {
+//        if (this.idDGG == null) {
+//            giaBan = giaNiemYet;
+//        }
+//        return giaBan;
+//    }
+//
+//    public int getLoaiDGG() {
+//        if (null == idDGG.getHinhThucDGG()) {
+//            return 2;
+//        } else {
+//            switch (idDGG.getHinhThucDGG()) {
+//                case 1:
+//                    return 1;
+//                case 0:
+//                    return 0;
+//                default:
+//                    return 2;
+//            }
+//        }
+//    }
+//
+//    public BigDecimal getGiaTriDGG() {
+//        if (this.idDGG != null) {
+//            return idDGG.getGiaTri();
+//        } else {
+//            return BigDecimal.ZERO;
+//        }
+//    }
 
-            return giaBan;
-        } else {
-            giaBan = giaNiemYet;
-            //        System.out.println("yet = ban");
-            return giaBan;
-        }
-    }
-
-    public BigDecimal tinhGiaTriDGG() {
-        Integer checkLoai = this.idDGG.getHinhThucDGG();
-        if (checkLoai == 0) {
-
-            BigDecimal giaGiam = idDGG.getGiaTri().divide(giaNiemYet.multiply(BigDecimal.valueOf(Double.parseDouble("100"))));
-            giaBan = giaNiemYet.subtract(giaGiam);
-            System.out.println("loai 0 ... %: " + giaBan);
-            return giaBan;
-        } else if (checkLoai == 1) {
-            giaBan = giaNiemYet.subtract(idDGG.getGiaTri());
-            return giaBan;
-        } else {
-            return BigDecimal.ZERO;
-        }
-    }
-
-    public BigDecimal khoiPhucGiaBan() {
-        if (this.idDGG == null) {
-            giaBan = giaNiemYet;
-        }
-        return giaBan;
-    }
-
-    public int getLoaiDGG() {
-        if (null == idDGG.getHinhThucDGG()) {
-            return 2;
-        } else {
-            switch (idDGG.getHinhThucDGG()) {
-                case 1:
-                    return 1;
-                case 0:
-                    return 0;
-                default:
-                    return 2;
-            }
-        }
-    }
-
-    public BigDecimal getGiaTriDGG() {
-        if (this.idDGG != null) {
-            return idDGG.getGiaTri();
-        } else {
-            return BigDecimal.ZERO;
-        }
-    }
-
-    public BigDecimal getGiaGiam() {
-        //  return this.giaNiemYet - tinhGiaBan();
-        return this.giaNiemYet.subtract(tinhGiaBan());
-    }
+//    public BigDecimal getGiaGiam() {
+//        //  return this.giaNiemYet - tinhGiaBan();
+//        return this.giaNiemYet.subtract(tinhGiaBan());
+//    }
 
     public Object[] rowDataSPBH() {
 
@@ -294,6 +294,8 @@ public class SanPhamChiTiet {
             false, index, maSPCT, idSanPham.getTenSanpham(), giaBan, idThuongHieu.getTenThuongHieu(), idMau.getTenMau(), idKichThuoc.getTenSize()
         };
     }
+    
+   
 
     @Override
     public String toString() {

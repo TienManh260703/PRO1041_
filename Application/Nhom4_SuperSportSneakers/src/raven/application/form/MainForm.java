@@ -33,6 +33,7 @@ import raven.application.form.other.Form_PhieuGiaoHang;
 import raven.application.form.other.Form_SPCT;
 import raven.application.form.other.Form_SPCT_NV;
 import raven.application.form.other.Form_ThongKe;
+import raven.application.form.other.Form_TraHang;
 
 import raven.menu.Menu;
 import raven.menu.MenuAction;
@@ -163,7 +164,7 @@ public class MainForm extends JLayeredPane {
                         if (subIndex == 1) {
                             Application.showForm(new Form_PhieuGiaoHang());
                         } else {
-
+                            Application.showForm(new Form_TraHang());
                         }
                     } else if (index == 6) {
 
@@ -199,6 +200,7 @@ public class MainForm extends JLayeredPane {
                         if (subIndex == 1) {
                             Application.showForm(new Form_PhieuGiaoHang());
                         } else {
+                            Application.showForm(new Form_TraHang());
                         }
                     } else if (index == 6) {
                         Application.showForm(new Form_HoaDon());

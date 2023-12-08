@@ -47,7 +47,7 @@ public class HoaDon_MRepositoryM {
                     + "NV.MaNhanVien , NV.HoVaTen , \n"
                     + "SPCT.MaCTSP , SP.TenSP ,M.TenMau , S.TenSize , TH.TenThuongHieu ,\n"
                     + "HDCT.DonGia , HDCT.GiaBan , HDCT.SoLuong , \n"
-                    + "HD.PhuongThucTT ,HD.TongTienSP  ,  HD.TienPhieuGiam , HD.PhanTramGia , \n"
+                    + " HD.MaHoaDon , HD.PhuongThucTT ,HD.TongTienSP  ,  HD.TienPhieuGiam , HD.PhanTramGia , \n"
                     + "HD.CapBac , hd.QR , hd.DiemDoi , \n"
                     + "HD.TienKhDua , HD.TienKhChuyenKhoan , HD.ThanhTien ,HD.TienThua ,HD.NgayThanhToan , \n"
                     + "PGG.LoaiPhieu\n"
@@ -98,7 +98,8 @@ public class HoaDon_MRepositoryM {
                 hoaDon.setIdKH(khachHang);
                 hoaDon.setIdNV(nhanVien);
                 hoaDon.setIdPGG(phieuGiamGia);
-                hoaDon.setMaHoaDon((ma));
+                hoaDon.setMaHoaDon(rs.getString("MaHoaDon"));
+                System.out.println("Repository.HoaDon_MRepositoryM.pdfHD()"+rs.getString("QR"));
                 hoaDon.setQr(rs.getString("QR"));
                 hoaDon.setTienThua(rs.getBigDecimal("TienThua"));
                 hoaDon.setDiemDoi(rs.getBigDecimal("DiemDoi"));
@@ -282,14 +283,15 @@ public class HoaDon_MRepositoryM {
 
     public int create(HoaDon hoaDon) {
         try {
-            query = " INSERT INTO HOADON( IdNV , IdKH, MaHoaDon) VALUES \n"
-                    + "	(? , ? , ?) ";
+            query = " INSERT INTO HOADON( IdNV , IdKH, MaHoaDon , QR ) VALUES \n"
+                    + "	(? , ? , ? , ?) ";
             con = DBConnection.getConnect();
             pstm = con.prepareStatement(query);
             // pstm.setObject(1, hoaDon.getIdPGG().getIdPGG());
             pstm.setLong(1, hoaDon.getIdNV().getId());
             pstm.setLong(2, hoaDon.getIdKH().getId());
             pstm.setString(3, hoaDon.getMaHoaDon());
+            pstm.setString(4, hoaDon.getQr());
             return pstm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(HoaDon_MRepositoryM.class.getName()).log(Level.SEVERE, null, ex);

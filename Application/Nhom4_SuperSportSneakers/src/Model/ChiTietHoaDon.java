@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import Utils.Format;
 import java.util.List;
+import org.bridj.cpp.com.IID;
 
 /**
  *
@@ -226,13 +227,24 @@ public class ChiTietHoaDon {
 
     public Object[] rowDataHD(int index) {
         return new Object[]{
-            index, IdCTSP.getMaSPCT(), IdCTSP.getIdSanPham().getTenSanpham(), soLuong, GiaBan, thanhTien
+            index, IdCTSP.getMaSPCT(), IdCTSP.getIdSanPham().getTenSanpham(), soLuong, Format.format(GiaBan), Format.format(thanhTien)
         };
     }
 
     @Override
     public String toString() {
         return "ChiTietHoaDon{" + "id=" + id + ", IdHoaDon=" + IdHoaDon + ", IdCTSP=" + IdCTSP + ", soLuong=" + soLuong + ", maDGG=" + maDGG + ", loaiDGG=" + loaiDGG + ", giaTriDGG=" + giaTriDGG + ", quyDoiDGGTT=" + quyDoiDGGTT + ", GiaBan=" + GiaBan + ", DonGia=" + DonGia + ", thanhTien=" + thanhTien + ", ngayTao=" + ngayTao + ", trangThai=" + trangThai + '}';
+    }
+
+    public Object[] rowDataTraHang(int i) {
+        return new Object[]{
+            i,
+            IdCTSP.getMaSPCT(),
+            IdCTSP.getIdSanPham().getTenSanpham(),
+            soLuong,
+            Format.format(GiaBan),
+            Format.format(thanhTien)
+        };
     }
 
 }

@@ -3,6 +3,7 @@ package Impl;
 import Model.ChiTietHoaDon;
 import Model.HoaDon;
 import Utils.Format;
+import Utils.XDate;
 import com.itextpdf.barcodes.Barcode1D;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -59,7 +60,10 @@ public class ExportBill {
 
     public String docPDF(HoaDon hoaDon, List<ChiTietHoaDon> lstHdct, String path, boolean open) {
         Document document;
+
         String output = path + "\\" + hoaDon.getMaHoaDon() + ".pdf";
+        System.out.println("PATH: " + output);
+        System.out.println("HD " + hoaDon.toString());
         try {
             try {
                 PdfFont fontTitle = PdfFontFactory.createFont("unicode.ttf", com.itextpdf.text.pdf.BaseFont.IDENTITY_H);
@@ -81,9 +85,9 @@ public class ExportBill {
                 ImageData imageData = ImageDataFactory.create(getClass().getResource("/raven/icon/png/logo3.png"));
                 Image imageLogo = new Image(imageData);
                 imageLogo.setHeight(50f).setWidth(65f);
-
+                System.out.println("Impl.ExportBill.docPDF()  " + getClass().getResource("/src/qrbill/" + hoaDon.getQr()));
                 ImageData imageQr = ImageDataFactory.create(getClass().getResource("/qrbill/" + hoaDon.getQr()));
-                System.out.println("Impl.ExportBill.docPDF()" + "  " + hoaDon.getQr());
+
                 Image imageOr = new Image(imageQr);
                 imageOr.setHeight(50f).setWidth(65f);
 
@@ -95,7 +99,7 @@ public class ExportBill {
                 tableHeader.addCell(new Cell().add(imageLogo).setBorder(Border.NO_BORDER)
                         .setVerticalAlignment(VerticalAlignment.MIDDLE).setMarginTop(5f));
 
-                tableHeader.addCell(new Cell().add("Hóa đơn Supper __ ")
+                tableHeader.addCell(new Cell().add("Hóa Đơn Shop Bán Giày Sneakers")
                         .setFontColor(new DeviceRgb(255, 255, 255)).setFontSize(16f)
                         .setBold()
                         .setMarginLeft(15f)
@@ -115,15 +119,16 @@ public class ExportBill {
                 Paragraph qr = null;
                 if (hoaDon.getIdKH().getCapBac() == 3) {
                     khachLe = new Paragraph("Khách lẻ");
-                    khachLe.setFont(fontTitle).setBold().setMarginTop(10f);
+                    khachLe.setFont(fontTitle).setBold().setFontSize(9f);
                     qr = new Paragraph("QR hóa đơn : ");
-                    qr.setFont(fontTitle).setBold().setMarginTop(10f);
+                    qr.setFont(fontTitle).setBold().setFontSize(9f);
+                    maHD = new Paragraph("Mã HD :\t" + hoaDon.getMaHoaDon());
                 } else {
                     nameCos = new Paragraph("Họ tên:\t" + hoaDon.getIdKH().getTenKhachHang());
                     nameCos.setFont(fontTitle).setFontSize(9f);
                     maHD = new Paragraph("Mã HD :\t" + hoaDon.getMaHoaDon());
                     maHD.setFont(fontTitle).setFontSize(9f);
-                    purchaseTime = new Paragraph("Thời gian:\t" + hoaDon.getNgayThanhToan());
+                    purchaseTime = new Paragraph("Thời gian:\t" + XDate.toString(hoaDon.getNgayThanhToan(), "hh:mm a dd-MM-yyyy"));
                     purchaseTime.setFont(fontTitle).setFontSize(9f);
 
                     phoneNumber = new Paragraph("Số điện thoại:\t" + hoaDon.getIdKH().getSdt());
@@ -133,7 +138,7 @@ public class ExportBill {
                 }
 
                 Paragraph nhanVienThanhToan = new Paragraph("Nhân viên thanh toán:\t" + hoaDon.getIdNV().getMaNhanVien() + "-" + hoaDon.getIdNV().getTenNhanVien());
-                nhanVienThanhToan.setFont(fontTitle).setBold().setMarginTop(12f);
+                nhanVienThanhToan.setFont(fontTitle).setBold().setMarginTop(9f);
 
                 document.add(tableHeader);
                 document.add(infoCostumer);
@@ -142,12 +147,10 @@ public class ExportBill {
                     document.add(nameCos);
                     document.add(purchaseTime);
                     document.add(phoneNumber);
-                    
 
                 } else {
                     document.add(maHD);
                     document.add(khachLe);
-                 
 
                 }
                 document.add(qr);
@@ -155,22 +158,22 @@ public class ExportBill {
                 tableHeader.addCell(new Cell().add(imageOr).setBorder(Border.NO_BORDER)
                         .setVerticalAlignment(VerticalAlignment.MIDDLE).setMarginTop(5f));
 
-                Table tableBarcode = new Table(columnWithBarcode)
-                        .setMarginTop(10f)
+                Table tableQr = new Table(columnWithBarcode)
+                        .setMarginTop(2f)
                         .setVerticalAlignment(VerticalAlignment.MIDDLE)
                         .setTextAlignment(TextAlignment.LEFT)
                         .setBorder(Border.NO_BORDER);
 
-                tableBarcode.addCell(new Cell().add(imageOr)
+                tableQr.addCell(new Cell().add(imageOr)
                         .setVerticalAlignment(VerticalAlignment.MIDDLE)
                         .setTextAlignment(TextAlignment.LEFT)
                         .setBorder(Border.NO_BORDER))
-                        .setMarginLeft(10f);
+                        .setMarginLeft(2f);
 
-                document.add(tableBarcode);
+                document.add(tableQr);
 
                 document.add(nhanVienThanhToan);
-                
+
                 Paragraph listProducts = new Paragraph("Sản phẩm");
                 listProducts.setFont(fontTitle).setBold().setMarginTop(25f).setMarginBottom(-10);
 
@@ -239,22 +242,19 @@ public class ExportBill {
                 int totalMoney = 0;
                 int count = 1;
                 for (int i = 0; i < lstHdct.size(); i++) {
-                    tableContent.addCell(new Cell().add(String.valueOf(i+1)).setBorder(Border.NO_BORDER).setFontSize(9));
+                    tableContent.addCell(new Cell().add(String.valueOf(i + 1)).setBorder(Border.NO_BORDER).setFontSize(9));
                     tableContent.addCell(new Cell().add(lstHdct.get(i).getIdCTSP().getMaSPCT()).setBorder(Border.NO_BORDER).setFontSize(9));
                     tableContent.addCell(new Cell().add(lstHdct.get(i).getIdCTSP().getIdSanPham().getTenSanpham()).setBorder(Border.NO_BORDER).setFontSize(9));
                     tableContent.addCell(new Cell().add(lstHdct.get(i).getIdCTSP().getIdThuongHieu().getTenThuongHieu()).setBorder(Border.NO_BORDER).setFontSize(9));
                     tableContent.addCell(new Cell().add(lstHdct.get(i).getIdCTSP().getIdMau().getTenMau()).setBorder(Border.NO_BORDER).setFontSize(9));
                     tableContent.addCell(new Cell().add(lstHdct.get(i).getIdCTSP().getIdKichThuoc().getTenSize() + "").setBorder(Border.NO_BORDER).setFontSize(9));
-                    tableContent.addCell(new Cell().add(lstHdct.get(i).getDonGia() + "").setBorder(Border.NO_BORDER).setFontSize(9));
-                    tableContent.addCell(new Cell().add(lstHdct.get(i).getGiaBan() + "").setBorder(Border.NO_BORDER).setFontSize(9));
+                    tableContent.addCell(new Cell().add(Format.format1(lstHdct.get(i).getDonGia()) + "").setBorder(Border.NO_BORDER).setFontSize(9));
+                    tableContent.addCell(new Cell().add(Format.format1(lstHdct.get(i).getGiaBan()) + "").setBorder(Border.NO_BORDER).setFontSize(9));
                     tableContent.addCell(new Cell().add(lstHdct.get(i).getSoLuong() + "").setBorder(Border.NO_BORDER).setFontSize(9));
-                    //      tableContent.addCell(new Cell().add(df.format(lstHdct.get(i).getDonGia())).setBorder(Border.NO_BORDER).setFontSize(9));
-//                    tableContent.addCell(new Cell().add(df.format(lstHdct.get(i).getGiaBan())).setBorder(Border.NO_BORDER).setFontSize(9));
+
                 }
 
                 document.add(tableContent);
-//                PdfPTable table = new PdfPTable(3);
-//                table.addCell(new PdfPCell().setBackgroundColor(BaseColor.DARK_GRAY))
                 float coulumnWithFotter[] = {100, 300, 600, 350, 350};
                 Table tableFotter = new Table(coulumnWithFotter)
                         .setTextAlignment(TextAlignment.LEFT)
@@ -265,6 +265,7 @@ public class ExportBill {
                 tableFotter.addCell(new Cell().setBackgroundColor(new DeviceRgb(1, 181, 204)).setBorder(Border.NO_BORDER));
                 tableFotter.addCell(new Cell().add(
                         "Tổng tiền:" + "\n"
+                        + "Giảm cấp bậc :\n "
                         + "Phiếu Giảm : \n"
                         + "Điểm đổi :\n "
                         + "Tiền sau giảm : \n"
@@ -289,8 +290,9 @@ public class ExportBill {
                 }
                 tableFotter.addCell(new Cell().add(
                         "" + df.format(hoaDon.getTongTienSP()) + " VNĐ"
+                        + "\n" + hoaDon.getCapBac() + " % "
                         + "\n" + (hoaDon.getIdPGG() == null ? "" : (hoaDon.getIdPGG().getLoaiPhieu() == 0 ? hoaDon.getPhanTramGG() + " % " : df.format(hoaDon.getTienPhieuGiam()) + " VNĐ"))
-                        + "\n" + (df.format(hoaDon.getDiemDoi().multiply(new BigDecimal("50000")))) + " VNĐ"
+                        + "\n" + (df.format(hoaDon.getDiemDoi().multiply(new BigDecimal("5000")))) + " VNĐ"
                         + "\n" + Format.format(hoaDon.getThanhTien())
                         + "\n" + (df.format(hoaDon.getTienKhChuyenKhoan()) + " VNĐ")
                         + "\n" + (df.format(hoaDon.getTienKhDua()) + " VNĐ")

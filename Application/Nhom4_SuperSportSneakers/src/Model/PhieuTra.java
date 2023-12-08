@@ -91,5 +91,11 @@ public class PhieuTra {
         return "PhieuTra{" + "id=" + id + ", idHD=" + idHD + ", idNV=" + idNV + ", maPhieu=" + maPhieu + ", ngayTra=" + ngayTra + ", tienHoanTra=" + tienHoanTra + ", ghiChu=" + ghiChu + ", ngayTao=" + ngayTao + '}';
     }
     
+    public Object[] rowData (int i ){
+        return new Object[]{
+            i, 
+        };
+    }
+    
     
 }

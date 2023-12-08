@@ -15,7 +15,7 @@ import java.util.List;
  * @author tabah
  */
 public class NhanVienRepository {
-
+    
     private final String Insert_sql = "insert into NHANVIEN(MaNhanVien,HoVaTen,MatKhau,NgaySinh,CCCD,Email,DiaChi,SDT,VaiTro,NgayTao,TrangThai)\n"
             + "values (?,?,?,?,?,?,?,?,?,?,?)";
     private final String Changpass_sql = "Update NHANVIEN set MatKhau = ? where Email like ? ";
@@ -53,7 +53,7 @@ public class NhanVienRepository {
             + "ORDER BY NHANVIEN.ID;";
     private final String totalNv_sql = "select Count(*) from NhanVien";
     private final String Select_all = "select * from NHANVIEN";
-
+    
     public List<NhanVien> getALLSQL(String sql) {
         List<NhanVien> lst = new ArrayList<>();
         try {
@@ -86,7 +86,7 @@ public class NhanVienRepository {
         }
         return lst;
     }
-
+    
     public List<NhanVien> Filternameorsdt(String nameorsdt, String vaitro, String trangthai) {
         List<NhanVien> lst = new ArrayList<>();
         String sql = "sql= select * from NhanVien\n"
@@ -133,13 +133,13 @@ public class NhanVienRepository {
 //                else nv.setVaiTro(true);
 
                 lst.add(nv);
-
+                
             }
         } catch (Exception e) {
         }
         return lst;
     }
-
+    
     public void ADDNhanVien(NhanVien nv) {
         try {
             Connection con = DBConnection.getConnect();
@@ -162,7 +162,7 @@ public class NhanVienRepository {
             throw new RuntimeException(e);
         }
     }
-
+    
     public void UpdateNhanVien(NhanVien nv) {
         try {
             Connection con = DBConnection.getConnect();
@@ -182,7 +182,7 @@ public class NhanVienRepository {
             throw new RuntimeException(e);
         }
     }
-
+    
     public void BuocThoiViecNhanVien(String manv) {
         try {
             Connection con = DBConnection.getConnect();
@@ -195,11 +195,11 @@ public class NhanVienRepository {
             throw new RuntimeException(e);
         }
     }
-
+    
     public List<NhanVien> getALL() {
         return getALLSQL(Select_all);
     }
-
+    
     public int gettotalNhanVien() {
         int total = 0;
         try {
@@ -213,7 +213,7 @@ public class NhanVienRepository {
         }
         return total;
     }
-
+    
     public String automanv() {
         String manv = "NV";
         try {
@@ -228,7 +228,7 @@ public class NhanVienRepository {
         }
         return manv;
     }
-
+    
     public int getsohoadondataobymanv(String manv) {
         int total = 0;
         try {
@@ -244,7 +244,7 @@ public class NhanVienRepository {
         }
         return total;
     }
-
+    
     public int getdoanhsobymanv(String manv) {
         int total = 0;
         try {
@@ -260,7 +260,7 @@ public class NhanVienRepository {
         }
         return total;
     }
-
+    
     public int getkhachhangdathembymanv(String manv) {
         int total = 0;
         try {
@@ -276,7 +276,7 @@ public class NhanVienRepository {
         }
         return total;
     }
-
+    
     public int getcreatedpggbymanv(String manv) {
         int total = 0;
         try {
@@ -292,7 +292,7 @@ public class NhanVienRepository {
         }
         return total;
     }
-
+    
     public int getcreateddggbymanv(String manv) {
         int total = 0;
         try {
@@ -308,7 +308,7 @@ public class NhanVienRepository {
         }
         return total;
     }
-
+    
     public NhanVien login(String username) {
         try {
             String sql = "select * from NhanVien where MaNhanVien =?";
@@ -341,7 +341,7 @@ public class NhanVienRepository {
             return null;
         }
     }
-
+    
     public String ChangePassword(String Email, String Password) {
         try {
             Connection con = DBConnection.getConnect();
@@ -355,7 +355,7 @@ public class NhanVienRepository {
             return "Đổi MK thất bại";
         }
     }
-
+    
     public NhanVien findNhanVien(String userName, String passWord) {
         String query = "Select * From NHANVIEN where Email = ? AND MatKhau = ?";
         NhanVien nv = new NhanVien();
@@ -365,9 +365,9 @@ public class NhanVienRepository {
             ps.setString(1, userName);
             ps.setString(2, passWord);
             ResultSet rs = ps.executeQuery();
-
+            
             while (rs.next()) {
-                System.out.println("Re  chay      ndNhanVien()");
+                nv.setId(rs.getLong("ID"));
                 nv.setMaNhanVien(rs.getString("MaNhanVien"));
                 nv.setTenNhanVien(rs.getString("HoVaTen"));
                 nv.setPassword(rs.getString("MatKhau"));

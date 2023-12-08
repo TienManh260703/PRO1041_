@@ -30,6 +30,7 @@ import Repository.PhieuGiamGiaService;
 import Repository.PhieuGiaoHangRepository;
 import Repository.SanPham_Repository;
 import Repository.ThuongHieu_Repository;
+import Utils.Auth;
 import Utils.MsgBox;
 import Utils.Validate;
 import Utils.XDate;
@@ -147,6 +148,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         initWebcam();
         captureThread();
         init();
+        System.err.println("-------------- " + Auth.nv.toString());
     }
 
     void init() {
@@ -158,6 +160,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
 
         listHD = hoaDon_MRepository.getAllHDByTrangThai2(0);
         fillToTableHD(listHD);
+        ///  Dợt Giam Giá
         listCTDGG = chiTietDotGiamRepository.getAllCT_CTDGG();
         for (ChiTietDotGiamGia ctdgg : listCTDGG) {
             chiTietDotGiamRepository.update_SP(ctdgg);
@@ -219,6 +222,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
 
                     if (result != null) {
                         String resultText = result.getText();
+                        System.out.println(resultText);
                         String[] arrResult = resultText.split("\\n");
                         txtSearch.setText(arrResult[1].substring(10));
                         searchSanPham();
@@ -255,24 +259,9 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         }
 
         cboTenGiay.setSelectedItem(result.getIdSanPham().getTenSanpham());
-        //  txtMaSPCT.setText(result.getMaSPCT());
-        String soLuong = String.valueOf(result.getSoLuong());
-        // txtSoLuong1.setText(soLuong);
-        String giaBan = result.getGiaBan().toString();
-        // txtGiaBan.setText(giaBan);
-        String giaBan1 = result.getGiaNiemYet().toString();
-        // txtGiaNiemYet.setText(giaBan1);
-//        if (result.getTrangThai() == 0) {
-//            cboTrangThai1.setSelectedIndex(0);
-//        } else if (result.getTrangThai() == 1) {
-//            cboTrangThai1.setSelectedIndex(1);
-//        } else if (result.getTrangThai() == 2) {
-//            cboTrangThai1.setSelectedIndex(2);
-//        }
         cboMauSac.setSelectedItem(result.getIdMau().getTenMau());
         cboKichThuoc.setSelectedItem(result.getIdKichThuoc().getTenSize());
         cboThuongHieu.setSelectedItem(result.getIdThuongHieu().getTenThuongHieu());
-        //txtMoTa1.setText(result.getMoTa());
         spct = result;
 
     }
@@ -402,9 +391,11 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
 
         String maHD = tblHD.getValueAt(indexHD, 1).toString();
 
-        PhieuGiaoHang id = phieuGiaoHangRepository.getPGHByMaHD(maHD);
+        PhieuGiaoHang idPGH = phieuGiaoHangRepository.getPGHByMaHD(maHD);
+
+        System.out.println(idPGH);
         try {
-            if (id.getIdHD().getId() > 0L) {
+            if (idPGH.getIdHD().getId() > 0L) {
                 rdoDatHang.setSelected(true);
                 rdoTaiQuay.setSelected(false);
                 rdoTaiQuay.setEnabled(false);
@@ -446,7 +437,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         int count0 = 0;
         for (PhieuGiamGia pgg : listPGG) {
             if (thanhTien.compareTo(pgg.getDonToiThieu()) >= 0) {
-                System.out.println("raven.   " + pgg);
+
                 count0++;
             }
 
@@ -500,9 +491,8 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
             quyTienCapBac = phanTramGiam.multiply(thanhTien);
         }
         thanhTien = thanhTien.subtract(quyTienCapBac);
-        System.out.println("raven.appl  1yu T() " + quyTienCapBac);
+
         txtThanhTien.setText(Format.format1(thanhTien) + "");
-        System.out.println("Thanh tien sau cap bac : " + thanhTien);
 
         //  htt
         if (cboHTTT.getSelectedIndex() == 0) {
@@ -515,7 +505,6 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         try {
             if (khachHang != 3) {
                 tienKhachDua = new BigDecimal(txtThua.getText().trim());
-
             }
         } catch (Exception e) {
         }
@@ -575,7 +564,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
 
     public void getTable() {
 
-        String maHD = tblHD.getValueAt(indexHD, 0).toString();
+        String maHD = tblHD.getValueAt(indexHD, 1).toString();
         for (int i = 0; i < tblGH.getRowCount(); i++) {
             Object ktr = tblGH.getValueAt(i, 8);
 
@@ -596,7 +585,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
 
             }
         }
-
+        System.out.println("MaHD : " + maHD);
         listGH = chiTietHoaDon_Repository.getAllHDCT(maHD);
         list = chiTietSanPham_Repository.get(page, lmit);
         fillToTableGH(listGH);
@@ -1919,9 +1908,27 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         khachHangRepositoryM.updateDiem(defaultKhachHang.getMaKhachHang(), (defaultKhachHang.getDiem() - diem) + diemCong);
     }
 
+    private void clearFormTT() {
+        txtChuyenKhoan.setText("");
+        txtDiem.setText("");
+        txtMHD.setText("");
+        txtPhieuGiamGia.setText("");
+        txtThanhTien.setText("");
+        txtThua.setText("");
+        txtTienKhachDua.setText("");
+        txtTongTien.setText("");
+        lblGiamDiem.setText("");
+        cboHTTT.setSelectedIndex(0);
+        phieuGiamGia = null;
+        phieuGiaoHang = null;
+    }
     private void btnThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThanhToanActionPerformed
         if (indexHD == -1) {
             MsgBox.aleart(this, "Bạn hãy chọn 1 hóa đơn !!!");
+            return;
+        }
+        if(listGH.isEmpty()){
+             MsgBox.aleart(this, "Hóa đơn chưa có sản phẩm nào !!!");
             return;
         }
         HoaDon hoaDon = thanhToan();
@@ -1950,14 +1957,20 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
             listHD = hoaDon_MRepository.getAllHDByTrangThai2(0);
             fillToTableHD(listHD);
             updateKh(Integer.parseInt(hoaDon.getDiemDoi() + ""), hoaDon.getThanhTien());
-            listGH.clear();
 
-            return;
+            if (MsgBox.confirm(this, "Bạn có muốn in hóa đơn không ?")) {
+                String path = "src\\bill";
+                String ma = txtMHD.getText().trim();
+                if (Impl.Bill.exportPdf(path, ma)) {
+                    clearFormTT();
+                }
+            }
+            listGH.clear();
+            fillToTableGH(listGH);
         } else {
             MsgBox.aleart(this, "Thánh toán không thành công");
         }
 
-        phieuGiamGia = null;
 
     }//GEN-LAST:event_btnThanhToanActionPerformed
 
@@ -1987,7 +2000,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
 
     private void btnTapHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTapHDActionPerformed
 
-        NhanVien nhanVien = new NhanVien(2L);
+        NhanVien nhanVien = new NhanVien(3L);
 
         int maxHD = hoaDon_MRepository.getRowCountHD();
         String maHD = "HD";
@@ -1999,8 +2012,12 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         hd.setIdNV(nhanVien);
         hd.setIdPGG(phieuGiamGia);
         hd.setMaHoaDon(maHD);
+        Impl.ExportQr.exportQrHD("src\\qrbill", maHD);
+
+        hd.setQr(maHD + ".png");
         int kq = hoaDon_MRepository.create(hd);
         if (kq != -1) {
+
             MsgBox.aleart(this, "Tạo thành công hóa đơn : " + maHD);
             listHD = hoaDon_MRepository.getAllHDByTrangThai2(0);
             fillToTableHD(listHD);
@@ -2023,7 +2040,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
             String maSP = tblGH.getValueAt(indexGH, 1).toString();
 
             int soLuongTon = chiTietHoaDon_Repository.getSLSPByMa(maSP).getSoLuong();
-            System.out.println(maHD + " " + maSP + " " + IDHDCT);
+            System.out.println(maHD + " " + maSP + " " + IDHDCT + " ssl " + soLuongTon);
             Integer slSPGh = Integer.parseInt(tblGH.getValueAt(indexGH, 4).toString());
             Integer slInp = 0;
             Integer slInsert = 0;
@@ -2037,6 +2054,11 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
                     return;
                 }
                 if ((slSPGh + soLuongTon) < slInp) {
+                    MsgBox.aleart(this, "Số lượng sản phẩm ko đủ bán !!");
+                    return;
+                }
+
+                if ((slSPGh) > soLuongTon || slInp > soLuongTon) {
                     MsgBox.aleart(this, "Số lượng sản phẩm ko đủ bán !!");
                     return;
                 }

@@ -187,7 +187,7 @@ public class PhieuGiamGia {
     public Object[] rowDate(int i){
         return new Object[]{
             i , idNV.getTenNhanVien() , maPhieu , tenPhieu , loaiPhieu == 0 ? "%" :"VND",
-            giaTri , soLuongPhieu, donToiThieu , ngayBatDau , ngayKetThuc , ngayTao, moTa , getTrangThaiString()
+            giaTri , soLuongPhieu, Format.format(donToiThieu) , ngayBatDau , ngayKetThuc , ngayTao, moTa , getTrangThaiString()
         };
     }
     

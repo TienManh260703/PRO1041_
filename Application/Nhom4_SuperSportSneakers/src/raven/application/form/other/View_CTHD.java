@@ -45,7 +45,7 @@ public class View_CTHD extends javax.swing.JDialog {
         }
     }
     public void setForm() {
-        lblCK.setText(hoaDon.getTienKhChuyenKhoan() + "");
+        lblCK.setText(Format.format(hoaDon.getTienKhChuyenKhoan()) + "");
         lblGiamCapBac.setText(hoaDon.getCapBac() == 0 ? "0 %" : (hoaDon.getCapBac() == 1 ? "3 %" : hoaDon.getCapBac() == 2 ? "8 %" : "0 %"));
         lblHinhThucTT.setText(hoaDon.getPhuongThucTT() == 0 ? "Tiền mặt": hoaDon.getPhanTramGG()==1 ? "Chuyển khoản": "Kết hợp");
         lblMaHD.setText(hoaDon.getMaHoaDon());
@@ -298,12 +298,13 @@ public class View_CTHD extends javax.swing.JDialog {
                     .addComponent(jLabel2)
                     .addComponent(lblMaHD))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(lblTenKH)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel12)
-                        .addComponent(lblMaKH)))
+                        .addComponent(lblMaKH))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(lblTenKH)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)

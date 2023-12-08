@@ -561,7 +561,7 @@ public class Form_HoaDon extends javax.swing.JPanel {
 //        JnaFileChooser jfc = new JnaFileChooser();
 //        jfc.setMode(JnaFileChooser.Mode.Directories);
 //        if (jfc.showOpenDialog((JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this))) {
-            String path = "src\\bill"; //jfc.getSelectedFile().getAbsolutePath();
+            String path = "src\\bill" ;//jfc.getSelectedFile().getAbsolutePath();
             System.out.println(path);
             String ma = tblHD3.getValueAt(row, 1).toString();
             if (Impl.Bill.exportPdf(path, ma)) {
@@ -571,7 +571,7 @@ public class Form_HoaDon extends javax.swing.JPanel {
 //                Notification panel = new Notification((JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this), Notification.Type.WARNING, Notification.Location.TOP_CENTER, "Lỗi hệ thống. Xuất thất bại");
 //                panel.showNotification();
             }
-   //     }
+    //    }
     }//GEN-LAST:event_btnInHoaDonActionPerformed
 
     private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed

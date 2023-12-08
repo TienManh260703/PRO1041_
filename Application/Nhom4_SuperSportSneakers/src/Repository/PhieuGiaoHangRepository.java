@@ -35,7 +35,7 @@ public class PhieuGiaoHangRepository {
         PhieuGiaoHang phieuGiaoHang = new PhieuGiaoHang();
         try {
             con = DBConnection.getConnect();
-            query = " SELECT PGH.IdHoaDon as idhd FROM HOADON\n"
+            query = " SELECT PGH.ID , PGH.IdHoaDon as idhd FROM HOADON\n"
                     + "JOIN PHIEUGIAOHANG AS PGH ON PGH.IdHoaDon = HOADON.ID\n"
                     + "WHERE HOADON.MaHoaDon LIKE '" + maHD + "'";
 
@@ -45,6 +45,7 @@ public class PhieuGiaoHangRepository {
                 HoaDon hoaDon = new HoaDon();
 
                 hoaDon.setId(rs.getLong("idhd"));
+                phieuGiaoHang.setId(rs.getLong("ID"));
                 phieuGiaoHang.setIdHD(hoaDon);
                 return phieuGiaoHang;
             }

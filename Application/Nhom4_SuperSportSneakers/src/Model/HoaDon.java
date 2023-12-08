@@ -6,7 +6,7 @@ package Model;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
+import Utils.Format;
 /**
  *
  * @author manhnt
@@ -350,7 +350,7 @@ public class HoaDon {
     public Object [] rowData_HD (int i){
         
         return new Object[]{
-            i , maHoaDon , IdNV.getMaNhanVien() , IdKH.getMaKhachHang() , thanhTien , loai== 0 ? "Tại quầy" :"Đặt hàng" , ngayTao , ngayThanhToan, setTrangThaiHD(trangThai)
+            i , maHoaDon , IdNV.getMaNhanVien() , IdKH.getMaKhachHang() , Format.format(thanhTien) , loai== 0 ? "Tại quầy" :"Đặt hàng" , ngayTao , ngayThanhToan, setTrangThaiHD(trangThai)
         };
     }
     @Override
