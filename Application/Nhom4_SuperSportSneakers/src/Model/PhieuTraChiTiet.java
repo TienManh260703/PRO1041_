@@ -102,4 +102,10 @@ public class PhieuTraChiTiet {
         return "PhieuTraChiTiet{" + "id=" + id + ", idPT=" + idPT + ", maCTSP=" + maCTSP + ", tenSP=" + tenSP + ", mau=" + mau + ", size=" + size + ", thuongHieu=" + thuongHieu + ", soLuong=" + soLuong + ", ngayTao=" + ngayTao + '}';
     }
 
+    
+    public Object[]rowData (int i ){
+        return new Object[]{
+            i , maCTSP , tenSP , mau ,thuongHieu , size , soLuong
+        };
+    }
 }

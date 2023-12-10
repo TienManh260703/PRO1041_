@@ -44,7 +44,7 @@ public class Menu extends JPanel {
         {"Khuyến Mại", "Phiếu Giảm Giá", "Đợt Giảm Giá"},
         //4
         {"~Phiếu Hàng~"},
-        { "Phiếu","Phiếu Giao", "Đổi trả"},
+        { "Phiếu","Phiếu Giao", "Phiếu Trả"},
         //6
         {"~Hóa Đơn~"},
         {"Hóa Đơn"},

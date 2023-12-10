@@ -16,17 +16,35 @@ import java.util.UUID;
  * @author manhnt
  */
 public class Bill {
-  static HoaDon_MRepositoryM hoaDon_MRepositoryM = new HoaDon_MRepositoryM();
-    
-     public static Boolean exportPdf(String path, String ma ) {
-         HoaDon hoaDonDone;
+
+    static HoaDon_MRepositoryM hoaDon_MRepositoryM = new HoaDon_MRepositoryM();
+
+    public static Boolean exportPdf(String path, String ma) {
+        HoaDon hoaDonDone;
         hoaDonDone = hoaDon_MRepositoryM.pdfHD(ma);
+        System.out.println(hoaDonDone.toString());
         List<ChiTietHoaDon> lst = hoaDon_MRepositoryM.pdfHDCT(ma);
         ExportBill exportBill = new ExportBill();
-        if (exportBill.docPDF(hoaDonDone, lst, path, true) != null) {
+        exportBill.docPDF(hoaDonDone, lst, path, true) ;
             return true;
-        } else {
-            return false;
-        }
+    }
+
+    public static void exportPdf2(String path, String ma) {
+        new Thread() {
+            @Override
+            public void run() {
+                HoaDon hoaDonDone;
+                hoaDonDone = hoaDon_MRepositoryM.pdfHD(ma);
+                System.out.println(hoaDonDone.toString());
+                List<ChiTietHoaDon> lst = hoaDon_MRepositoryM.pdfHDCT(ma);
+                ExportBill exportBill = new ExportBill();
+                if (exportBill.docPDF(hoaDonDone, lst, path, true) != null) {
+                    return;
+                } else {
+                    return;
+                }
+            }
+
+        }.start();
     }
 }

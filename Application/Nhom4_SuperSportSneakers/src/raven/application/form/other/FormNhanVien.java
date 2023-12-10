@@ -3,6 +3,7 @@ package raven.application.form.other;
 import com.formdev.flatlaf.FlatClientProperties;
 import Model.NhanVien;
 import Repository.NhanVienRepository;
+import Utils.Auth;
 import Utils.MsgBox;
 import Utils.XDate2;
 import java.text.ParseException;
@@ -38,6 +39,8 @@ public class FormNhanVien extends javax.swing.JPanel {
     private int index = -1;
     //khai báo biến đang dùng nút hiện hay không
     private boolean hiddenpass = true;
+    
+    private NhanVien nhanVien = Auth.nv;
 
     public FormNhanVien() {
         initComponents();

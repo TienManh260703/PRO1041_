@@ -37,6 +37,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
 
     //private static int gioiHanPage2 = (int) ((Math.ceil(khachHangRepository.getRowCountKH() / lmit)));
     private static int index = -1;
+       private NhanVien nhanVien = Auth.nv;
 
     /**
      * Creates new form Form_KhachHang
@@ -62,7 +63,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
     private void fillToTableKH(List<KhachHang> list) {
         DefaultTableModel dtm = (DefaultTableModel) this.tblKH.getModel();
         dtm.setRowCount(0);
-        int i = 0;
+        int i = 1;
         for (KhachHang kh : list) {
             dtm.addRow(kh.rowData(i));
             i++;
@@ -73,7 +74,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
         DefaultTableModel dtm = (DefaultTableModel) this.tblLSGD.getModel();
         dtm.setRowCount(0);
         for (int i = 0; i < list.size(); i++) {
-            dtm.addRow((Object[]) list.get(i));
+            dtm.addRow((Object[]) list.get(i+1));
         }
     }
 
@@ -84,7 +85,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
         txtEmail.setText(khachHang.getEmail());
         txtHoTen.setText(khachHang.getTenKhachHang());
         txtMaKH.setText(khachHang.getMaKhachHang());
-        txtNgaySinh.setText(khachHang.getNgaySinh() + "");
+        txtNgaySinh.setDate(khachHang.getNgaySinh());
         txtSDT.setText(khachHang.getSdt());
         boolean gioiTinh = khachHang.isGioiTinh();
         rdoNam.setSelected(gioiTinh);
@@ -100,17 +101,17 @@ public class Form_KhachHang extends javax.swing.JPanel {
         String sdt = txtSDT.getText().trim();
         String email = txtEmail.getText().trim();
         String diaChi = txtDiaChi.getText().trim();
-        String ngaySinh = txtNgaySinh.getText().trim();
+        String ngaySinh = txtNgaySinh.getDate()+"";
         System.out.println(ngaySinh);
         boolean gioiTinh = rdoNam.isSelected();
         int maxIDKH = khachHangRepository.getRowCountKH() + 1;
         if (maKH.isEmpty()) {
             if (maxIDKH < 10) {
-                maKH = "KH" + "00" + maKH;
+                maKH = "PT" + "00" + maxIDKH;
             } else if (maxIDKH < 100) {
-                maKH = "KH" + "0" + maxIDKH;
+                maKH = "PT" + "0" + maxIDKH;
             } else {
-                maKH = "KH" + maxIDKH;
+                maKH = "PT" + maxIDKH;
             }
         } else {
             maKH = txtMaKH.getText().trim();
@@ -190,7 +191,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
         }
         date = XDate.convertDateFormat(ngaySinh, "MM-dd-yyyy");
 
-        return new KhachHang(new NhanVien(1L), maKH, tenKH, sdt, date, gioiTinh, email, diaChi);
+        return new KhachHang(nhanVien, maKH, tenKH, sdt, date, gioiTinh, email, diaChi);
     }
 
     private void insert() {
@@ -233,7 +234,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
         txtSDT.setText("");
         txtEmail.setText("");
         txtDiaChi.setText("");
-        txtNgaySinh.setText("");
+        txtNgaySinh.setDate(null);
         rdoNam.setSelected(true);
         txtDiem.setText("");
         cboCapBac.setSelectedIndex(3);
@@ -335,11 +336,11 @@ public class Form_KhachHang extends javax.swing.JPanel {
         rdoNam = new javax.swing.JRadioButton();
         rdoNu = new javax.swing.JRadioButton();
         jLabel11 = new javax.swing.JLabel();
-        txtNgaySinh = new javax.swing.JTextField();
         btnUpdate = new javax.swing.JButton();
         btnInsert = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
         pbgTienDo = new javax.swing.JProgressBar();
+        txtNgaySinh = new com.toedter.calendar.JDateChooser();
         jLabel1 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -420,6 +421,9 @@ public class Form_KhachHang extends javax.swing.JPanel {
 
         pbgTienDo.setForeground(new java.awt.Color(255, 102, 0));
 
+        txtNgaySinh.setDateFormatString("dd-MM-yyyy");
+        txtNgaySinh.setMaxSelectableDate(new java.util.Date(253370743316000L));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -430,7 +434,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel11)
                         .addGap(18, 18, 18)
-                        .addComponent(txtNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -520,7 +524,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
                             .addComponent(rdoNu)))
                     .addComponent(pbgTienDo, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel11)
                     .addComponent(txtNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -732,7 +736,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
                     .addComponent(jLabel1)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -906,7 +910,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtHoTen;
     private javax.swing.JTextField txtMaKH;
-    private javax.swing.JTextField txtNgaySinh;
+    private com.toedter.calendar.JDateChooser txtNgaySinh;
     private javax.swing.JTextField txtSDT;
     private javax.swing.JTextField txtTim;
     // End of variables declaration//GEN-END:variables

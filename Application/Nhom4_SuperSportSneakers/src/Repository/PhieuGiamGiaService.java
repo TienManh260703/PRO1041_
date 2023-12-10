@@ -4,7 +4,6 @@
  */
 package Repository;
 
-
 import Model.HoaDon;
 import Model.NhanVien;
 import Model.PhieuGiamGia;
@@ -40,7 +39,7 @@ public class PhieuGiamGiaService {
                 + "DonToiThieu , \n"
                 + "NgayBatDau , NgayKetThuc ,  PGG.NgayTao , MoTa , PGG.TrangThai FROM PHIEU_GIAM_GIA AS PGG\n"
                 + "JOIN NHANVIEN AS NV ON NV.ID = PGG.IdNV"
-                + "	order by ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";;
+                + "	order by ID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";;
 
         try {
             pstm = conn.prepareStatement(sql);
@@ -190,7 +189,7 @@ public class PhieuGiamGiaService {
         try {
 
             if (giamGia.getNgayBatDau() == null && giamGia.getNgayKetThuc() == null && giamGia.getLoaiPhieu() == -1 && giamGia.getTrangThai() == -1) {
-                query += "order by ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+                query += "order by ID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
                 System.out.println(query);
                 pstm = con.prepareStatement(query);
                 pstm.setInt(1, (page - 1) * limt);
@@ -362,6 +361,50 @@ public class PhieuGiamGiaService {
             Logger.getLogger(PhieuGiamGiaService.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    public PhieuGiamGia getPGGByMa2(String ma) {
+        try {
+            query = "SELECT\n"
+                    + "    PGG.ID AS ID,\n"
+                    + "    MaPhieu,\n"
+                    + "    TenPhieu,\n"
+                    + "    LoaiPhieu,\n"
+                    + "    GiaTri,\n"
+                    + "    SoLuongPhieu,\n"
+                    + "    DonToiThieu,\n"
+                    + "    NgayBatDau,\n"
+                    + "    NgayKetThuc,\n"
+                    + "    PGG.NgayTao,\n"
+                    + "    MoTa,\n"
+                    + "    PGG.TrangThai\n"
+                    + "FROM\n"
+                    + "    PHIEU_GIAM_GIA AS PGG\n"
+                    + "WHERE   MaPhieu LIKE '" + ma + "' ";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                PhieuGiamGia pgg = new PhieuGiamGia();
+
+                pgg.setIdPGG(rs.getLong("ID"));
+                pgg.setMaPhieu(rs.getString("MaPhieu"));
+                pgg.setTenPhieu(rs.getString("TenPhieu"));
+                pgg.setLoaiPhieu(rs.getInt(("LoaiPhieu")));
+                pgg.setGiaTri(rs.getBigDecimal("GiaTri"));
+                pgg.setSoLuongPhieu(rs.getInt("SoLuongPhieu"));
+                pgg.setDonToiThieu(rs.getBigDecimal("DonToiThieu"));
+                pgg.setNgayBatDau(rs.getDate("NgayBatDau"));
+                pgg.setNgayKetThuc(rs.getDate("NgayKetThuc"));
+                pgg.setNgayTao(rs.getDate("NgayTao"));
+                pgg.setMoTa(rs.getString("MoTa"));
+                pgg.setTrangThai(rs.getInt("TrangThai"));
+                return pgg;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiamGiaService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public static NhanVien getNhanVien(long idPGG) {
@@ -677,6 +720,34 @@ public class PhieuGiamGiaService {
         } catch (SQLException ex) {
             Logger.getLogger(PhieuGiamGiaService.class.getName()).log(Level.SEVERE, null, ex);
             return -1;
+        }
+
+    }
+
+    public void updateKT(String date) {
+        try {
+            query = "UPDATE PHIEU_GIAM_GIA\n"
+                    + "SET TrangThai = 2\n"
+                    + "WHERE NgayKetThuc <'" + date + "' or SoLuongPhieu =0 ";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiamGiaService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void updateBD(String date) {
+        try {
+            query = "UPDATE PHIEU_GIAM_GIA\n"
+                    + "SET TrangThai = 1\n"
+                    + "WHERE NgayBatDau = '"+date+"' and SoLuongPhieu >0";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiamGiaService.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

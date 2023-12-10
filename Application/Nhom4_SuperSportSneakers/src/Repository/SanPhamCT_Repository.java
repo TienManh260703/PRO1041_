@@ -36,7 +36,7 @@ public class SanPhamCT_Repository {
 
     public List<SanPhamChiTiet> getToAll() {
         List<SanPhamChiTiet> list = new ArrayList<>();
-        String sql = "select  CTSP.ID,CTSP.MaCTSP,SP.TenSP,TH.TenThuongHieu,S.TenSize,M.TenMau,CTSP.SoLuongTon, CTSP.GiaBan, CTSP.GiaNiemYet, CTSP.MoTa, CTSP.TrangThai , CTSP.ID as ID from CHI_TIET_SAN_PHAM as CTSP\n"
+        String sql = "select  CTSP.ID ,CTSP.MaCTSP ,SP.TenSP,TH.TenThuongHieu,S.TenSize,M.TenMau,CTSP.SoLuongTon, CTSP.GiaBan, CTSP.GiaNiemYet, CTSP.MoTa, CTSP.TrangThai , CTSP.ID as ID from CHI_TIET_SAN_PHAM as CTSP\n"
                 + "join MAU as M on M.ID = CTSP.IdMau\n"
                 + "join SIZE as S on S.ID = CTSP.IdSize\n"
                 + "join THUONGHIEU as TH on TH.ID = CTSP.IdThuongHieu\n"
@@ -92,7 +92,7 @@ public class SanPhamCT_Repository {
 
     public List<SanPhamChiTiet> searchTrangThai_SanPhamChiTiet(int n) {
         List<SanPhamChiTiet> listSearch = new ArrayList<>();
-        String query = "select  CTSP.ID,CTSP.MaCTSP,SP.TenSP,TH.TenThuongHieu,S.TenSize,M.TenMau,CTSP.SoLuongTon, CTSP.GiaBan, CTSP.GiaNiemYet, CTSP.MoTa, CTSP.TrangThai , CTSP.ID as ID from CHI_TIET_SAN_PHAM as CTSP\n"
+        String query = "select  CTSP.ID ,CTSP.MaCTSP,SP.TenSP,TH.TenThuongHieu,S.TenSize,M.TenMau,CTSP.SoLuongTon, CTSP.GiaBan, CTSP.GiaNiemYet, CTSP.MoTa, CTSP.TrangThai , CTSP.ID as ID from CHI_TIET_SAN_PHAM as CTSP\n"
                 + "join MAU as M on M.ID = CTSP.IdMau\n"
                 + "join SIZE as S on S.ID = CTSP.IdSize\n"
                 + "join THUONGHIEU as TH on TH.ID = CTSP.IdThuongHieu\n"
@@ -147,6 +147,37 @@ public class SanPhamCT_Repository {
         return list;
     }
 
+    
+    public List<SanPhamChiTiet> get3(int page, int limt) {
+        List<SanPhamChiTiet> list = new ArrayList<>();
+        String sql = "SELECT CTSP.ID, CTSP.MaCTSP, SP.TenSP, TH.TenThuongHieu, S.TenSize, M.TenMau, CTSP.SoLuongTon, CTSP.GiaBan, CTSP.GiaNiemYet, CTSP.MoTa, CTSP.TrangThai\n"
+                + "FROM CHI_TIET_SAN_PHAM as CTSP\n"
+                + "JOIN MAU as M on M.ID = CTSP.IdMau\n"
+                + "JOIN SIZE as S on S.ID = CTSP.IdSize\n"
+                + "JOIN THUONGHIEU as TH on TH.ID = CTSP.IdThuongHieu\n"
+                + "JOIN SANPHAM as SP on SP.ID = CTSP.IdSP\n"
+                + " where CTSP.SoLuongTon > 0 "
+                + "ORDER BY CTSP.ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
+
+        try {
+            PreparedStatement pstm = connect.prepareStatement(sql);
+            // Công thức chỉ cần ghi như vậy
+            pstm.setInt(1, (page - 1) * limt);
+            pstm.setInt(2, limt);
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+                SanPham sanPham = new SanPham(rs.getString("TenSP"));
+                MauSac mauSac = new MauSac(rs.getString("TenMau"));
+                ThuongHieu thuongHieu = new ThuongHieu(rs.getString("TenThuongHieu"));
+                KichThuoc kichThuoc = new KichThuoc(rs.getFloat("TenSize"));
+                SanPhamChiTiet sanPhamChiTiet = new SanPhamChiTiet(rs.getLong("ID"), rs.getString("MaCTSP"), rs.getInt("SoLuongTon"), rs.getBigDecimal("GiaBan"), rs.getBigDecimal("GiaNiemYet"), rs.getInt("TrangThai"), rs.getString("MoTa"), mauSac, kichThuoc, thuongHieu, sanPham);
+                list.add(sanPhamChiTiet);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return list;
+    }
     public void insertSPCT(SanPhamChiTiet spct) {
         String query = " Insert  into CHI_TIET_SAN_PHAM (IdSP,IdThuongHieu,IdMau,IdSize,MaCTSP,SoLuongTon,GiaNiemYet,GiaBan,MoTa,TrangThai) Values (?,?,?,?,?,?,?,?,?,?)";
         try {

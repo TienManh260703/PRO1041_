@@ -349,8 +349,8 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="txtNgayKetThuc" pref="254" max="32767" attributes="0"/>
-                                  <Component id="txtNgayBatDAu" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="txtDau1" pref="254" max="32767" attributes="0"/>
+                                  <Component id="txtDau" alignment="1" max="32767" attributes="0"/>
                                   <Component id="jScrollPane1" alignment="1" pref="254" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace pref="91" max="32767" attributes="0"/>
@@ -372,9 +372,9 @@
                                       <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
-                                      <Component id="txtNgayBatDAu" min="-2" max="-2" attributes="0"/>
+                                      <Component id="txtDau" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="32767" attributes="0"/>
-                                      <Component id="txtNgayKetThuc" min="-2" max="-2" attributes="0"/>
+                                      <Component id="txtDau1" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -435,7 +435,7 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLocActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="com.toedter.calendar.JDateChooser" name="txtNgayBatDAu">
+                    <Component class="com.toedter.calendar.JDateChooser" name="txtDau">
                       <Properties>
                         <Property name="dateFormatString" type="java.lang.String" value="dd-MM-yyyy"/>
                         <Property name="maxSelectableDate" type="java.util.Date" editor="org.netbeans.beaninfo.editors.DateEditor">
@@ -443,7 +443,7 @@
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="com.toedter.calendar.JDateChooser" name="txtNgayKetThuc">
+                    <Component class="com.toedter.calendar.JDateChooser" name="txtDau1">
                       <Properties>
                         <Property name="dateFormatString" type="java.lang.String" value="dd-MM-yyyy"/>
                         <Property name="maxSelectableDate" type="java.util.Date" editor="org.netbeans.beaninfo.editors.DateEditor">

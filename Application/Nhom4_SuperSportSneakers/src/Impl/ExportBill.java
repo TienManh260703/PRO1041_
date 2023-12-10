@@ -85,11 +85,13 @@ public class ExportBill {
                 ImageData imageData = ImageDataFactory.create(getClass().getResource("/raven/icon/png/logo3.png"));
                 Image imageLogo = new Image(imageData);
                 imageLogo.setHeight(50f).setWidth(65f);
-                System.out.println("Impl.ExportBill.docPDF()  " + getClass().getResource("/src/qrbill/" + hoaDon.getQr()));
-                ImageData imageQr = ImageDataFactory.create(getClass().getResource("/qrbill/" + hoaDon.getQr()));
-
-                Image imageOr = new Image(imageQr);
-                imageOr.setHeight(50f).setWidth(65f);
+//                System.out.println("Impl.ExportBill.docPDF()  " + getClass().getResource("/src/qrbill/" + hoaDon.getQr()));
+//                ImageData imageQr = ImageDataFactory.create(getClass().getResource("/qrbill/" + hoaDon.getQr()));
+//                System.out.println("C:\\Users\\manhnt\\Desktop\\SuperSport-Sneakers\\Application\\Nhom4_SuperSportSneakers\\Qrbill\\" + hoaDon.getQr());
+//                ImageData imageQr = ImageDataFactory.create(getClass().getResource("C:\\Users\\manhnt\\Desktop\\SuperSport-Sneakers\\Application\\Nhom4_SuperSportSneakers\\Qrbill\\" + hoaDon.getQr()));
+//
+//                Image imageOr = new Image(imageQr);
+//                imageOr.setHeight(50f).setWidth(65f);
 
                 document = new Document(pdfDocument);
                 float columnWith[] = {80, 1000};
@@ -116,12 +118,12 @@ public class ExportBill {
                 Paragraph purchaseTime = null;
                 Paragraph phoneNumber = null;
                 Paragraph khachLe = null;
-                Paragraph qr = null;
+                //    Paragraph qr = null;
                 if (hoaDon.getIdKH().getCapBac() == 3) {
                     khachLe = new Paragraph("Khách lẻ");
                     khachLe.setFont(fontTitle).setBold().setFontSize(9f);
-                    qr = new Paragraph("QR hóa đơn : ");
-                    qr.setFont(fontTitle).setBold().setFontSize(9f);
+//                    qr = new Paragraph("QR hóa đơn : ");
+//                    qr.setFont(fontTitle).setBold().setFontSize(9f);
                     maHD = new Paragraph("Mã HD :\t" + hoaDon.getMaHoaDon());
                 } else {
                     nameCos = new Paragraph("Họ tên:\t" + hoaDon.getIdKH().getTenKhachHang());
@@ -133,8 +135,8 @@ public class ExportBill {
 
                     phoneNumber = new Paragraph("Số điện thoại:\t" + hoaDon.getIdKH().getSdt());
                     phoneNumber.setFont(fontTitle).setFontSize(9f);
-                    qr = new Paragraph("QR hóa đơn : ");
-                    qr.setFont(fontTitle).setFontSize(9f);
+//                    qr = new Paragraph("QR hóa đơn : ");
+//                    qr.setFont(fontTitle).setFontSize(9f);
                 }
 
                 Paragraph nhanVienThanhToan = new Paragraph("Nhân viên thanh toán:\t" + hoaDon.getIdNV().getMaNhanVien() + "-" + hoaDon.getIdNV().getTenNhanVien());
@@ -153,25 +155,24 @@ public class ExportBill {
                     document.add(khachLe);
 
                 }
-                document.add(qr);
+                // document.add(qr);
                 float columnWithBarcode[] = {1000f};
-                tableHeader.addCell(new Cell().add(imageOr).setBorder(Border.NO_BORDER)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE).setMarginTop(5f));
+//                tableHeader.addCell(new Cell().add(imageOr).setBorder(Border.NO_BORDER)
+//                        .setVerticalAlignment(VerticalAlignment.MIDDLE).setMarginTop(5f));
+//
+//                Table tableQr = new Table(columnWithBarcode)
+//                        .setMarginTop(2f)
+//                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+//                        .setTextAlignment(TextAlignment.LEFT)
+//                        .setBorder(Border.NO_BORDER);
+//
+//                tableQr.addCell(new Cell().add(imageOr)
+//                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+//                        .setTextAlignment(TextAlignment.LEFT)
+//                        .setBorder(Border.NO_BORDER))
+//                        .setMarginLeft(2f);
 
-                Table tableQr = new Table(columnWithBarcode)
-                        .setMarginTop(2f)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
-                        .setTextAlignment(TextAlignment.LEFT)
-                        .setBorder(Border.NO_BORDER);
-
-                tableQr.addCell(new Cell().add(imageOr)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
-                        .setTextAlignment(TextAlignment.LEFT)
-                        .setBorder(Border.NO_BORDER))
-                        .setMarginLeft(2f);
-
-                document.add(tableQr);
-
+                //   document.add(tableQr);
                 document.add(nhanVienThanhToan);
 
                 Paragraph listProducts = new Paragraph("Sản phẩm");
@@ -288,9 +289,19 @@ public class ExportBill {
                 } else {
                     tongTienKhachDua = hoaDon.getTienKhDua().add(hoaDon.getTienKhChuyenKhoan());
                 }
+                int capBac = 0;
+                if(hoaDon.getCapBac()==0){
+                    capBac =0 ;
+                }else if(hoaDon.getCapBac()==1){
+                    capBac =3 ;
+                }else if(hoaDon.getCapBac()==2){
+                    capBac =8 ;
+                }else{
+                    capBac = 0;
+                }
                 tableFotter.addCell(new Cell().add(
                         "" + df.format(hoaDon.getTongTienSP()) + " VNĐ"
-                        + "\n" + hoaDon.getCapBac() + " % "
+                        + "\n" + capBac + " % "
                         + "\n" + (hoaDon.getIdPGG() == null ? "" : (hoaDon.getIdPGG().getLoaiPhieu() == 0 ? hoaDon.getPhanTramGG() + " % " : df.format(hoaDon.getTienPhieuGiam()) + " VNĐ"))
                         + "\n" + (df.format(hoaDon.getDiemDoi().multiply(new BigDecimal("5000")))) + " VNĐ"
                         + "\n" + Format.format(hoaDon.getThanhTien())

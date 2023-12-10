@@ -295,6 +295,13 @@ public class SanPhamChiTiet {
         };
     }
     
+    public Object [] rowTraHang (int i){
+        return new Object[]{
+            i, maSPCT , idSanPham.getTenSanpham() , idThuongHieu.getTenThuongHieu() ,
+            idMau.getTenMau() , idKichThuoc.getTenSize() , soLuong , Format.format(giaBan) , Format.format(giaBan.multiply(new BigDecimal(soLuong)))
+        };
+    }
+    
    
 
     @Override

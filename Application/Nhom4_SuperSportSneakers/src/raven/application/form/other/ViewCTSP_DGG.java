@@ -164,6 +164,7 @@ public class ViewCTSP_DGG extends javax.swing.JDialog {
         for(SanPhamChiTiet chiTiet :listSP_DGG){
           System.out.println(chiTiet.rowDataDGG(i));
       }
+        this.dispose();
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed

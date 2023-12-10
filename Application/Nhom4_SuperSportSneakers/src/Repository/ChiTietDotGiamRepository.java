@@ -80,8 +80,40 @@ public class ChiTietDotGiamRepository {
 
             con = DBConnection.getConnect();
             query = "SELECT IdDGG AS IDDGG , IdCTSP , MaCTSP , DonGia , DonGiaConLai , GiaTriGiam ,DGG.TrangThai FROM CHI_TIET_DGG AS CTDGG\n"
-                    + "                    LEFT JOIN DOT_GIAM_GIA AS DGG ON DGG.ID = CTDGG.IdDGG\n"
+                    + "    LEFT JOIN DOT_GIAM_GIA AS DGG ON DGG.ID = CTDGG.IdDGG\n"
                     + "					WHERE DGG.TrangThai =1";
+
+            pstm = con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                ChiTietDotGiamGia ctdgg = new ChiTietDotGiamGia();
+                DotGiamGia_M dgg = new DotGiamGia_M();
+                dgg.setIdDGG(rs.getLong("IDDGG"));
+                dgg.setTrangThai(rs.getInt("TrangThai"));
+
+                ctdgg.setIdDGG(dgg);
+                ctdgg.setIdCTSP(rs.getLong("IdCTSP"));
+                ctdgg.setMsSP(rs.getString("MaCTSP"));
+                ctdgg.setDonGia(rs.getBigDecimal("DonGia"));
+                ctdgg.setDonGiaConLai(rs.getBigDecimal("DonGiaConLai"));
+                ctdgg.setGiaTriGiam(rs.getFloat("GiaTriGiam"));
+                list.add(ctdgg);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietDotGiamRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public List<ChiTietDotGiamGia> getAllCT_CTDGG_KT() {
+        List<ChiTietDotGiamGia> list = new ArrayList<>();
+        try {
+
+            con = DBConnection.getConnect();
+            query = "SELECT IdDGG AS IDDGG , IdCTSP , MaCTSP , DonGia , DonGiaConLai , GiaTriGiam ,DGG.TrangThai FROM CHI_TIET_DGG AS CTDGG\n"
+                    + "    LEFT JOIN DOT_GIAM_GIA AS DGG ON DGG.ID = CTDGG.IdDGG\n"
+                    + "					WHERE DGG.TrangThai =2";
 
             pstm = con.prepareStatement(query);
             rs = pstm.executeQuery();
@@ -114,7 +146,7 @@ public class ChiTietDotGiamRepository {
 
             Connection c = DBConnection.getConnect();
             PreparedStatement ps = c.prepareStatement(sql);
-            ps.setLong(1, ctdgg.getIdDGG().getIdDGG());
+            ps.setObject(1, ctdgg.getIdDGG().getIdDGG());
             ps.setBigDecimal(2, ctdgg.getDonGiaConLai());
             ps.setLong(3, ctdgg.getIdCTSP());
             ps.execute();
@@ -235,6 +267,24 @@ public class ChiTietDotGiamRepository {
 
     }
 
+    public void updaet(ChiTietDotGiamGia cTDGG, DotGiamGia_M dgg, SanPhamChiTiet spct) {
+        try {
+            query = "UPDATE CHI_TIET_DGG\n"
+                    + "SET DonGia = ? , DonGiaConLai = ? , GiaTriGiam = ?\n"
+                    + "WHERE IdDGG = ? AND IdCTSP = ? ";
+            con = DBConnection.getConnect();
+            pstm = con.prepareCall(query);
+            pstm.setBigDecimal(1, spct.getGiaNiemYet());
+            pstm.setBigDecimal(2, cTDGG.getDonGiaConLai());
+            pstm.setFloat(3, Float.parseFloat(dgg.getGiaTri() + ""));
+            pstm.setLong(4, dgg.getIdDGG());
+            pstm.setLong(5, spct.getIdSPCT());
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietDotGiamRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public int insert(ChiTietDotGiamGia cTDGG, DotGiamGia_M dgg, SanPhamChiTiet spct) {
 
         try {
@@ -273,6 +323,19 @@ public class ChiTietDotGiamRepository {
         } catch (SQLException ex) {
             Logger.getLogger(ChiTietDotGiamRepository.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        }
+    }
+
+    public void updateTrangIDGG_SP(Long id) {
+        try {
+            query = "UPDATE CHI_TIET_SAN_PHAM\n"
+                    + "SET IdDGG = NULL , GiaBan = GiaNiemYet\n"
+                    + "WHERE ID = " + id + "";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietDotGiamRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

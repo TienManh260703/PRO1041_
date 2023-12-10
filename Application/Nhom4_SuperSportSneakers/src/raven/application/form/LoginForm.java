@@ -147,14 +147,16 @@ public class LoginForm extends javax.swing.JPanel {
             Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Bạn đã bỏ trống Tài Khoản hoặc Mật Khẩu.");
             return;
         } else {
-            NhanVien nv = nhanVienRepository.findNhanVien(txtUser.getText(), txtPass.getText());
+            NhanVien nv = nhanVienRepository.findNhanVien(txtUser.getText(), new String(txtPass.getPassword()));
             if (nv.getEmail() == null) {
                 Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Login Faild.");
                 return;
             } else if (nv.getEmail() != null) {
+                Auth.nv = nv;
+                System.out.println("NV : "+nv);
                 Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Login Successfull.");
                 Application.login();
-                Auth.nv = nv;
+                
             }
 
         }

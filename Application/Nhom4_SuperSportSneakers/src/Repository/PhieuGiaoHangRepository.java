@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -378,5 +379,20 @@ public class PhieuGiaoHangRepository {
             return -1;
         }
 
+    }
+
+    public void updateNgayNhan(String ma , Date date) {
+        try {
+            query = "UPDATE PHIEUGIAOHANG\n"
+                    + "SET NgayHoanThanhDon = ? \n"
+                    + "WHERE MaVanDon LIKE ?";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.setObject(1, date);
+            pstm.setObject(2, ma);
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(PhieuGiaoHangRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

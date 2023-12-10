@@ -69,6 +69,12 @@ public class View_TT_DatHang extends javax.swing.JDialog {
                 txtTenKh.requestFocus();
                 return null;
             }
+
+            if (!Validate.isName(tenNgN)) {
+                MsgBox.aleart(this, "Tên khách hàng sai đinh dạng !");
+                txtTenKh.requestFocus();
+                return null;
+            }
         }
 
         if (sdtNgNh.isEmpty()) {
@@ -98,6 +104,12 @@ public class View_TT_DatHang extends javax.swing.JDialog {
                 txtTenShip.requestFocus();
                 return null;
             }
+
+            if (!Validate.isName(tenShip)) {
+                MsgBox.aleart(this, "Tên ship sai đinh dạng !");
+                txtTenShip.requestFocus();
+                return null;
+            }
         }
 
         if (sdtShip.isEmpty()) {
@@ -119,6 +131,11 @@ public class View_TT_DatHang extends javax.swing.JDialog {
         } else {
             try {
                 giaShipB = new BigDecimal(giaShip);
+                if (Float.parseFloat(giaShip) < 0) {
+                    MsgBox.aleart(this, "Giá ship phải > 0 !");
+                    txtGiaShip.requestFocus();
+                    return null;
+                }
             } catch (Exception e) {
                 MsgBox.aleart(this, "Giá ship phải là số !");
                 txtGiaShip.requestFocus();
@@ -352,8 +369,8 @@ public class View_TT_DatHang extends javax.swing.JDialog {
         phieuGiaoHang_ = getForm();
         if (phieuGiaoHang_ != null) {
             int kq = phieuGiaoHangRepository.insert(phieuGiaoHang_);
-              
-        hoaDon_MRepositoryM.updateLoaiHD(idHD, 1);
+
+            hoaDon_MRepositoryM.updateLoaiHD(idHD, 1, phieuGiaoHang_.getIdHD().getTrangThai());
             if (kq != -1) {
                 System.out.println(phieuGiaoHang_);
                 MsgBox.aleart(this, "Tạo thành công 1 phiếu giao hàng : " + phieuGiaoHang_.getMaVanDon());

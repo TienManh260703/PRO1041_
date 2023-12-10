@@ -33,7 +33,8 @@ import raven.application.form.other.Form_PhieuGiaoHang;
 import raven.application.form.other.Form_SPCT;
 import raven.application.form.other.Form_SPCT_NV;
 import raven.application.form.other.Form_ThongKe;
-import raven.application.form.other.Form_TraHang;
+
+import raven.application.form.other.Form_TraHang2;
 
 import raven.menu.Menu;
 import raven.menu.MenuAction;
@@ -47,10 +48,9 @@ public class MainForm extends JLayeredPane {
     NhanVienRepository nhanVienRepository = new NhanVienRepository();
     NhanVien nv;
 
-    public MainForm(NhanVien nhanVien) {
+    public MainForm() {
         init();
-        nv = nhanVien;
-        Auth.nv = nhanVien;
+       
     }
 
     private void init() {
@@ -164,7 +164,7 @@ public class MainForm extends JLayeredPane {
                         if (subIndex == 1) {
                             Application.showForm(new Form_PhieuGiaoHang());
                         } else {
-                            Application.showForm(new Form_TraHang());
+                            Application.showForm(new Form_TraHang2());
                         }
                     } else if (index == 6) {
 
@@ -175,6 +175,7 @@ public class MainForm extends JLayeredPane {
                         Application.showForm(new Form_DoiMatKhau());
                     } else if (index == 9) {
                         Application.logout();
+                        // Auth.clear();
                     } else {
                         action.cancel();
                     }
@@ -200,7 +201,7 @@ public class MainForm extends JLayeredPane {
                         if (subIndex == 1) {
                             Application.showForm(new Form_PhieuGiaoHang());
                         } else {
-                            Application.showForm(new Form_TraHang());
+                            Application.showForm(new Form_TraHang2());
                         }
                     } else if (index == 6) {
                         Application.showForm(new Form_HoaDon());
@@ -210,6 +211,7 @@ public class MainForm extends JLayeredPane {
                         Application.showForm(new Form_DoiMatKhau());
                     } else if (index == 9) {
                         Application.logout();
+                        // Auth.clear();
                     } else {
                         action.cancel();
                     }

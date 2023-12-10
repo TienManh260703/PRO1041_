@@ -16,7 +16,9 @@ import Repository.DotGiamGia_MRpository;
 import Repository.PhieuGiamGiaService;
 import Repository.PhieuGiaoHangRepository;
 import Repository.ThuongHieu_Repository;
+import Utils.Auth;
 import Utils.MsgBox;
+import Utils.XDate;
 import Utils.XuLyString;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -24,6 +26,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +56,8 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     private static int gioiHanPage = (int) ((Math.ceil(dotGiamGia_MRpository.getRowCount() / lmit))) + 1;
     private static int index = -1;
 
+    private static NhanVien nhanVien = Auth.nv;
+
     public Form_DotGiamGia() {
         initComponents();
         init();
@@ -64,6 +70,13 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         fillToTableDGG(listDGG);
         lblPageTTKH.setText(page + " / " + gioiHanPage);
         setBtn();
+        if (Auth.isManager()) {
+            btnSua.setVisible(true);
+            btnThem.setVisible(true);
+        } else {
+            btnSua.setVisible(false);
+            btnThem.setVisible(false);
+        }
     }
 
     private void setBtn() {
@@ -154,7 +167,9 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     }
 
     private DotGiamGia_M getForm() {
-        NhanVien nhanVien = new NhanVien(1L);
+        NhanVien nhanVien = new NhanVien(7L);
+        System.out.println(nhanVien + " tétt");
+
         String maDGG = txtMaPhieu.getText().trim();
         if (maDGG.isEmpty()) {
             int maxDGG = dotGiamGia_MRpository.getRowCount() + 1;
@@ -189,7 +204,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         Date date2 = null;
         try {
 
-            date1 = txtNgayBatDAu.getDate();
+            date1 = txtDau.getDate();
             if (date1 == null) {
                 MsgBox.aleart(this, "Ngày bắt đầu chưa có");
                 return null;
@@ -200,7 +215,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         }
         try {
 
-            date2 = txtNgayKetThuc.getDate();
+            date2 = txtDau1.getDate();
             if (date2 == null) {
                 MsgBox.aleart(this, "Ngày kết thúc chưa có");
                 return null;
@@ -232,7 +247,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                 String maCTSP = tblSP.getValueAt(i, 0).toString();
                 SanPhamChiTiet sanPhamChiTiet = chiTietDotGiamRepository.getSPCTByMa(maCTSP);
                 listSP.add(sanPhamChiTiet);
-                System.out.println("raven." + sanPhamChiTiet.getMaSPCT() + "  " + sanPhamChiTiet.getGiaNiemYet() + " " + sanPhamChiTiet.getIdSPCT());
+
             }
         }
         return listSP;
@@ -254,9 +269,14 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
             // Trừ giá trị giảm từ giá niêm yết
             giaTriGiam = giaNiemYet.subtract(giaTriGiam);
             System.out.println("Loại 0 ... %: " + giaTriGiam + " " + giaTriGiamDGG);
+
             return giaTriGiam;
         } else if (checkLoai == 1) { // Giảm theo giá trị cố định (VND)
             giaTriGiam = giaNiemYet.subtract(giaTriGiamDGG);
+            if (giaTriGiam.compareTo(BigDecimal.ZERO) < 0) {
+                giaTriGiam = BigDecimal.ZERO;
+
+            }
             System.out.println("Loại 1 ... VND: " + giaTriGiam);
             return giaTriGiam;
         } else {
@@ -273,7 +293,21 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         Long id = dotGiamGia_MRpository.getDGGByMaDGG(dgg.getMaDGG()).getIdDGG();
         dgg.setIdDGG(id);
         int kq = dotGiamGia_MRpository.update(dgg);
+
+        String date = XDate.toString(new Date(), "yyyy-MM-dd");
+        dotGiamGia_MRpository.updateKT(date);
+        List<ChiTietDotGiamGia> listCTDGG = chiTietDotGiamRepository.getAllCT_CTDGG_KT();
+        for (ChiTietDotGiamGia ctdgg : listCTDGG) {
+            chiTietDotGiamRepository.updateTrangIDGG_SP(ctdgg.getIdCTSP());
+        }
+        // bat dau
+        dotGiamGia_MRpository.updateBD(date);
+        List<ChiTietDotGiamGia> listCTDGG_BD = chiTietDotGiamRepository.getAllCT_CTDGG();
+        for (ChiTietDotGiamGia ctdggBD : listCTDGG_BD) {
+            chiTietDotGiamRepository.update_SP(ctdggBD);
+        }
         if (kq != -1) {
+
             List<ChiTietDotGiamGia> list = chiTietDotGiamRepository.getAllByIDDgg(dgg.getIdDGG());
             for (ChiTietDotGiamGia ctdgg : list) {
                 System.out.println(tinhGiaGiam(dgg, ctdgg.getDonGia()) + "");
@@ -281,6 +315,9 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                 ));
                 chiTietDotGiamRepository.update(dgg, ctdgg);
             }
+            listDGG = dotGiamGia_MRpository.getAllDGG(page, lmit);
+            fillToTableDGG(listDGG);
+            MsgBox.aleart(this, "Update thành công");
         } else {
             MsgBox.aleart(this, "Update thất bại");
         }
@@ -292,13 +329,28 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
             return;
         }
         int kq = dotGiamGia_MRpository.insertDGG(dgg);
+        // Ket thuc
+        String date = XDate.toString(new Date(), "yyyy-MM-dd");
+        dotGiamGia_MRpository.updateKT(date);
+        List<ChiTietDotGiamGia> listCTDGG = chiTietDotGiamRepository.getAllCT_CTDGG_KT();
+        for (ChiTietDotGiamGia ctdgg : listCTDGG) {
+            chiTietDotGiamRepository.updateTrangIDGG_SP(ctdgg.getIdCTSP());
+        }
+        // bat dau
+        dotGiamGia_MRpository.updateBD(date);
+        List<ChiTietDotGiamGia> listCTDGG_BD = chiTietDotGiamRepository.getAllCT_CTDGG();
+        for (ChiTietDotGiamGia ctdggBD : listCTDGG_BD) {
+            chiTietDotGiamRepository.update_SP(ctdggBD);
+        }
         if (kq != -1) {
             MsgBox.aleart(this, "Tạo thành công 1 phiếu giảm giá");
             listDGG = dotGiamGia_MRpository.getAllDGG(page, lmit);
             fillToTableDGG(listDGG);
             String maDGG = dgg.getMaDGG();
             DotGiamGia_M getDGG = dotGiamGia_MRpository.getDGGByMaDGG(maDGG);
+            System.out.println("getTable : " + getTable());
             for (SanPhamChiTiet sp : getTable()) {
+                System.out.println("DGG chạy");
                 BigDecimal giaGiam = tinhGiaGiam(getDGG, sp.getGiaNiemYet());
                 ChiTietDotGiamGia ctdgg = new ChiTietDotGiamGia();
                 ctdgg.setDonGiaConLai(giaGiam);
@@ -317,8 +369,8 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         txtGiaTri.setText(dgg.getGiaTri() + "");
         txtMaPhieu.setText(dgg.getMaDGG());
         txtMoTa.setText(dgg.getMoTa());
-        txtNgayBatDAu.setDate(dgg.getNgayBatDau());
-        txtNgayKetThuc.setDate(dgg.getNgayKetThuc());
+        txtDau.setDate(dgg.getNgayBatDau());
+        txtDau1.setDate(dgg.getNgayKetThuc());
         txtNguoiTao.setText(dgg.getIdNV().getTenNhanVien());
         txtTenPhieu.setText(dgg.getTenDGG());
         cboLoaiPhieu.setSelectedIndex(dgg.getHinhThucDGG());
@@ -329,8 +381,8 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         txtGiaTri.setText("");
         txtMaPhieu.setText("");
         txtMoTa.setText("");
-        txtNgayBatDAu.setDate(null);
-        txtNgayKetThuc.setDate(null);
+        txtDau.setDate(null);
+        txtDau1.setDate(null);
         txtNguoiTao.setText("");
         txtTenPhieu.setText("");
         cboLoaiPhieu.setSelectedIndex(0);
@@ -377,8 +429,8 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtMoTa = new javax.swing.JTextArea();
         btnLoc = new javax.swing.JButton();
-        txtNgayBatDAu = new com.toedter.calendar.JDateChooser();
-        txtNgayKetThuc = new com.toedter.calendar.JDateChooser();
+        txtDau = new com.toedter.calendar.JDateChooser();
+        txtDau1 = new com.toedter.calendar.JDateChooser();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tblSP = new javax.swing.JTable();
@@ -487,11 +539,11 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
             }
         });
 
-        txtNgayBatDAu.setDateFormatString("dd-MM-yyyy");
-        txtNgayBatDAu.setMaxSelectableDate(new java.util.Date(253370743316000L));
+        txtDau.setDateFormatString("dd-MM-yyyy");
+        txtDau.setMaxSelectableDate(new java.util.Date(253370743316000L));
 
-        txtNgayKetThuc.setDateFormatString("dd-MM-yyyy");
-        txtNgayKetThuc.setMaxSelectableDate(new java.util.Date(253370743316000L));
+        txtDau1.setDateFormatString("dd-MM-yyyy");
+        txtDau1.setMaxSelectableDate(new java.util.Date(253370743316000L));
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -505,8 +557,8 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtNgayKetThuc, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
-                    .addComponent(txtNgayBatDAu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtDau1, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                    .addComponent(txtDau, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                 .addComponent(btnLoc)
@@ -524,9 +576,9 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                         .addGap(7, 7, 7)
                         .addComponent(jLabel11))
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(txtNgayBatDAu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtDau, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtNgayKetThuc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtDau1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel12)
@@ -1042,19 +1094,116 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     }//GEN-LAST:event_chkAllActionPerformed
 
     private void btnLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocActionPerformed
-        Date date = txtNgayBatDAu.getDate();
-        Date date2 = txtNgayKetThuc.getDate();
-        System.out.println("raven.application.form.other.Form_DotGiamGia.jButton6ActionPerformed()" + date + date2 + "");
-        if (date == null || date2 == null) {
+        Date date1 = null;
+        Date date2 = null;
+
+        try {
+            date1 = txtDau.getDate();
+            date2 = txtDau1.getDate();
+
+        } catch (Exception e) {
+            MsgBox.aleart(this, "Ngày tháng năm ko hợp lệ");
+            return;
+        }
+        if (date1 != null || date2 != null) {
+            if (date1 == null || date2 == null) {
+                MsgBox.aleart(this, "Bạn hãy điền đủ 2 ngày");
+                return;
+            }
+
+        }
+
+        if (date1 == null || date2 == null) {
+            MsgBox.aleart(this, "Bạn hãy điền đủ 2 ngày");
+            return;
+        }
+
+        if (date1 != null && date2 != null) {
+
+            System.out.println("Vaof ");
+            if (!Utils.Validate.isDate(XDate.toString(date1, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                txtDau.requestFocus();
+                return;
+            }
+            if (!Utils.Validate.isDate(XDate.toString(date2, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                txtDau1.requestFocus();
+                return;
+            }
+            try {
+                XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
+                XDate.toDate(XDate.toString(date2, "dd-MM-yyyy"), "dd-MM-yyyy");
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+
+                return;
+            }
+
+            if (!compareDates(XDate.toString(date1, "dd-MM-yyyy"), XDate.toString(date2, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
+                return;
+            }
+        }
+
+        if (Utils.Validate.isEmpty(XDate.toString(date1, "dd-MM-yyyy"))) {
+            MsgBox.aleart(this, "Ngày bắt đầu không được để trống");
+            txtDau.requestFocus();
+            return;
+        } else {
+            if (!Utils.Validate.isDate(XDate.toString(date1, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày bắt đầu sai định dạng dd-MM-yyyy");
+                txtDau.requestFocus();
+                return;
+            }
+            try {
+                XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+                txtDau.requestFocus();
+                return;
+            }
+        }
+
+        if (Utils.Validate.isEmpty(XDate.toString(date2, "dd-MM-yyyy"))) {
+            MsgBox.aleart(this, "Ngày kết thúc không được để trống");
+            txtDau1.requestFocus();
+            return;
+        } else {
+            if (!Utils.Validate.isDate(XDate.toString(date2, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày kết thúc sai định dạng dd-MM-yyyy");
+                txtDau1.requestFocus();
+                return;
+            }
+            try {
+                XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+                txtDau1.requestFocus();
+                return;
+            }
+        }
+        System.out.println("raven.application.form.other.Form_DotGiamGia.jButton6ActionPerformed()" + date1 + date2 + "");
+        if (date1 == null || date2 == null) {
             MsgBox.aleart(this, "Bạn hãy điển đủ thông tin");
             return;
         }
-        ViewCTSP_DGG cTSP_DGG = new ViewCTSP_DGG(new Application(), true, date, date2);
+        ViewCTSP_DGG cTSP_DGG = new ViewCTSP_DGG(new Application(), true, date1, date2);
         cTSP_DGG.setVisible(true);
         lisrSP = cTSP_DGG.getTable();
         fillToTableSP(lisrSP);
     }//GEN-LAST:event_btnLocActionPerformed
+    public boolean compareDates(String dateStr1, String dateStr2) {
+        // Định dạng để chuyển đổi từ chuỗi sang LocalDate
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
+        // Chuyển đổi chuỗi thành LocalDate
+        LocalDate date1 = LocalDate.parse(dateStr1, formatter);
+        LocalDate date2 = LocalDate.parse(dateStr2, formatter);
+
+        // So sánh ngày
+        return date2.isAfter(date1);
+    }
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         clearForm();
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -1121,11 +1270,11 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     private javax.swing.JTable tblPhieuGG;
     private javax.swing.JTable tblSP;
     private javax.swing.JTable tblSPDGG;
+    private com.toedter.calendar.JDateChooser txtDau;
+    private com.toedter.calendar.JDateChooser txtDau1;
     private javax.swing.JTextField txtGiaTri;
     private javax.swing.JTextField txtMaPhieu;
     private javax.swing.JTextArea txtMoTa;
-    private com.toedter.calendar.JDateChooser txtNgayBatDAu;
-    private com.toedter.calendar.JDateChooser txtNgayKetThuc;
     private javax.swing.JTextField txtNguoiTao;
     private javax.swing.JTextField txtTenPhieu;
     private javax.swing.JTextField txtTim;

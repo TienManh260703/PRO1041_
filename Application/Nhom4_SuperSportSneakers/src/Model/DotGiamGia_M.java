@@ -4,6 +4,7 @@
  */
 package Model;
 
+import Utils.Format;
 import Utils.XDate;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -179,7 +180,7 @@ public class DotGiamGia_M {
 
     public Object[] rowData(int index) {
         return new Object[]{
-            index, idNV.getTenNhanVien(), maDGG, tenDGG, hinhThucDGG == 0 ? "Phần trăm % " : " VND ", giaTri + (hinhThucDGG == 0 ? "( % )" : "( VND )"), XDate.toString(ngayBatDau, "dd-MM-yyyy"),
+            index, idNV.getTenNhanVien(), maDGG, tenDGG, hinhThucDGG == 0 ? "Phần trăm % " : " VND ", Format.format1(giaTri) + (hinhThucDGG == 0 ? "( % )" : "( VND )"), XDate.toString(ngayBatDau, "dd-MM-yyyy"),
             XDate.toString(ngayKetThuc, "dd-MM-yyyy"),
             XDate.toString(ngayTao, "dd-MM-yyyy"), moTa
                 , trangThai ==0 ? "Sắp đến" : (trangThai ==1 ? "Đang áp dụng" : (trangThai ==2 ?"Hết hạn": ""))};

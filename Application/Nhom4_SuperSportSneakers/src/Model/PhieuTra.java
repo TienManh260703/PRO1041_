@@ -4,6 +4,7 @@
  */
 package Model;
 
+import Utils.Format;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -93,7 +94,7 @@ public class PhieuTra {
     
     public Object[] rowData (int i ){
         return new Object[]{
-            i, 
+            i, maPhieu , idHD.getMaHoaDon() ,ngayTra , Format.format(tienHoanTra) , ghiChu
         };
     }
     

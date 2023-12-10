@@ -4,10 +4,13 @@
  */
 package raven.application.form.other;
 
+import Model.KhachHang;
 import Model.NhanVien;
 import Model.PhieuGiamGia;
+import Repository.KhachHangRepositoryM;
 import Repository.PhieuGiamGiaService;
 import Utils.Auth;
+import Utils.Email;
 import Utils.MsgBox;
 import Utils.Validate;
 import Utils.XDate;
@@ -18,6 +21,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +34,8 @@ import javax.swing.table.DefaultTableModel;
  * @author manhnt
  */
 public class Form_PhieuGiamGia extends javax.swing.JPanel {
+
+    private static KhachHangRepositoryM khachHangRepository = new KhachHangRepositoryM();
 
     //DefaultTableModel model1 = new DefaultTableModel();
     //DefaultTableModel model2= new DefaultTableModel();
@@ -49,11 +56,18 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         initComponents();
         listPGG = servicePGG.getAllPGG(page, lmit);
         loadToTable(listPGG);
+        if (Auth.isManager()) {
+            btnSua.setVisible(true);
+            btnThem.setVisible(true);
+        } else {
+            btnSua.setVisible(false);
+            btnThem.setVisible(false);
+        }
     }
 
     public void loadToTable(ArrayList<PhieuGiamGia> listPgg) {
         DefaultTableModel model = (DefaultTableModel) this.tblPhieuGG.getModel();
- //       System.out.println(listPGG.size());
+        //       System.out.println(listPGG.size());
         model.setRowCount(0);
         int i = 1;
         for (PhieuGiamGia pgg : listPgg) {
@@ -110,8 +124,20 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         }
     }
 
+    public boolean compareDates(String dateStr1, String dateStr2) {
+        // Định dạng để chuyển đổi từ chuỗi sang LocalDate
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        // Chuyển đổi chuỗi thành LocalDate
+        LocalDate date1 = LocalDate.parse(dateStr1, formatter);
+        LocalDate date2 = LocalDate.parse(dateStr2, formatter);
+
+        // So sánh ngày
+        return date2.isAfter(date1);
+    }
+
     private PhieuGiamGia getForm() {
-        NhanVien nhanVien = new NhanVien(1L);
+        NhanVien nhanVien = Auth.nv;
         String maPhieu = txtMaPhieu.getText().trim();
         int max = servicePGG.getRowCountPGG();
         if (maPhieu.isEmpty()) {
@@ -129,8 +155,9 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         String giaTri = txtGiaTri.getText().trim();
         String soLuong = txtSoLuong.getText().trim();
         String donToiThieu = txtDonTuoiThieu.getText().trim();
-        String ngayBD = XDate.toString(txtNgayBatDAu.getDate(), "dd-MM-yyyy");
-        String ngayKetThuc = XDate.toString(txtNgayKetThuc.getDate(), "dd-MM-yyyy");
+//        String ngayBD = XDate.toString(txtNgayBatDAu.getDate(), "dd-MM-yyyy");
+//        String ngayKetThuc = XDate.toString(txtNgayKetThuc.getDate(), "dd-MM-yyyy");
+
         String moTa = txtMoTa.getText().trim();
         BigDecimal giaTriB = BigDecimal.ZERO;
         BigDecimal donDt = BigDecimal.ZERO;
@@ -140,8 +167,8 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
             txtTenPhieu.requestFocus();
             return null;
         } else {
-            if (Validate.checkLength(tenPhieu, 50)) {
-                MsgBox.aleart(this, "Tên phiếu tối da 50 ký tự !");
+            if (Validate.checkLength(tenPhieu, 99)) {
+                MsgBox.aleart(this, "Tên phiếu tối da 99 ký tự !");
                 txtTenPhieu.requestFocus();
                 return null;
             }
@@ -151,6 +178,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
             txtGiaTri.requestFocus();
             return null;
         } else {
+
             try {
                 giaTriB = new BigDecimal(giaTri);
                 if (cboLoaiPhieu.getSelectedIndex() == 0) {
@@ -159,6 +187,12 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
                         txtGiaTri.requestFocus();
                         return null;
                     }
+
+                }
+                if (Float.parseFloat(giaTri) <= 0) {
+                    MsgBox.aleart(this, "Giá trị > 0");
+                    txtGiaTri.requestFocus();
+                    return null;
                 }
             } catch (Exception e) {
                 MsgBox.aleart(this, "Giá trị phiếu phải là số !");
@@ -173,6 +207,15 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         } else {
             try {
                 soLuongI = Integer.parseInt(soLuong);
+                if (soLuongI <= 0) {
+                    MsgBox.aleart(this, "Số lượng phải >0");
+                    return null;
+                }
+
+                if (soLuongI >= 1000000) {
+                    MsgBox.aleart(this, "Số lượng phải < 1000000");
+                    return null;
+                }
             } catch (Exception e) {
                 MsgBox.aleart(this, "Số lượng phiếu phải là số !");
                 txtSoLuong.requestFocus();
@@ -185,7 +228,13 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
             return null;
         } else {
             try {
-                soLuongI = Integer.parseInt(soLuong);
+                float dtt = Float.parseFloat(donToiThieu);
+                donDt = new BigDecimal(donToiThieu);
+                if (dtt < 0) {
+                    MsgBox.aleart(this, "Đơn tối thiểu phiếu phải > 0!");
+                    txtDonTuoiThieu.requestFocus();
+                    return null;
+                }
             } catch (Exception e) {
                 MsgBox.aleart(this, "Đơn tối thiểu phiếu phải là số !");
                 txtDonTuoiThieu.requestFocus();
@@ -193,48 +242,98 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
             }
         }
         // date 
-        Date date = null;
-        System.out.println("raven.application.form.other.Form_PhieuGiamGia.getF" + ngayBD);
-        if (Utils.Validate.isEmpty(ngayBD)) {
-            MsgBox.aleart(this, "Ngày bắt đầu không được để trống");
-            txtNgayBatDAu.requestFocus();
-            return null;
-        } else {
-            if (!Utils.Validate.isDate(ngayBD)) {
-                MsgBox.aleart(this, "Ngày bắt đầu sai định dạng dd-MM-yyyy");
-                txtNgayBatDAu.requestFocus();
-                return null;
-            }
-            try {
-                XDate.toDate(ngayBD, "dd-MM-yyyy");
-            } catch (Exception e) {
-                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
-                txtNgayBatDAu.requestFocus();
-                return null;
-            }
-        }
+        Date date1 = null;
         Date date2 = null;
-        if (Utils.Validate.isEmpty(ngayKetThuc)) {
-            MsgBox.aleart(this, "Ngày kết thúc không được để trống");
-            txtNgayKetThuc.requestFocus();
+        try {
+            date1 = txtDau.getDate();
+            date2 = txtDau1.getDate();
+
+        } catch (Exception e) {
+            MsgBox.aleart(this, "Ngày tháng năm ko hợp lệ");
             return null;
-        } else {
-            if (!Utils.Validate.isDate(ngayKetThuc)) {
-                MsgBox.aleart(this, "Ngày kết thúc sai định dạng dd-MM-yyyy");
-                txtNgayKetThuc.requestFocus();
+        }
+        if (date1 != null || date2 != null) {
+            if (date1 == null || date2 == null) {
+                MsgBox.aleart(this, "Bạn hãy điền đủ 2 ngày");
+                return null;
+            }
+
+        }
+
+        if (date1 == null || date2 == null) {
+            MsgBox.aleart(this, "Bạn hãy điền đủ 2 ngày");
+            return null;
+        }
+
+        if (date1 != null && date2 != null) {
+
+            System.out.println("Vaof ");
+            if (!Utils.Validate.isDate(XDate.toString(date1, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                txtDau.requestFocus();
+                return null;
+            }
+            if (!Utils.Validate.isDate(XDate.toString(date2, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                txtDau1.requestFocus();
                 return null;
             }
             try {
-                XDate.toDate(ngayKetThuc, "dd-MM-yyyy");
+                XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
+                XDate.toDate(XDate.toString(date2, "dd-MM-yyyy"), "dd-MM-yyyy");
             } catch (Exception e) {
                 MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
-                txtNgayKetThuc.requestFocus();
+
+                return null;
+            }
+
+            if (!compareDates(XDate.toString(date1, "dd-MM-yyyy"), XDate.toString(date2, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
                 return null;
             }
         }
-        java.util.Date utilDate1 = txtNgayBatDAu.getDate(); // Giả sử dateNgaybd.getDate() trả về java.util.Date
+
+        if (Utils.Validate.isEmpty(XDate.toString(date1, "dd-MM-yyyy"))) {
+            MsgBox.aleart(this, "Ngày bắt đầu không được để trống");
+            txtDau.requestFocus();
+            return null;
+        } else {
+            if (!Utils.Validate.isDate(XDate.toString(date1, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày bắt đầu sai định dạng dd-MM-yyyy");
+                txtDau.requestFocus();
+                return null;
+            }
+            try {
+                XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+                txtDau.requestFocus();
+                return null;
+            }
+        }
+
+        if (Utils.Validate.isEmpty(XDate.toString(date2, "dd-MM-yyyy"))) {
+            MsgBox.aleart(this, "Ngày kết thúc không được để trống");
+            txtDau1.requestFocus();
+            return null;
+        } else {
+            if (!Utils.Validate.isDate(XDate.toString(date2, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày kết thúc sai định dạng dd-MM-yyyy");
+                txtDau1.requestFocus();
+                return null;
+            }
+            try {
+                XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+                txtDau1.requestFocus();
+                return null;
+            }
+        }
+        System.out.println("raven.application.form.other.Form_PhieuGiamGia.getForm()" + " don toi thiu " + donDt);
+        java.util.Date utilDate1 = txtDau.getDate(); // Giả sử dateNgaybd.getDate() trả về java.util.Date
         java.sql.Date sqlDate1 = new java.sql.Date(utilDate1.getTime());
-        java.util.Date utilDate2 = txtNgayKetThuc.getDate(); // Giả sử dateNgaybd.getDate() trả về java.util.Date
+        java.util.Date utilDate2 = txtDau1.getDate(); // Giả sử dateNgaybd.getDate() trả về java.util.Date
         java.sql.Date sqlDate2 = new java.sql.Date(utilDate2.getTime());
         PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
         phieuGiamGia.setIdNV(nhanVien);
@@ -258,8 +357,8 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         txtGiaTri.setText(pgg.getGiaTri() + "");
         txtMaPhieu.setText(pgg.getMaPhieu() + "");
         txtMoTa.setText(pgg.getMoTa() + "");
-        txtNgayBatDAu.setDate(pgg.getNgayBatDau());
-        txtNgayKetThuc.setDate(pgg.getNgayKetThuc());
+        txtDau.setDate(pgg.getNgayBatDau());
+        txtDau1.setDate(pgg.getNgayKetThuc());
         txtNguoiTao.setText(pgg.getIdNV().getTenNhanVien() + "");
         txtSoLuong.setText(pgg.getSoLuongPhieu() + "");
         txtTenPhieu.setText(pgg.getTenPhieu() + "");
@@ -339,11 +438,11 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         txtMoTa = new javax.swing.JTextArea();
         txtTenPhieu = new javax.swing.JTextField();
         txtMaPhieu = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnThem = new javax.swing.JButton();
+        btnSua = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        txtNgayKetThuc = new com.toedter.calendar.JDateChooser();
-        txtNgayBatDAu = new com.toedter.calendar.JDateChooser();
+        txtDau1 = new com.toedter.calendar.JDateChooser();
+        txtDau = new com.toedter.calendar.JDateChooser();
         jPanel4 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
@@ -396,6 +495,12 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel7.setText("Số lượng phiếu :");
 
+        txtSoLuong.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                txtSoLuongMouseEntered(evt);
+            }
+        });
+
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel8.setText("Đơn tối thiểu :");
 
@@ -420,17 +525,17 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
 
         txtMaPhieu.setEditable(false);
 
-        jButton1.setText("Thêm");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnThemActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Sửa");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnSua.setText("Sửa");
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnSuaActionPerformed(evt);
             }
         });
 
@@ -441,11 +546,11 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
             }
         });
 
-        txtNgayKetThuc.setDateFormatString("dd-MM-yyyy");
-        txtNgayKetThuc.setMaxSelectableDate(new java.util.Date(253370743316000L));
+        txtDau1.setDateFormatString("dd-MM-yyyy");
+        txtDau1.setMaxSelectableDate(new java.util.Date(253370743316000L));
 
-        txtNgayBatDAu.setDateFormatString("dd-MM-yyyy");
-        txtNgayBatDAu.setMaxSelectableDate(new java.util.Date(253370743316000L));
+        txtDau.setDateFormatString("dd-MM-yyyy");
+        txtDau.setMaxSelectableDate(new java.util.Date(253370743316000L));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -489,9 +594,9 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
                                 .addComponent(cboTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(216, 216, 216)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(392, 392, 392)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnSua, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(59, 59, 59)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -506,8 +611,8 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNgayKetThuc, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNgayBatDAu, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtDau1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDau, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
@@ -522,7 +627,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
                         .addComponent(txtNguoiTao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtNgayBatDAu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDau, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -532,7 +637,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel3)
                         .addComponent(txtMaPhieu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtNgayKetThuc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDau1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -551,9 +656,9 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
+                    .addComponent(btnThem)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton2)
+                        .addComponent(btnSua)
                         .addComponent(jButton3)))
                 .addContainerGap(28, Short.MAX_VALUE))
         );
@@ -858,7 +963,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
 
         int loaiPhieu = cboLoaiPhieu1.getSelectedIndex() - 1;
         int trangThai = cboTrangThai1.getSelectedIndex() - 1;
-        System.out.println("raven.a"+trangThai);
+        System.out.println("raven.a" + trangThai);
         PhieuGiamGia gia = new PhieuGiamGia();
         gia.setNgayBatDau(txtNgayBDLoc.getDate());
         gia.setNgayKetThuc(txtNgayKTLoc.getDate());
@@ -868,20 +973,23 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         loadToTable(listPGG);
     }//GEN-LAST:event_btnLocActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void clear() {
         txtMaPhieu.setText("");
         txtNguoiTao.setText("");
         txtTenPhieu.setText("");
         txtGiaTri.setText("");
         txtSoLuong.setText("");
         txtDonTuoiThieu.setText("");
-        txtNgayBatDAu.setDate(null);
-        txtNgayKetThuc.setDate(null);
+        txtDau.setDate(null);
+        txtDau1.setDate(null);
         txtMoTa.setText("");
-        
+    }
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        clear();
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         PhieuGiamGia phieuGiamGia = getForm();
         System.out.println(phieuGiamGia);
         if (phieuGiamGia == null) {
@@ -890,29 +998,61 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
         int kq = servicePGG.SuaPGG(phieuGiamGia);
         if (kq == 1) {
             MsgBox.aleart(this, "Sửa thành có");
+            String date = XDate.toString(new Date(), "yyyy-MM-dd");
+            servicePGG.updateKT(date);
+            servicePGG.updateBD(date);
             listPGG = servicePGG.getAllPGG(page, lmit);
             loadToTable(listPGG);
+            clear();
         } else {
             MsgBox.aleart(this, "Sửa không thành công");
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnSuaActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
 
         PhieuGiamGia phieuGiamGia = getForm();
         if (phieuGiamGia == null) {
             return;
         }
+// tao
+        Impl.ExportQr.exportQrHD("src\\qrpgg", phieuGiamGia.getMaPhieu());
 
         int kq = servicePGG.ThemPGG(phieuGiamGia);
+        String date = XDate.toString(new Date(), "yyyy-MM-dd");
+        servicePGG.updateKT(date);
+        servicePGG.updateBD(date);
         if (kq != -1) {
             MsgBox.aleart(this, "Thêm thành có");
             listPGG = servicePGG.getAllPGG(page, lmit);
             loadToTable(listPGG);
+            // email
+            for (KhachHang kh : khachHangRepository.getAll2()) {
+                try {
+                    if (kh.getMaKhachHang() == null) {
+                        continue;
+                    }
+                    String thongTin = "Shop SuperSport Sneakers  \n Gửi tặng khách hàng " + kh.getTenKhachHang() + " phiếu giảm giá \n"
+                            + "Mã phiếu : " + phieuGiamGia.getMaPhieu() + " .\n"
+                            + "Giá trị phiếu : " + phieuGiamGia.getTenPhieu() + " .\n"
+                            + (phieuGiamGia.getLoaiPhieu() == 0 ? phieuGiamGia.getGiaTri() + " % " : phieuGiamGia.getGiaTri() + " VNĐ ") + " \n "
+                            + "Ngày bắt đầu : " + XDate.toString(phieuGiamGia.getNgayBatDau(), "dd-MM-yyyy") + " \n "
+                            + "Ngày kết thúc : " + XDate.toString(phieuGiamGia.getNgayKetThuc(), "dd-MM-yyyy");
+                    Email.sendMailwithFile(kh.getEmail(), thongTin, "Phiếu giảm giá danh tặng cho bạn", "src\\qrpgg\\" + phieuGiamGia.getMaPhieu() + ".png");
+                } catch (Exception e) {
+                    continue;
+                }
+            }
+
+            clear();
         } else {
             MsgBox.aleart(this, "Thêm không thành công");
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void txtSoLuongMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSoLuongMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSoLuongMouseEntered
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -920,13 +1060,13 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
     private javax.swing.JButton btnDau;
     private javax.swing.JButton btnLoc;
     private javax.swing.JButton btnLui;
+    private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnThem;
     private javax.swing.JButton btnTien;
     private javax.swing.JComboBox<String> cboLoaiPhieu;
     private javax.swing.JComboBox<String> cboLoaiPhieu1;
     private javax.swing.JComboBox<String> cboTrangThai;
     private javax.swing.JComboBox<String> cboTrangThai1;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -950,25 +1090,22 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JLabel lblPageTTKH;
-    private javax.swing.JTable tblHD;
     private javax.swing.JTable tblHD2;
     private javax.swing.JTable tblPhieuGG;
+    private com.toedter.calendar.JDateChooser txtDau;
+    private com.toedter.calendar.JDateChooser txtDau1;
     private javax.swing.JTextField txtDonTuoiThieu;
     private javax.swing.JTextField txtGiaTri;
     private javax.swing.JTextField txtMaPhieu;
     private javax.swing.JTextArea txtMoTa;
     private com.toedter.calendar.JDateChooser txtNgayBDLoc;
-    private com.toedter.calendar.JDateChooser txtNgayBatDAu;
     private com.toedter.calendar.JDateChooser txtNgayKTLoc;
-    private com.toedter.calendar.JDateChooser txtNgayKetThuc;
     private javax.swing.JTextField txtNguoiTao;
     private javax.swing.JTextField txtSoLuong;
     private javax.swing.JTextField txtTenPhieu;

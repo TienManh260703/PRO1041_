@@ -17,10 +17,14 @@ import Repository.DotGiamGia_MRpository;
 import Repository.HoaDon_MRepositoryM;
 import Repository.PhieuGiaoHangRepository;
 import Repository.SanPhamCT_Repository;
+import Utils.Auth;
 import Utils.MsgBox;
 import Utils.Validate;
+import Utils.XDate;
 import java.awt.Graphics;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +52,8 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
 
     private static int indexPGH = -1;
 
+    private NhanVien nhanVien = Auth.nv;
+
     /**
      * Creates new form Form_PhieuGiaoHang
      */
@@ -61,7 +67,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         filfToTablePGH(list);
         lisHD = phieuGiaoHangRepository.listDSHD();
         fillToTableHD(lisHD);
-        txtNgayTao.setDate(new Date());
+        txtDau.setDate(new Date());
         setBtn();
     }
 
@@ -116,7 +122,6 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         String sdtShip = txtSdtShip.getText().trim();
         String giaShip = txtGiaShip.getText().trim();
         String donViVC = txtDonViVC.getText().trim();
-        Date ngayTT = txtNgayThanhToanDK1.getDate();
 
         if (tennKh.isEmpty()) {
             MsgBox.aleart(this, "Tên khách hàng chưa có !");
@@ -125,6 +130,11 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         } else {
             if (Validate.checkLength(tennKh, 50)) {
                 MsgBox.aleart(this, "Tên khách hàng tố đa 50 ký tự !");
+                txtTenKh.requestFocus();
+                return null;
+            }
+            if (!Validate.isName(tennKh)) {
+                MsgBox.aleart(this, "Tên khách hàng sai đinh dạng !");
                 txtTenKh.requestFocus();
                 return null;
             }
@@ -146,6 +156,11 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
             txtDiaChi.requestFocus();
             return null;
         }
+        if (Validate.checkLength(diaChi, 100)) {
+            MsgBox.aleart(this, "Đia chỉ đa 100 ký tự !");
+            txtTenKh.requestFocus();
+            return null;
+        }
 
         if (tenShip.isEmpty()) {
             MsgBox.aleart(this, "Tên Ship chưa có !");
@@ -153,7 +168,12 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
             return null;
         } else {
             if (Validate.checkLength(tenShip, 50)) {
-                MsgBox.aleart(this, "Tên Ship tố đa 50 ký tự !");
+                MsgBox.aleart(this, "Tên Ship tối đa 50 ký tự !");
+                txtTenShip.requestFocus();
+                return null;
+            }
+            if (!Validate.isName(tenShip)) {
+                MsgBox.aleart(this, "Tên ship sai đinh dạng !");
                 txtTenShip.requestFocus();
                 return null;
             }
@@ -178,6 +198,11 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         } else {
             try {
                 giaShipB = new BigDecimal(giaShip);
+                if (Float.parseFloat(giaShip) < 0) {
+                    MsgBox.aleart(this, "Giá ship >= 0 !");
+                    txtGiaShip.requestFocus();
+                    return null;
+                }
             } catch (Exception e) {
                 MsgBox.aleart(this, "Giá ship phải là số !");
                 txtGiaShip.requestFocus();
@@ -189,9 +214,103 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
             txtDonViVC.requestFocus();
             return null;
         }
-        if (ngayTT == null) {
+
+        if (Validate.checkLength(donViVC, 100)) {
+            MsgBox.aleart(this, "Đơn vị vận chuyển tối đa 100 ký tự !");
+            txtDonViVC.requestFocus();
+            return null;
+        }
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = txtDau.getDate();
+            date2 = txtDau1.getDate();
+
+        } catch (Exception e) {
+            MsgBox.aleart(this, "Ngày tháng năm ko hợp lệ");
+            return null;
+        }
+        if (date1 != null || date2 != null) {
+            if (date1 == null || date2 == null) {
+                MsgBox.aleart(this, "Bạn hãy điền đủ 2 ngày");
+                return null;
+            }
+
+        }
+
+        if (date1 == null || date2 == null) {
+            MsgBox.aleart(this, "Bạn hãy điền đủ 2 ngày");
+            return null;
+        }
+
+        if (date1 != null && date2 != null) {
+
+            System.out.println("Vaof ");
+            if (!Utils.Validate.isDate(XDate.toString(date1, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                txtDau.requestFocus();
+                return null;
+            }
+            if (!Utils.Validate.isDate(XDate.toString(date2, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                txtDau1.requestFocus();
+                return null;
+            }
+            try {
+                XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
+                XDate.toDate(XDate.toString(date2, "dd-MM-yyyy"), "dd-MM-yyyy");
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+
+                return null;
+            }
+
+            if (!compareDates(XDate.toString(date1, "dd-MM-yyyy"), XDate.toString(date2, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày nhận > ngày tạo");
+                return null;
+            }
+        }
+
+        if (Utils.Validate.isEmpty(XDate.toString(date1, "dd-MM-yyyy"))) {
+            MsgBox.aleart(this, "Ngày tạo không được để trống");
+            txtDau.requestFocus();
+            return null;
+        } else {
+            if (!Utils.Validate.isDate(XDate.toString(date1, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày tạo sai định dạng dd-MM-yyyy");
+                txtDau.requestFocus();
+                return null;
+            }
+            try {
+                XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+                txtDau.requestFocus();
+                return null;
+            }
+        }
+
+        if (Utils.Validate.isEmpty(XDate.toString(date2, "dd-MM-yyyy"))) {
+            MsgBox.aleart(this, "Ngày nhận không được để trống");
+            txtDau1.requestFocus();
+            return null;
+        } else {
+            if (!Utils.Validate.isDate(XDate.toString(date2, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày nhận sai định dạng dd-MM-yyyy");
+                txtDau1.requestFocus();
+                return null;
+            }
+            try {
+                XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+                txtDau1.requestFocus();
+                return null;
+            }
+        }
+        if (date2 == null) {
             MsgBox.aleart(this, "Bạn hãy nhập ngày dự kiến nhận hàng");
-            txtNgayThanhToanDK1.requestFocus();
+            txtDau1.requestFocus();
             return null;
         }
         PhieuGiaoHang phieuGiaoHang = new PhieuGiaoHang();
@@ -203,7 +322,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         phieuGiaoHang.setSdtShip(sdtShip);
         phieuGiaoHang.setGiaShip(giaShipB);
         phieuGiaoHang.setDonViVanChuyen(donViVC);
-        phieuGiaoHang.setNgayHoanThanh(ngayTT);
+        phieuGiaoHang.setNgayHoanThanh(date2);
 
         return phieuGiaoHang;
     }
@@ -247,8 +366,8 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         txtDiaChi.setText(phieuGiaoHang.getIdKH().getDiaChi());
         txtDonViVC.setText(phieuGiaoHang.getDonViVanChuyen());
         txtGiaShip.setText(phieuGiaoHang.getGiaShip() + "");
-        txtNgayTao.setDate(phieuGiaoHang.getNgayTao());
-        txtNgayThanhToanDK1.setDate(phieuGiaoHang.getNgayHoanThanh());
+        txtDau.setDate(phieuGiaoHang.getNgayTao());
+        txtDau1.setDate(phieuGiaoHang.getNgayHoanThanh());
         txtSDTKh.setText(phieuGiaoHang.getIdKH().getSdt());
         txtSdtShip.setText(phieuGiaoHang.getSdtShip());
         txtTenKh.setText(phieuGiaoHang.getIdKH().getTenKhachHang());
@@ -259,6 +378,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
     }
 
     private void first() {
+        page = 1;
         lblPageTTKH.setText(1 + " / " + gioiHanPage);
         list = phieuGiaoHangRepository.getAll(1, lmit);
         filfToTablePGH(list);
@@ -299,7 +419,7 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         txtDonViVC.setText("");
         txtGiaShip.setText("");
         txtMaPhieu.setText("");
-        txtNgayThanhToanDK1.setDate(null);
+        txtDau1.setDate(null);
         txtSDTKh.setText("");
         txtSdtShip.setText("");
         txtTenKh.setText("");
@@ -308,21 +428,21 @@ public class Form_PhieuGiaoHang extends javax.swing.JPanel {
         setBtn();
     }
 
-   
     private void setBtn() {
 
         boolean ktr = (indexPGH == -1);
-        boolean ktrHuy = false;
-btnSua.setEnabled(!ktr);
+        boolean ktrHuy = false, ktrTT = false;
+        btnSua.setEnabled(!ktr);
         try {
             ktrHuy = tblPGH.getValueAt(indexPGH, 11).toString().equals("Hủy");
             btnHuy.setEnabled(!ktr && !ktrHuy);
+            ktrTT = tblPGH.getValueAt(indexPGH, 11).toString().equals("Đã nhận hàng");
 
         } catch (Exception e) {
             btnHuy.setEnabled(false);
 
         }
-        if (ktrHuy) {
+        if (ktrHuy ) {
             btnDangGiao.setEnabled(false);
             btnHenLai.setEnabled(false);
             btnNhanHang.setEnabled(false);
@@ -338,8 +458,26 @@ btnSua.setEnabled(!ktr);
             btnChoGiao.setEnabled(true);
 
         }
+         if ( ktrTT || ktrHuy) {
+            btnDangGiao.setEnabled(false);
+            btnHenLai.setEnabled(false);
+            btnNhanHang.setEnabled(false);
+            btnThem.setEnabled(false);
+            btnSua.setEnabled(false);
+            btnChoGiao.setEnabled(false);
+            btnHuy.setEnabled(false);
+        } else {
+            btnDangGiao.setEnabled(true);
+            btnHenLai.setEnabled(true);
+            btnNhanHang.setEnabled(true);
+            btnThem.setEnabled(true);
+            btnSua.setEnabled(true);
+            btnChoGiao.setEnabled(true);
+           // btnHuy.setEnabled(false);
+
+        }
         btnThem.setEnabled(ktr);
-        
+
     }
 
     /**
@@ -370,11 +508,11 @@ btnSua.setEnabled(!ktr);
         jLabel13 = new javax.swing.JLabel();
         btnThem = new javax.swing.JButton();
         btnSua = new javax.swing.JButton();
-        txtNgayTao = new com.toedter.calendar.JDateChooser();
+        txtDau = new com.toedter.calendar.JDateChooser();
         txtSdtShip = new javax.swing.JTextField();
         txtGiaShip = new javax.swing.JTextField();
         txtTenShip = new javax.swing.JTextField();
-        txtNgayThanhToanDK1 = new com.toedter.calendar.JDateChooser();
+        txtDau1 = new com.toedter.calendar.JDateChooser();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblHD = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
@@ -459,12 +597,12 @@ btnSua.setEnabled(!ktr);
             }
         });
 
-        txtNgayTao.setDateFormatString("dd-MM-yyyy");
-        txtNgayTao.setEnabled(false);
-        txtNgayTao.setMaxSelectableDate(new java.util.Date(253370743316000L));
+        txtDau.setDateFormatString("dd-MM-yyyy");
+        txtDau.setEnabled(false);
+        txtDau.setMaxSelectableDate(new java.util.Date(253370743316000L));
 
-        txtNgayThanhToanDK1.setDateFormatString("dd-MM-yyyy");
-        txtNgayThanhToanDK1.setMaxSelectableDate(new java.util.Date(253370743316000L));
+        txtDau1.setDateFormatString("dd-MM-yyyy");
+        txtDau1.setMaxSelectableDate(new java.util.Date(253370743316000L));
 
         tblHD.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -606,9 +744,9 @@ btnSua.setEnabled(!ktr);
                                         .addComponent(jLabel11)
                                         .addGap(48, 48, 48)))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(txtNgayThanhToanDK1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                                    .addComponent(txtDau1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                                     .addComponent(txtDonViVC, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtNgayTao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(txtDau, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addComponent(btnChoGiao))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -631,7 +769,7 @@ btnSua.setEnabled(!ktr);
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel11)
-                                    .addComponent(txtNgayTao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtDau, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(369, 369, 369))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -650,7 +788,7 @@ btnSua.setEnabled(!ktr);
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(jLabel13)
-                                        .addComponent(txtNgayThanhToanDK1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtDau1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel9)
                                         .addComponent(txtGiaShip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -686,7 +824,7 @@ btnSua.setEnabled(!ktr);
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel6)
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(240, 240, 240))))
+                        .addGap(246, 246, 246))))
         );
 
         jLabel1.setText("Thiết lập thông tin");
@@ -912,12 +1050,26 @@ btnSua.setEnabled(!ktr);
             MsgBox.aleart(this, "Tạo thành công phiếu giao hàng");
             lisHD = phieuGiaoHangRepository.listDSHD();
             fillToTableHD(lisHD);
+            page = 1;
+            list = phieuGiaoHangRepository.getAll(1, lmit);
+            filfToTablePGH(list);
         }
         clearForm();
 
 
     }//GEN-LAST:event_btnThemActionPerformed
 
+    public boolean compareDates(String dateStr1, String dateStr2) {
+        // Định dạng để chuyển đổi từ chuỗi sang LocalDate
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        // Chuyển đổi chuỗi thành LocalDate
+        LocalDate date1 = LocalDate.parse(dateStr1, formatter);
+        LocalDate date2 = LocalDate.parse(dateStr2, formatter);
+
+        // So sánh ngày
+        return date2.isAfter(date1);
+    }
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         PhieuGiaoHang phieuGiaoHang = getForm();
         int kq = phieuGiaoHangRepository.update(phieuGiaoHang);
@@ -999,6 +1151,9 @@ btnSua.setEnabled(!ktr);
 
             }
             MsgBox.aleart(this, "Phiếu giao hàng đã được hủy");
+            page = 1;
+            list = phieuGiaoHangRepository.getAll(1, lmit);
+            filfToTablePGH(list);
             clearForm();
         }
     }//GEN-LAST:event_btnHuyActionPerformed
@@ -1010,7 +1165,7 @@ btnSua.setEnabled(!ktr);
         String maHD = tblPGH.getValueAt(indexPGH, 2).toString();
         String maP = tblPGH.getValueAt(indexPGH, 1).toString();
         System.out.println("ma P " + maP + "     " + maHD);
-        hoaDon_MRepositoryM.updateTTHD(maHD, 1);
+        hoaDon_MRepositoryM.updateTTHD2(maHD, 1);
         int kqP = phieuGiaoHangRepository.updateTrangThaiPGH(maP, 4);
         if (kqP != -1) {
             MsgBox.aleart(this, "Update thành công phiếu giao : " + maP);
@@ -1055,9 +1210,22 @@ btnSua.setEnabled(!ktr);
         if (indexPGH == -1) {
             return;
         }
+        ViewHenlai viewHenlai = new ViewHenlai(new Application(), true);
+        viewHenlai.setVisible(true);
+
+        if (viewHenlai.getDate == null) {
+            MsgBox.aleart(this, "Hãy nhập lại !!!");
+            return;
+        }
+
+        if (!compareDates(XDate.toString(txtDau1.getDate(), "dd-MM-yyyy"), XDate.toString(viewHenlai.getDate, "dd-MM-yyyy"))) {
+            MsgBox.aleart(this, "Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
+            return;
+        }
         String maHD = tblPGH.getValueAt(indexPGH, 2).toString();
-        String maP = tblCTPGH.getValueAt(indexPGH, 1).toString();
+        String maP = tblPGH.getValueAt(indexPGH, 1).toString();
         hoaDon_MRepositoryM.updateTTHD(maHD, 2);
+        phieuGiaoHangRepository.updateNgayNhan(maP, viewHenlai.getDate);
         int kqP = phieuGiaoHangRepository.updateTrangThaiPGH(maP, 2);
         if (kqP != -1) {
             MsgBox.aleart(this, "Update thành công phiếu giao : " + maP);
@@ -1112,12 +1280,12 @@ btnSua.setEnabled(!ktr);
     private javax.swing.JTable tblCTPGH;
     private javax.swing.JTable tblHD;
     private javax.swing.JTable tblPGH;
+    private com.toedter.calendar.JDateChooser txtDau;
+    private com.toedter.calendar.JDateChooser txtDau1;
     private javax.swing.JTextArea txtDiaChi;
     private javax.swing.JTextField txtDonViVC;
     private javax.swing.JTextField txtGiaShip;
     private javax.swing.JTextField txtMaPhieu;
-    private com.toedter.calendar.JDateChooser txtNgayTao;
-    private com.toedter.calendar.JDateChooser txtNgayThanhToanDK1;
     private javax.swing.JTextField txtSDTKh;
     private javax.swing.JTextField txtSdtShip;
     private javax.swing.JTextField txtTenKh;

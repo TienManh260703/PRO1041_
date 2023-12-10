@@ -349,4 +349,31 @@ public class DotGiamGia_MRpository {
         }
         return dgg;
     }
+
+    public void updateBD(String date) {
+        try {
+          
+            query = "UPDATE DOT_GIAM_GIA\n"
+                    + "SET TrangThai = 1\n"
+                    + "WHERE CAST(NgayBatDau AS DATE) = CAST(GETDATE() AS DATE);";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void updateKT(String date) {
+        try {
+            query = "UPDATE DOT_GIAM_GIA\n"
+                    + "SET TrangThai =2 \n"
+                    + "WHERE NgayKetThuc < '" + date + "' ;";
+            con = DBConnection.getConnect();
+            pstm = con.prepareStatement(query);
+            pstm.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(DotGiamGia_MRpository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

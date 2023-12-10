@@ -7,6 +7,7 @@ package raven.application.form.other;
 import Model.KhachHang;
 import Model.NhanVien;
 import Repository.KhachHangRepositoryM;
+import Utils.Auth;
 import Utils.MsgBox;
 import Utils.Validate;
 import Utils.XDate;
@@ -28,6 +29,7 @@ public class Form_KhachHangJDialogManh extends javax.swing.JDialog {
     private static int gioiHanPage = (int) ((Math.ceil(khachHangRepository.getRowCountKH() / lmit + 1)));
     private static int index = -1;
     private KhachHang selectedKhachHang;
+       private NhanVien nhanVien = Auth.nv;
 
     /**
      * Creates new form Form_KhachHangJDialog
@@ -184,7 +186,7 @@ public class Form_KhachHangJDialogManh extends javax.swing.JDialog {
         }
         date = XDate.convertDateFormat(ngaySinh, "MM-dd-yyyy");
 
-        return new KhachHang(new NhanVien(1L), maKH, tenKH, sdt, date, gioiTinh, email, diaChi);
+        return new KhachHang(nhanVien, maKH, tenKH, sdt, date, gioiTinh, email, diaChi);
     }
 
     private void insert() {
