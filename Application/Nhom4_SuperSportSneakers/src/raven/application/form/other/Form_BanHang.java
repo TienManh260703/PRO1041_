@@ -178,9 +178,9 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         }
         phieuGiamGiaService.updateBD(date);
         phieuGiamGiaService.updateKT(date);
-         hoaDon_MRepository.updateSP();
+        hoaDon_MRepository.updateSP();
         list = chiTietSanPham_Repository.get3(page, lmit);
-       
+
         fillToTableSP(list);
         fillToCboTenSP();
         fillToCboMauSac1();
@@ -243,7 +243,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
                             phieuGiamGia = phieuGiamGiaService.getPGGByMa2(resultText);
                             if (Float.parseFloat(phieuGiamGia.getDonToiThieu() + "") > Float.parseFloat("0" + txtTongTien.getText().trim())) {
                                 MsgBox.aleart(new Application(), "Đơn hàng bạn chưa đủ điều kiện áp dụng !!");
-                                return;
+
                             } else {
                                 hoaDon_MRepository.updateIdDGGInHDByMaHD(txtMHD.getText().trim(), phieuGiamGia);
                             }
@@ -253,8 +253,12 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
                         }
                         System.out.println(resultText);
                         String[] arrResult = resultText.split("\\n");
-                        txtSearch.setText(arrResult[1].substring(10));
-                        searchSanPham();
+                        // txtSearch.setText(arrResult[1].substring(10));
+                        // Chạy đoạn này " :  .....
+                        List<SanPhamChiTiet> listSearch = sanPhamCT_Repository.search_SanPhamChiTiet(arrResult[1].substring(10));
+                        System.out.println(listSearch);
+                        fillToTableSP(listSearch);
+                        //   searchSanPham();
 
                     }
                 } while (true);
@@ -400,6 +404,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
     }
 
     private void setFormTT(int index) {
+
         txtDiem.setText("");
         lblGiamDiem.setText("");
         txtTienKhachDua.setText("0");
@@ -419,7 +424,14 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         BigDecimal thanhTien = BigDecimal.ZERO;
 
         String maHD = tblHD.getValueAt(indexHD, 1).toString();
-
+        int trangThai = hoaDon_MRepository.getTrangThaiHD(maHD);
+        if(trangThai==2){
+            txtTienKhachDua.setEditable(false);
+            txtChuyenKhoan.setEditable(false);
+        }else{
+            txtTienKhachDua.setEditable(true);
+            txtChuyenKhoan.setEditable(true);
+        }
         PhieuGiaoHang idPGH = phieuGiaoHangRepository.getPGHByMaHD(maHD);
         phieuGiaoHang = idPGH;
         System.out.println(idPGH);
@@ -461,7 +473,12 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         }
         thanhTien = tongTien;
         txtTongTien.setText(Format.format1(tongTien) + "");
-        txtThanhTien.setText(Format.format1(thanhTien));
+        if (thanhTien.compareTo(BigDecimal.ZERO) < 0) {
+            txtThanhTien.setText(Format.format1(new BigDecimal(0)));
+        } else {
+            txtThanhTien.setText(Format.format1(thanhTien));
+        }
+
         listPGG = phieuGiamGiaService.getALL(tongTien);
         int count0 = 0;
         for (PhieuGiamGia pgg : listPGG) {
@@ -1321,7 +1338,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
                         .addGap(18, 18, 18)
                         .addComponent(btnThemNhanhKH))
                     .addComponent(lblDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1641,7 +1658,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel5.setText("Đơn hàng");
 
-        dlWeb.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Quét mã vạch sản phẩm", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 1, 16))); // NOI18N
+        dlWeb.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Quét mã vạch sản phẩm và phiếu gg", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 1, 14))); // NOI18N
 
         jpnWebcam.setBackground(new java.awt.Color(255, 255, 255));
         jpnWebcam.setMaximumSize(new java.awt.Dimension(50, 50));
@@ -1972,8 +1989,12 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
             System.out.println(" ------------- Cap bac vaof 2 ");
             diemCong = 60; // + diêm 
         }
+        Integer diemCuoi = (defaultKhachHang.getDiem() - diem) + diemCong;
+        if (diemCuoi < 0) {
+            diemCuoi = 0;
+        }
         System.out.println("Diem " + diemCong + " diem còn lại " + (defaultKhachHang.getDiem() - diem) + diemCong);
-        khachHangRepositoryM.updateDiem(defaultKhachHang.getMaKhachHang(), (defaultKhachHang.getDiem() - diem) + diemCong);
+        khachHangRepositoryM.updateDiem(defaultKhachHang.getMaKhachHang(), diemCuoi);
     }
 
     private void clearFormTT() {
@@ -2079,6 +2100,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         view_TT_DatHang.setVisible(true);
 
         phieuGiaoHang = view_TT_DatHang.getPhieuGH();
+
         System.out.println("pppp" + phieuGiaoHang.toString());
     }//GEN-LAST:event_rdoDatHangActionPerformed
 
@@ -2279,7 +2301,13 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
             lblGiamDiem.setText(Format.format(quyDiem) + "");
 
             tt = tt.subtract(quyDiem);
-            txtThanhTien.setText(Format.format1(tt));
+            if (tt.compareTo(BigDecimal.ZERO) < 0) {
+                txtThanhTien.setText(Format.format1(new BigDecimal(0)));
+            } else {
+                // Xử lý khi thanhTien không nhỏ hơn 0
+                txtThanhTien.setText(Format.format1(tt));
+            }
+
         } catch (Exception e) {
             MsgBox.aleart(this, "Điểm bạn nhập phải là số !!");
             return;

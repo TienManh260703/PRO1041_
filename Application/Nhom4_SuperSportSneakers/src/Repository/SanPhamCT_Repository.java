@@ -68,6 +68,7 @@ public class SanPhamCT_Repository {
                 + "join THUONGHIEU as TH on TH.ID = CTSP.IdThuongHieu\n"
                 + "join SANPHAM as SP on SP.ID = CTSP.IdSP\n"
                 + "WHERE MACTSP like ? OR TenSP like ? OR TenThuongHieu like ?";
+        // Sản phảm lỗi phần này neey quét mã sẽ ra ko đúng thông tin 
         try {
             PreparedStatement ps = connect.prepareCall(query);
             ps.setString(1, "%" + text + "%");
@@ -147,7 +148,6 @@ public class SanPhamCT_Repository {
         return list;
     }
 
-    
     public List<SanPhamChiTiet> get3(int page, int limt) {
         List<SanPhamChiTiet> list = new ArrayList<>();
         String sql = "SELECT CTSP.ID, CTSP.MaCTSP, SP.TenSP, TH.TenThuongHieu, S.TenSize, M.TenMau, CTSP.SoLuongTon, CTSP.GiaBan, CTSP.GiaNiemYet, CTSP.MoTa, CTSP.TrangThai\n"
@@ -178,6 +178,7 @@ public class SanPhamCT_Repository {
         }
         return list;
     }
+
     public void insertSPCT(SanPhamChiTiet spct) {
         String query = " Insert  into CHI_TIET_SAN_PHAM (IdSP,IdThuongHieu,IdMau,IdSize,MaCTSP,SoLuongTon,GiaNiemYet,GiaBan,MoTa,TrangThai) Values (?,?,?,?,?,?,?,?,?,?)";
         try {
@@ -215,8 +216,6 @@ public class SanPhamCT_Repository {
             System.out.println(e);
         }
     }
-
-    
 
     public SanPhamChiTiet getProductByMa(String ma) {
         SanPhamChiTiet result = null;
@@ -433,8 +432,6 @@ public class SanPhamCT_Repository {
         }
     }
 ///////////////////////////////////////////////
-    
-
 
     public ArrayList<SanPham> getToAllSanPham() {
         ArrayList<SanPham> listSanPham = new ArrayList<>();
@@ -562,6 +559,7 @@ public class SanPhamCT_Repository {
         }
         return list;
     }
+
     public List<SanPhamChiTiet> searchItem(Long idMau, Long idSize, Long idThuongHieu, Long idSanPham, int trangThai) {
         List<SanPhamChiTiet> list = new ArrayList<>();
         if (connect != null) {
@@ -615,8 +613,6 @@ public class SanPhamCT_Repository {
     }
 // Đếm tổng số bản ghi 
 
-    
-
     public List<SanPham> search_SanPhamByTrangThai(int n) {
         List<SanPham> listSearch = new ArrayList<>();
         String query = "SELECT  MaSP, TenSP, TrangThai FROM SANPHAM WHERE TrangThai = ?";
@@ -649,5 +645,5 @@ public class SanPhamCT_Repository {
         System.out.println(th);
         return th;
     }
-    
+
 }

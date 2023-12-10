@@ -840,7 +840,7 @@
                                   </Group>
                                   <Component id="lblDiem" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="22" max="32767" attributes="0"/>
+                              <EmptySpace pref="21" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1329,8 +1329,8 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Qu&#xe9;t m&#xe3; v&#x1ea1;ch s&#x1ea3;n ph&#x1ea9;m">
-              <Font PropertyName="font" name="Times New Roman" size="16" style="1"/>
+            <TitledBorder title="Qu&#xe9;t m&#xe3; v&#x1ea1;ch s&#x1ea3;n ph&#x1ea9;m v&#xe0; phi&#x1ebf;u gg">
+              <Font PropertyName="font" name="Times New Roman" size="14" style="1"/>
             </TitledBorder>
           </Border>
         </Property>

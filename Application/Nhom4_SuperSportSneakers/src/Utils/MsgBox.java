@@ -16,7 +16,7 @@ public class MsgBox {
     // Hiển thị thông báo 
     // parent cửa sổ chứa thông báo
     public static void aleart(Component parent, String message) {
-        JOptionPane.showMessageDialog(parent, message, "Hệ thông quản lý đào tạo", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(parent, message, "Phần Mềm Bán Giày SuperSport Sneakers", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -26,13 +26,13 @@ public class MsgBox {
      * @return
      */
     public static boolean confirm(Component parent, String message) {
-        int hoi = JOptionPane.showConfirmDialog(parent, message, "Hệ thông quản lý đào tạo",
+        int hoi = JOptionPane.showConfirmDialog(parent, message, "Phần Mềm Bán Giày SuperSport Sneakers",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         return hoi == JOptionPane.YES_OPTION;
     }
 
     public static String pormpt(Component parent, String message) {
-        return JOptionPane.showInputDialog(parent, message, "Hệ thông quản lý đào tạo",
+        return JOptionPane.showInputDialog(parent, message, "Phần Mềm Bán Giày SuperSport Sneakers",
                 JOptionPane.INFORMATION_MESSAGE);
     }
 

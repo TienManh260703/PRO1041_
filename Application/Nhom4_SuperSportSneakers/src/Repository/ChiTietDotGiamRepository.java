@@ -12,6 +12,7 @@ import Model.MauSac;
 import Model.SanPham;
 import Model.SanPhamChiTiet;
 import Model.ThuongHieu;
+import Utils.Format;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -242,7 +243,7 @@ public class ChiTietDotGiamRepository {
                 spct = null;
                 spct = this.getProductByID(rs.getLong("IdCTSP"));
 //                System.out.println("ID "+ spct.getIdSPCT());
-                BigDecimal donGia = BigDecimal.ONE; //rs.getBigDecimal("DonGia");
+                BigDecimal donGia = rs.getBigDecimal("DonGia");
                 Object[] ob = new Object[]{
                     i,
                     spct.getMaSPCT(),
@@ -250,7 +251,7 @@ public class ChiTietDotGiamRepository {
                     spct.getIdThuongHieu().getTenThuongHieu(),
                     spct.getIdMau().getTenMau(),
                     spct.getIdKichThuoc().getTenSize(),
-                    donGia,
+                    Format.format(donGia) ,
                     rs.getInt("loai") == 0 ? rs.getBigDecimal("GiaTriGiam") + " ( % )" : rs.getBigDecimal("GiaTriGiam") + " ( VND )"
 
                 };

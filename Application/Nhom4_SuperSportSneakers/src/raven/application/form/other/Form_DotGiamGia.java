@@ -52,7 +52,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
     private static List<DotGiamGia_M> listDGG = new ArrayList<>();
     private List<Object> listSP_DGG = new ArrayList<>();
     private static int page = 1;
-    private static int lmit = 2;
+    private static int lmit = 6;
     private static int gioiHanPage = (int) ((Math.ceil(dotGiamGia_MRpository.getRowCount() / lmit))) + 1;
     private static int index = -1;
 
@@ -196,8 +196,14 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                     return null;
                 }
             }
+
         } catch (Exception e) {
             MsgBox.aleart(this, "Giá trị nhập vào phải là số");
+            return null;
+        }
+
+        if (Float.parseFloat(giaTriB + "") < 0) {
+            MsgBox.aleart(this, "Giá trị nhập vào phải > 0");
             return null;
         }
         Date date1 = null;
@@ -459,7 +465,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
         tblSPDGG = new javax.swing.JTable();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setText("Thiết lập phiếu giảm giá");
+        jLabel1.setText("Thiết lập đợt giảm giá");
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -600,7 +606,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -914,7 +920,7 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
 
             },
             new String [] {
-                "STT", "Ma CTSP", "Tên SP", "Thương Hiệu", "Màu", "Size", "Đơn giá", "Giá Bán"
+                "STT", "Ma CTSP", "Tên SP", "Thương Hiệu", "Màu", "Size", "Đơn giá", "Giá trị giảm"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -966,9 +972,9 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
                             .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1362, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(

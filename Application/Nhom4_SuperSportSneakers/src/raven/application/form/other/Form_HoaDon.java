@@ -246,7 +246,7 @@ public class Form_HoaDon extends javax.swing.JPanel {
 
         cboLoai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--- Tất cả ---", "Tại quầy", "Đặt hàng" }));
 
-        cboTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--- Tất cả ---", "Chưa thanh toán", "Đã thanh toán", " " }));
+        cboTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--- Tất cả ---", "Chưa thanh toán", "Đã thanh toán", "Đang giao", "Thanh toán trước", "Hủy" }));
 
         jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel15.setText("Loại hóa đơn :");
@@ -496,7 +496,7 @@ public class Form_HoaDon extends javax.swing.JPanel {
                                 .addComponent(btnHuy))
                             .addComponent(jLabel4)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1292, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -633,6 +633,10 @@ public class Form_HoaDon extends javax.swing.JPanel {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         int index = tblHD3.getSelectedRow();
+        if(index<0){
+            MsgBox.aleart(this, "Bạn hãy chọn một hóa đơn");
+            return;
+        }
         String maHD = tblHD3.getValueAt(index, 1).toString();
         System.out.println("ravormed()" + " " + chiTietHoaDon_RepositoryM.viewCTHDByMaHD(maHD));
 

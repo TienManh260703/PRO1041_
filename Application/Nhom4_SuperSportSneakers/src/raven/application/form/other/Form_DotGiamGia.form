@@ -61,9 +61,9 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                                   <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTabbedPane2" alignment="0" min="-2" pref="1362" max="-2" attributes="0"/>
+                                  <Component id="jLabel1" alignment="0" min="-2" pref="186" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -97,7 +97,7 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="14" style="1"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Thi&#x1ebf;t l&#x1ead;p phi&#x1ebf;u gi&#x1ea3;m gi&#xe1;"/>
+                <Property name="text" type="java.lang.String" value="Thi&#x1ebf;t l&#x1ead;p &#x111;&#x1ee3;t gi&#x1ea3;m gi&#xe1;"/>
               </Properties>
             </Component>
             <Container class="javax.swing.JPanel" name="jPanel3">
@@ -515,7 +515,7 @@
                                 <Column editable="false" title="H&#xe3;ng" type="java.lang.Object"/>
                                 <Column editable="false" title="M&#xf9;a s&#x1eaf;c" type="java.lang.Object"/>
                                 <Column editable="false" title="Size" type="java.lang.Object"/>
-                                <Column editable="false" title="Ch&#x1ecd;n" type="java.lang.Boolean"/>
+                                <Column editable="true" title="Ch&#x1ecd;n" type="java.lang.Boolean"/>
                               </Table>
                             </Property>
                             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -936,7 +936,7 @@
                                 <Column editable="false" title="M&#xe0;u" type="java.lang.Object"/>
                                 <Column editable="false" title="Size" type="java.lang.Object"/>
                                 <Column editable="false" title="&#x110;&#x1a1;n gi&#xe1;" type="java.lang.Object"/>
-                                <Column editable="false" title="Gi&#xe1; B&#xe1;n" type="java.lang.Object"/>
+                                <Column editable="false" title="Gi&#xe1; tr&#x1ecb; gi&#x1ea3;m" type="java.lang.Object"/>
                               </Table>
                             </Property>
                             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">

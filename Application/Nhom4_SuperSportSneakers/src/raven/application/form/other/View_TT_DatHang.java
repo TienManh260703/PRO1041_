@@ -11,6 +11,7 @@ import Repository.HoaDon_MRepositoryM;
 import Repository.PhieuGiaoHangRepository;
 import Utils.MsgBox;
 import Utils.Validate;
+import Utils.XDate;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -148,6 +149,47 @@ public class View_TT_DatHang extends javax.swing.JDialog {
             return null;
         }
         Date date = null;
+
+        try {
+
+            date = txtNgayNhan.getDate();
+
+        } catch (Exception e) {
+            MsgBox.aleart(this, "Ngày tháng năm ko hợp lệ");
+            return null;
+        }
+        if (date != null) {
+            if (date == null) {
+                MsgBox.aleart(this, "Bạn hãy điền đủ  ngày");
+                return null;
+            }
+
+        }
+
+        if (date == null) {
+            MsgBox.aleart(this, "Bạn hãy điền đủ  ngày");
+            return null;
+        }
+
+        if (date != null) {
+
+            if (!Utils.Validate.isDate(XDate.toString(date, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                txtNgayNhan.requestFocus();
+                return null;
+            }
+            try {
+
+                XDate.toDate(XDate.toString(date, "dd-MM-yyyy"), "dd-MM-yyyy");
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+
+                return null;
+            }
+
+        }
+
+        ///
         try {
             date = txtNgayNhan.getDate();
         } catch (Exception e) {
@@ -378,6 +420,8 @@ public class View_TT_DatHang extends javax.swing.JDialog {
             } else {
                 MsgBox.aleart(this, "Tạo không thành công phiếu giao hàng : " + phieuGiaoHang_.getMaVanDon());
             }
+        } else {
+            MsgBox.aleart(this, "Tạo không thành công phiếu giao hàng : " + phieuGiaoHang_.getMaVanDon());
         }
     }//GEN-LAST:event_btnTaoPhieuActionPerformed
 
