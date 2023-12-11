@@ -255,7 +255,9 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
                         String[] arrResult = resultText.split("\\n");
                         // txtSearch.setText(arrResult[1].substring(10));
                         // Chạy đoạn này " :  .....
-                        List<SanPhamChiTiet> listSearch = sanPhamCT_Repository.search_SanPhamChiTiet(arrResult[1].substring(10));
+                        System.out.println("Chuoi : 0 " + arrResult[0].substring(10));
+                        System.out.println("Chuoi : 0 " + arrResult[1].substring(10));
+                        List<SanPhamChiTiet> listSearch = sanPhamCT_Repository.search_SanPhamChiTiet(arrResult[0].substring(17));
                         System.out.println(listSearch);
                         fillToTableSP(listSearch);
                         //   searchSanPham();
@@ -425,10 +427,10 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
 
         String maHD = tblHD.getValueAt(indexHD, 1).toString();
         int trangThai = hoaDon_MRepository.getTrangThaiHD(maHD);
-        if(trangThai==2){
+        if (trangThai == 2) {
             txtTienKhachDua.setEditable(false);
             txtChuyenKhoan.setEditable(false);
-        }else{
+        } else {
             txtTienKhachDua.setEditable(true);
             txtChuyenKhoan.setEditable(true);
         }
@@ -478,6 +480,8 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         } else {
             txtThanhTien.setText(Format.format1(thanhTien));
         }
+        // Lamf cap bac o day
+
 
         listPGG = phieuGiamGiaService.getALL(tongTien);
         int count0 = 0;
@@ -534,7 +538,9 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
             lblPhanTramHD.setText(capBac + " % ");
             phanTramGiam = capBac.divide(new BigDecimal(100));
             quyTienCapBac = phanTramGiam.multiply(thanhTien);
+            
         }
+        System.out.println("CAp BC "+ quyTienCapBac);
         thanhTien = thanhTien.subtract(quyTienCapBac);
 
         txtThanhTien.setText(Format.format1(thanhTien) + "");
@@ -990,11 +996,11 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
                         .addComponent(lblDonTreo, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnTapHD)
-                        .addGap(99, 99, 99)
-                        .addComponent(btnXoaHD, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(67, 67, 67)
+                        .addComponent(btnXoaHD, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(48, 48, 48)
-                        .addComponent(jButton2)
-                        .addGap(69, 69, 69))))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(38, 38, 38))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1418,6 +1424,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
 
         jLabel25.setText("Thành Tiền :");
 
+        txtThanhTien.setEditable(false);
         txtThanhTien.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtThanhTienActionPerformed(evt);
@@ -1931,7 +1938,7 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
                 tongCK_TD = tienKHDua.add(tienChuyenKhoan);
             }
             if (trangThai != 2) {
-                if (tongCK_TD.compareTo(thanhTien) <= 0) {
+                if (tongCK_TD.compareTo(thanhTien) < 0) {
                     MsgBox.aleart(this, "Số tiền khách trả chưa đủ !!!");
                     return null;
                 }

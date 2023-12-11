@@ -24,7 +24,7 @@ public class ThuongHieu_Repository {
 
     Connection connect = DBConnection.getConnect();
 
-    public ArrayList<ThuongHieu> getToAll() {
+   public ArrayList<ThuongHieu> getToAll() {
         ArrayList<ThuongHieu> list = new ArrayList<>();
         String query = "Select ID,MaThuongHieu, TenThuongHieu From THUONGHIEU";
         try {
@@ -73,7 +73,7 @@ public class ThuongHieu_Repository {
 
     public void addThuongHieu(ThuongHieu th) {
 
-        String sql = "INSERT INTO SIZE(MaThuongHieu, TenThuongHieu, TrangThai) VALUES (?,?,?)";
+        String sql = "INSERT INTO THUONGHIEU(MaThuongHieu, TenThuongHieu, TrangThai) VALUES (?,?,?)";
         try {
             PreparedStatement ps = connect.prepareCall(sql);
             ps.setString(1, th.getMaThuongHieu());
@@ -110,7 +110,7 @@ public class ThuongHieu_Repository {
             while (rs.next()) {
                 listSearch.add(new ThuongHieu(rs.getString(1), rs.getString(2), rs.getInt(3)));
             }
-        } catch (Exception e) {
+} catch (Exception e) {
             throw new RuntimeException("Error while searching for SanPham", e);
         }
         return listSearch;
@@ -169,21 +169,21 @@ public class ThuongHieu_Repository {
     }
 
     public ThuongHieu findThuongHieuByName(String name) {
-    ThuongHieu th = null;
-    String query = "SELECT ID, MaThuongHieu, TenThuongHieu FROM THUONGHIEU WHERE TenThuongHieu LIKE ?";
-    
-    try (PreparedStatement ps = connect.prepareCall(query)) {
-        ps.setString(1, name);
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                th = new ThuongHieu(rs.getLong(1), rs.getString(2), rs.getString(3));
-            }
-        }
-    } catch (SQLException e) {
-        throw new RuntimeException("Error while searching for SanPham", e);
-    }
-    
-    return th;
-}
+        ThuongHieu th = null;
+        String query = "SELECT ID, MaThuongHieu, TenThuongHieu FROM THUONGHIEU WHERE MaThuongHieu LIKE ?";
 
+        try (PreparedStatement ps = connect.prepareStatement(query)) {
+            ps.setString(1, "%" + name + "%"); // Add wildcard characters here
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    th = new ThuongHieu(rs.getLong(1), rs.getString(2), rs.getString(3));
+                    // Note: If there are multiple results, th will be overwritten, and only the last result will be returned.
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while searching for SanPham", e);
+        }
+
+        return th;
+    }
 }

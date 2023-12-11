@@ -27,7 +27,7 @@ public class Form_MauSac extends javax.swing.JPanel {
 
     public Form_MauSac() {
         initComponents();
-        listMauSac = msr.get(page, 4);
+        listMauSac = msr.search_MauSacByTrangThai(0);
         fillToTable(listMauSac);
     }
 

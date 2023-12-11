@@ -13,6 +13,8 @@ import Utils.MsgBox;
 import Utils.Validate;
 import Utils.XDate;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -188,6 +190,13 @@ public class View_TT_DatHang extends javax.swing.JDialog {
             }
 
         }
+        
+        // thêm 
+        
+        if (compareDates(XDate.toString(date, "dd-MM-yyyy"), XDate.toString(new Date(), "dd-MM-yyyy"))) {
+                    MsgBox.aleart(this, "Ngày nhận hàng >= ngày hôm nay");
+                    return null;
+                }
 
         ///
         try {
@@ -227,7 +236,17 @@ public class View_TT_DatHang extends javax.swing.JDialog {
     public PhieuGiaoHang getPhieuGH() {
         return phieuGiaoHang_;
     }
+ public boolean compareDates(String dateStr1, String dateStr2) {
+        // Định dạng để chuyển đổi từ chuỗi sang LocalDate
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
+        // Chuyển đổi chuỗi thành LocalDate
+        LocalDate date1 = LocalDate.parse(dateStr1, formatter);
+        LocalDate date2 = LocalDate.parse(dateStr2, formatter);
+
+        // So sánh ngày
+        return date2.isAfter(date1);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

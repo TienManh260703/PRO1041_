@@ -33,6 +33,55 @@ public class SanPhamCT_Repository {
     private Connection con = null;
 
     Connection connect = DBConnection.getConnect();
+     public SanPhamChiTiet getCTSPByIdCTSP(Long idSanPham, Long idThuongHieu, Long idMauSac, Long idKichCo) {
+    
+        String query = ""
+                + "SELECT CTSP.ID as ID, CTSP.MaCTSP as MaCTSP, SP.ID AS IdSP, SP.TenSP AS TenSP, S.ID AS IdSize, S.TenSize AS TenSize,\n"
+                + " TH.ID AS IdTH, TH.TenThuongHieu AS TenThuongHieu, M.ID AS IdM, M.TenMau AS TenMau,\n"
+                + " IdDGG, DGG.MaDGG AS MaDGG, DGG.Loai AS LoaiDGG, DGG.GiaTri AS GiaTriDGG, DGG.TrangThai AS TrangThaiDGG,\n"
+                + " SoLuongTon, GiaNiemYet, GiaBan\n"
+                + " FROM CHI_TIET_SAN_PHAM AS CTSP\n"
+                + " JOIN SANPHAM AS SP ON CTSP.IdSP = SP.ID\n"
+                + " JOIN SIZE AS S ON CTSP.IdSize = S.ID\n"
+                + " JOIN THUONGHIEU AS TH ON CTSP.IdThuongHieu = TH.ID\n"
+                + " JOIN MAU AS M ON CTSP.IdMau = M.ID\n"
+                + " LEFT JOIN DOT_GIAM_GIA AS DGG ON CTSP.IdDGG = DGG.ID\n"
+                + " WHERE TH.ID = ? AND SP.ID = ? AND M.ID = ? AND S.ID = ?";
+                
+        try (Connection con = DBConnection.getConnect();
+             PreparedStatement stm = con.prepareStatement(query)) {
+
+            stm.setLong(1, idThuongHieu);
+            stm.setLong(2, idSanPham);
+            stm.setLong(3,idMauSac);
+            stm.setLong(4, idKichCo);
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    DotGiamGia_M dgg = new DotGiamGia_M(
+                            rs.getLong("IdDGG"),
+                            rs.getString("MaDGG"),
+                            rs.getInt("LoaiDGG"),
+                            rs.getBigDecimal("GiaTriDGG"),
+                            rs.getInt("TrangThaiDGG"));
+
+                    SanPham sp = new SanPham(rs.getLong("IdSP"), rs.getString("TenSP"));
+                    KichThuoc kt = new KichThuoc(rs.getLong("IdSize"), rs.getFloat("TenSize"));
+                    MauSac mau = new MauSac(rs.getLong("IdM"), rs.getString("TenMau"));
+                    ThuongHieu th = new ThuongHieu(rs.getLong("IdTH"), rs.getString("TenThuongHieu"));
+                    SanPhamChiTiet ctspm = new SanPhamChiTiet(rs.getLong("ID"), rs.getString("MaCTSP"),
+                            rs.getInt("SoLuongTon"), rs.getBigDecimal("GiaBan"), rs.getBigDecimal("GiaNiemYet"),
+                            mau, kt, th, sp);
+
+                    System.out.println(ctspm.toString());
+                    return ctspm;
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SanPhamCT_Repository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     public List<SanPhamChiTiet> getToAll() {
         List<SanPhamChiTiet> list = new ArrayList<>();
@@ -179,6 +228,33 @@ public class SanPhamCT_Repository {
         return list;
     }
 
+    public void insertSPCT(List<SanPhamChiTiet> spctList) {
+        String query = "INSERT INTO CHI_TIET_SAN_PHAM (IdSP, IdThuongHieu, IdMau, IdSize, MaCTSP, SoLuongTon, GiaNiemYet, GiaBan, MoTa, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            PreparedStatement pstm = connect.prepareCall(query);
+
+            for (SanPhamChiTiet spct : spctList) {
+                pstm.setLong(1, spct.getIdSanPham().getIdSanPham());
+                pstm.setLong(2, spct.getIdThuongHieu().getIdThuongHieu());
+                pstm.setLong(3, spct.getIdMau().getIdMau());
+                pstm.setLong(4, spct.getIdKichThuoc().getIdSize());
+                pstm.setString(5, spct.getMaSPCT());
+                pstm.setInt(6, spct.getSoLuong());
+                pstm.setBigDecimal(7, spct.getGiaNiemYet());
+                pstm.setBigDecimal(8, spct.getGiaBan());
+                pstm.setString(9, spct.getMoTa());
+                pstm.setInt(10, spct.getTrangThai());
+
+                pstm.addBatch();  // Add the current statement to the batch
+            }
+
+            // Execute the batch
+            pstm.executeBatch();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
     public void insertSPCT(SanPhamChiTiet spct) {
         String query = " Insert  into CHI_TIET_SAN_PHAM (IdSP,IdThuongHieu,IdMau,IdSize,MaCTSP,SoLuongTon,GiaNiemYet,GiaBan,MoTa,TrangThai) Values (?,?,?,?,?,?,?,?,?,?)";
         try {

@@ -17,6 +17,7 @@ public class Validate {
     private static String REGEX_SDT = "^0\\d{9}$";
     private static String REGEX_DATE = "^\\d{2}-\\d{2}-\\d{4}$";
     private static String REGEX_EMAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    private static String REGEX_CCCD = "^0\\d{11}$";
 
     public static boolean isEmpty(String str) {
         return str.isEmpty();
@@ -52,5 +53,9 @@ public class Validate {
 
     public static boolean isEmail(String str) {
         return str.matches(REGEX_EMAIL);
+    }
+
+    public static boolean isCCCD(String str) {
+        return str.matches(REGEX_CCCD);
     }
 }

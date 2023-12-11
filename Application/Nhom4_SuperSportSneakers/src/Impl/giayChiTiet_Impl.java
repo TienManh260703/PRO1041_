@@ -378,35 +378,55 @@ public class giayChiTiet_Impl {
                             }
                             break;
                         case COLUMN_INDEX_KICH_CO:
-                            // Xử lý cột KICH_CO
-                            String kichCoStr = (String) getCellValue(cell);
-                            if (!kichCoStr.isEmpty()) { 
-                                Float kichCoStr2 =Float.parseFloat(kichCoStr);
-                                
-                                KichThuoc kichCo = kichThuoc_Repository.findKichCoByName(kichCoStr2);
-                                if (kichCo == null) {
-                                   
-                                    KichThuoc newKichCo = new KichThuoc();
-                                    newKichCo.setTenSize(kichCoStr2);
-                                    kichThuoc_Repository.addKichThuoc(kichCo);
-                                    kichCo = kichThuoc_Repository.findKichCoByName(kichCoStr2);
+                            String kichCoStr = String.valueOf(getCellValue(cell)); // Assuming getCellValue returns a Double
+                            if (!kichCoStr.isEmpty()) {
+                                try {
+                                    Float kichCoFloat = Float.parseFloat(kichCoStr);
+
+                                    KichThuoc kichCo = kichThuoc_Repository.findKichCoByName(kichCoFloat);
+
+                                    if (kichCo == null) {
+                                        KichThuoc newKichCo = new KichThuoc();
+                                        newKichCo.setTenSize(kichCoFloat);
+
+                                        kichThuoc_Repository.addKichThuoc(newKichCo);
+
+                                        kichCo = kichThuoc_Repository.findKichCoByName(kichCoFloat);
+                                    }
+
+                                    spct.setIdKichThuoc(kichCo);
+                                } catch (NumberFormatException e) {
+                                    e.printStackTrace(); // Handle the case where kichCoStr is not a valid float
                                 }
-                                spct.setIdKichThuoc(kichCo);
                             }
+
                             break;
                         case COLUMN_INDEX_MAU_SAC:
                             // Xử lý cột MAU_SAC
                             String mauSacStr = (String) getCellValue(cell);
                             if (!mauSacStr.isEmpty()) {
                                 MauSac mauSac = mauSac_Reponsitory.findMauSacByName(mauSacStr);
+
                                 if (mauSac == null) {
+                                    // If the repository method expects a String parameter, pass mauSacStr directly
                                     MauSac newMauSac = new MauSac();
                                     newMauSac.setTenMau(mauSacStr);
                                     mauSac_Reponsitory.addMauSac(newMauSac);
+
+                                    // Retrieve the newly added MauSac
                                     mauSac = mauSac_Reponsitory.findMauSacByName(mauSacStr);
                                 }
-                                spct.setIdMau(mauSac);
+
+                                // Check if mauSac is still null and handle accordingly
+                                if (mauSac != null) {
+                                    spct.setIdMau(mauSac);
+                                } else {
+                                    // Handle the case where mauSac is still null
+                                    // You might want to log an error or take appropriate action
+                                    System.err.println("Failed to retrieve or add MauSac for: " + mauSacStr);
+                                }
                             }
+
                             break;
                         case COLUMN_INDEX_SO_LUONG:
                             if (cell.getCellType() == CellType.BLANK) {
@@ -426,26 +446,34 @@ public class giayChiTiet_Impl {
                                 return ketQua;
                             }
                             break;
-                            
-                            /////////// Mạnh sua Float
+
+                        /////////// Mạnh sua Float
                         case COLUMN_INDEX_GIA_BAN:
-                            if (cell.getCellType() == CellType.BLANK) {
-                                ketQua = "Giá bán không được để trống - dòng: " + (cell.getRowIndex() + 1);
-                                return ketQua;
-                            }
-                            try {
-                                // SUA R : Float giaBan = Float.parseFloat((String) cellValue);
-                                BigDecimal giaBan = BigDecimal.valueOf(Double.parseDouble((String) cellValue)); //Float.parseFloat((String) cellValue);
-                                if (giaBan.compareTo(BigDecimal.ZERO) <0) {
+                            if (cellValue instanceof String) {
+                                try {
+                                    BigDecimal giaBan = BigDecimal.valueOf(Double.parseDouble((String) cellValue));
+                                    if (giaBan.compareTo(BigDecimal.ZERO) < 0) {
+                                        ketQua = "Giá bán không được nhỏ hơn 0 - dòng: " + (cell.getRowIndex() + 1);
+                                        return ketQua;
+                                    }
+                                    spct.setGiaBan(giaBan);
+                                } catch (NumberFormatException e) {
+                                    ketQua = "Giá bán phải là số - dòng: " + (cell.getRowIndex() + 1);
+                                    e.printStackTrace();
+                                    return ketQua;
+                                }
+                            } else if (cellValue instanceof Double) {
+                                BigDecimal giaBan = BigDecimal.valueOf((Double) cellValue);
+                                if (giaBan.compareTo(BigDecimal.ZERO) < 0) {
                                     ketQua = "Giá bán không được nhỏ hơn 0 - dòng: " + (cell.getRowIndex() + 1);
                                     return ketQua;
                                 }
                                 spct.setGiaBan(giaBan);
-                            } catch (Exception e) {
-                                ketQua = "Giá bán phải là số - dòng: " + (cell.getRowIndex() + 1);
-                                e.printStackTrace();
+                            } else {
+                                ketQua = "Giá bán không hợp lệ - dòng: " + (cell.getRowIndex() + 1);
                                 return ketQua;
                             }
+
                             break;
                         case COLUMN_INDEX_GIA_NIEM_YET:
                             // Xử lý cột GIA_NIEM_YET
@@ -453,27 +481,37 @@ public class giayChiTiet_Impl {
                                 ketQua = "Giá niêm yết không được để trống - dòng: " + (cell.getRowIndex() + 1);
                                 return ketQua;
                             }
+
                             try {
-                                /// SUA
-                                BigDecimal giaNiemYet = BigDecimal.valueOf(Double.parseDouble((String) cellValue));
-                                //Float.parseFloat((String) cellValue);
-                                if (giaNiemYet.compareTo(BigDecimal.ZERO) <0) {
+                                BigDecimal giaNiemYet;
+                                if (cellValue instanceof String) {
+                                    giaNiemYet = BigDecimal.valueOf(Double.parseDouble((String) cellValue));
+                                } else if (cellValue instanceof Double) {
+                                    giaNiemYet = BigDecimal.valueOf((Double) cellValue);
+                                } else {
+                                    ketQua = "Giá niêm yết không hợp lệ - dòng: " + (cell.getRowIndex() + 1);
+                                    return ketQua;
+                                }
+
+                                if (giaNiemYet.compareTo(BigDecimal.ZERO) < 0) {
                                     ketQua = "Giá niêm yết không được nhỏ hơn 0 - dòng: " + (cell.getRowIndex() + 1);
                                     return ketQua;
                                 }
+
                                 spct.setGiaNiemYet(giaNiemYet);
-                            } catch (Exception e) {
+                            } catch (NumberFormatException e) {
                                 ketQua = "Giá niêm yết phải là số - dòng: " + (cell.getRowIndex() + 1);
                                 e.printStackTrace();
                                 return ketQua;
                             }
+
                             break;
                         case COLUMN_INDEX_MO_TA:
                             spct.setMoTa((String) getCellValue(cell));
                             break;
                         case COLUMN_INDEX_TRANG_THAI:
                             // Xử lý cột TRANG_THAI
-                            String trangThaiStr = (String) getCellValue(cell);
+                            String trangThaiStr = getCellValue(cell).toString(); // Convert to String
                             if (!trangThaiStr.isEmpty()) {
                                 Integer trangThai = -1;
                                 if (trangThaiStr.equals("Đang bán")) {
@@ -483,8 +521,9 @@ public class giayChiTiet_Impl {
                                 } else {
                                     trangThai = 2;
                                 }
-                                spct.setTrangThai((int) getCellValue(cell));
+                                spct.setTrangThai(trangThai); // Set the parsed Integer value
                             }
+
                             break;
                         default:
                             break;
@@ -497,12 +536,13 @@ public class giayChiTiet_Impl {
             ketQua = "Lỗi đọc file: " + e.getMessage();
             return ketQua;
         }
-
+        sanPhamChiTiet_Repo.insertSPCT(listSPCT);
         // TODO: Lưu danh sách sản phẩm chi tiết vào cơ sở dữ liệu
         ketQua = "Import file thành công";
         return ketQua;
     }
 
+    
     Connection connect = DBConnection.getConnect();
 
     public List<SanPhamChiTiet> getAllResponse() {

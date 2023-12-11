@@ -35,11 +35,11 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="66" red="ff" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Danh S&#xe1;ch S&#x1ea3;n Ph&#x1ea9;m"/>
+        <Property name="text" type="java.lang.String" value="Danh S&#xe1;ch Gi&#xe0;y Snaker"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="351" y="6" width="-1" height="-1"/>
+          <AbsoluteConstraints x="351" y="6" width="280" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -47,7 +47,9 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="T&#xec;m Ki&#x1ebf;m S&#x1ea3;n Ph&#x1ea9;m"/>
+            <TitledBorder title="T&#xec;m Ki&#x1ebf;m Gi&#xe0;y Snaker">
+              <Font PropertyName="font" name="Segoe UI" size="12" style="3"/>
+            </TitledBorder>
           </Border>
         </Property>
       </Properties>
@@ -61,9 +63,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                   <Component id="cboTenGiay" min="-2" pref="144" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="cboMauSac" linkSize="1" min="-2" pref="104" max="-2" attributes="0"/>
@@ -75,43 +75,32 @@
                   <Component id="cboTrangThai" linkSize="1" min="-2" pref="156" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="txtSearch" pref="137" max="32767" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                   <Component id="btnQRScan" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cboMauSac" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cboThuongHieu" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cboKichThuoc" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cboTrangThai" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cboTenGiay" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txtSearch" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="cboMauSac" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cboThuongHieu" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cboKichThuoc" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cboTrangThai" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cboTenGiay" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtSearch" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="btnQRScan" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="23" max="32767" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="0" attributes="0">
-                  <Component id="btnQRScan" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="12" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="jLabel1">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="12" style="1"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="T&#xea;n S&#x1ea3;n Ph&#x1ea9;m"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JComboBox" name="cboMauSac">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
@@ -189,7 +178,7 @@
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="1">
-                <StringItem index="0" value="-- T&#xea;n S&#x1ea3;n Ph&#x1ea9;m --"/>
+                <StringItem index="0" value="-- T&#xea;n Gi&#xe0;y Snaker --"/>
               </StringArray>
             </Property>
           </Properties>
@@ -202,7 +191,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtSearch">
           <Properties>
-            <Property name="text" type="java.lang.String" value="M&#xe3; S&#x1ea3;n Ph&#x1ea9;n Chi Ti&#x1ebf;t"/>
+            <Property name="text" type="java.lang.String" value="M&#xe3; Gi&#xe0;y Chi Ti&#x1ebf;t"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtSearchActionPerformed"/>
@@ -215,7 +204,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="S&#x1ea3;n Ph&#x1ea9;m">
+            <TitledBorder title="Gi&#xe0;y Snaker">
               <Font PropertyName="font" name="Segoe UI" size="14" style="3"/>
             </TitledBorder>
           </Border>
@@ -266,7 +255,7 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="txtTenSanPham" max="32767" attributes="0"/>
-                                      <Component id="cboTrangThaiSanPham" pref="217" max="32767" attributes="0"/>
+                                      <Component id="cboTrangThaiSanPham" pref="209" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -350,9 +339,9 @@
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="3" rowCount="4">
-                    <Column editable="true" title="M&#xe3; S&#x1ea3;n Ph&#x1ea9;m" type="java.lang.Object"/>
-                    <Column editable="true" title="T&#xea;n S&#x1ea3;n Ph&#x1ea9;m" type="java.lang.Object"/>
-                    <Column editable="true" title="Tr&#x1ea1;ng Th&#xe1;i S&#x1ea3;n Ph&#x1ea9;m" type="java.lang.Object"/>
+                    <Column editable="true" title="M&#xe3; Gi&#xe0;y Snaker" type="java.lang.Object"/>
+                    <Column editable="true" title="T&#xea;n Gi&#xe0;y Snaker" type="java.lang.Object"/>
+                    <Column editable="true" title="Tr&#x1ea1;ng Th&#xe1;i Gi&#xe0;y Snaker" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -386,7 +375,7 @@
         </Container>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
-            <Property name="text" type="java.lang.String" value="M&#xe3; S&#x1ea3;n Ph&#x1ea9;m:"/>
+            <Property name="text" type="java.lang.String" value="M&#xe3; Gi&#xe0;y Snaker:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txtMaSanPham">
@@ -396,10 +385,13 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
           <Properties>
-            <Property name="text" type="java.lang.String" value="T&#xea;n S&#x1ea3;n Ph&#x1ea9;m:"/>
+            <Property name="text" type="java.lang.String" value="T&#xea;n Gi&#xe0;y Snaker:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txtTenSanPham">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
@@ -526,7 +518,7 @@
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="8" rowCount="4">
                     <Column editable="true" title="M&#xe3; SPCT" type="java.lang.Object"/>
-                    <Column editable="true" title="T&#xea;n Gi&#xe0;y " type="java.lang.Object"/>
+                    <Column editable="true" title="T&#xea;n Gi&#xe0;y Snaker" type="java.lang.Object"/>
                     <Column editable="true" title="Th&#x1b0;&#x1a1;ng Hi&#x1ec7;u" type="java.lang.Object"/>
                     <Column editable="true" title="K&#xed;ch Th&#x1b0;&#x1edb;c" type="java.lang.Object"/>
                     <Column editable="true" title="M&#xe0;u S&#x1eaf;c" type="java.lang.Object"/>
@@ -677,6 +669,9 @@
           </Constraints>
         </Component>
         <Component class="javax.swing.JTextField" name="txtMaSPCT">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="764" y="22" width="191" height="-1"/>
@@ -769,6 +764,9 @@
           </Constraints>
         </Component>
         <Component class="javax.swing.JTextField" name="txtGiaNiemYet">
+          <Events>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtGiaNiemYetKeyReleased"/>
+          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="764" y="167" width="190" height="-1"/>
@@ -786,6 +784,12 @@
           </Constraints>
         </Component>
         <Component class="javax.swing.JTextField" name="txtGiaBan">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtGiaBanActionPerformed"/>
+          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="764" y="195" width="190" height="-1"/>

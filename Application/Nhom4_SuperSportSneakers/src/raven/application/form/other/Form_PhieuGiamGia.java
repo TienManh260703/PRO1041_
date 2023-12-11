@@ -63,6 +63,8 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
             btnSua.setVisible(false);
             btnThem.setVisible(false);
         }
+        
+         txtNguoiTao.setText(Auth.nv.getMaNhanVien());
     }
 
     public void loadToTable(ArrayList<PhieuGiamGia> listPgg) {
@@ -715,11 +717,11 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
                 .addComponent(cboLoaiPhieu1, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cboTrangThai1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(84, 84, 84)
                 .addComponent(btnLoc)
-                .addGap(25, 25, 25))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -814,7 +816,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(94, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnDau, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -897,7 +899,7 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jTabbedPane2))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -960,7 +962,54 @@ public class Form_PhieuGiamGia extends javax.swing.JPanel {
     }//GEN-LAST:event_tblPhieuGGMouseClicked
 
     private void btnLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocActionPerformed
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            try {
+                date1 = txtDau.getDate();
+                date2 = txtDau1.getDate();
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày tháng năm ko hợp lệ");
+                return;
+            }
+            if (date1 != null || date2 != null) {
+                if (date1 == null || date2 == null) {
+                    MsgBox.aleart(this, "Bạn hãy điền đúng 2 ngày");
+                    return;
+                }
 
+            }
+            if (date1 != null && date2 != null) {
+
+                System.out.println("Vaof ");
+                if (!Utils.Validate.isDate(XDate.toString(date1, "dd-MM-yyyy"))) {
+                    MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                    txtDau.requestFocus();
+                    return;
+                }
+                if (!Utils.Validate.isDate(XDate.toString(date2, "dd-MM-yyyy"))) {
+                    MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                    txtDau1.requestFocus();
+                    return;
+                }
+                try {
+                    XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
+                    XDate.toDate(XDate.toString(date2, "dd-MM-yyyy"), "dd-MM-yyyy");
+                } catch (Exception e) {
+                    MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+
+                    return;
+                }
+
+                if (!compareDates(XDate.toString(date1, "dd-MM-yyyy"), XDate.toString(date2, "dd-MM-yyyy"))) {
+                    MsgBox.aleart(this, "Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
+                    return;
+                }
+            }
+        } catch (Exception e) {
+            MsgBox.aleart(this, "Kiểm tra lại ngày của bạn nhập vào");
+            return;
+        }
         int loaiPhieu = cboLoaiPhieu1.getSelectedIndex() - 1;
         int trangThai = cboTrangThai1.getSelectedIndex() - 1;
         System.out.println("raven.a" + trangThai);

@@ -37,7 +37,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
 
     //private static int gioiHanPage2 = (int) ((Math.ceil(khachHangRepository.getRowCountKH() / lmit)));
     private static int index = -1;
-       private NhanVien nhanVien = Auth.nv;
+    private NhanVien nhanVien = Auth.nv;
 
     /**
      * Creates new form Form_KhachHang
@@ -74,7 +74,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
         DefaultTableModel dtm = (DefaultTableModel) this.tblLSGD.getModel();
         dtm.setRowCount(0);
         for (int i = 0; i < list.size(); i++) {
-            dtm.addRow((Object[]) list.get(i+1));
+            dtm.addRow((Object[]) list.get(i + 1));
         }
     }
 
@@ -101,7 +101,7 @@ public class Form_KhachHang extends javax.swing.JPanel {
         String sdt = txtSDT.getText().trim();
         String email = txtEmail.getText().trim();
         String diaChi = txtDiaChi.getText().trim();
-        String ngaySinh = txtNgaySinh.getDate()+"";
+        String ngaySinh = txtNgaySinh.getDate() + "";
         System.out.println(ngaySinh);
         boolean gioiTinh = rdoNam.isSelected();
         int maxIDKH = khachHangRepository.getRowCountKH() + 1;
@@ -171,25 +171,91 @@ public class Form_KhachHang extends javax.swing.JPanel {
             return null;
         }
         Date date = null;
-        if (Utils.Validate.isEmpty(ngaySinh)) {
-            MsgBox.aleart(this, "Ngày sinh không được để trống");
-            txtNgaySinh.requestFocus();
+/// ahasfjah
+        
+        try {
+            date = txtNgaySinh.getDate();
+
+        } catch (Exception e) {
+            MsgBox.aleart(this, "Ngày tháng năm ko hợp lệ");
             return null;
-        } else {
-            if (!Utils.Validate.isDate(ngaySinh)) {
+        }
+        if (date != null ) {
+            if (date == null ) {
+                MsgBox.aleart(this, "Bạn hãy điền đúng ngày dd-MM-yyy");
+                return null;
+            }
+
+        }
+
+        if (date == null ) {
+            MsgBox.aleart(this, "Bạn hãy điền đủ  ngày");
+            return null;
+        }
+
+        if (date != null ) {
+
+            System.out.println("Vaof ");
+            if (!Utils.Validate.isDate(XDate.toString(date, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                txtNgaySinh.requestFocus();
+                return null;
+            }
+            if (!Utils.Validate.isDate(XDate.toString(date, "dd-MM-yyyy"))) {
                 MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
                 txtNgaySinh.requestFocus();
                 return null;
             }
             try {
-                XDate.toDate(ngaySinh, "dd-MM-yyyy");
+                XDate.toDate(XDate.toString(date, "dd-MM-yyyy"), "dd-MM-yyyy");
+              //  XDate.toDate(XDate.toString(date2, "dd-MM-yyyy"), "dd-MM-yyyy");
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+
+                return null;
+            }
+
+           
+        }
+
+        if (Utils.Validate.isEmpty(XDate.toString(date, "dd-MM-yyyy"))) {
+            MsgBox.aleart(this, "Ngày bắt đầu không được để trống");
+            txtNgaySinh.requestFocus();
+            return null;
+        } else {
+            if (!Utils.Validate.isDate(XDate.toString(date, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày bắt đầu sai định dạng dd-MM-yyyy");
+                txtNgaySinh.requestFocus();
+                return null;
+            }
+            try {
+                XDate.toDate(XDate.toString(date, "dd-MM-yyyy"), "dd-MM-yyyy");
             } catch (Exception e) {
                 MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
                 txtNgaySinh.requestFocus();
                 return null;
             }
         }
-        date = XDate.convertDateFormat(ngaySinh, "MM-dd-yyyy");
+
+        if (Utils.Validate.isEmpty(XDate.toString(date, "dd-MM-yyyy"))) {
+            MsgBox.aleart(this, "Ngày kết thúc không được để trống");
+            txtNgaySinh.requestFocus();
+            return null;
+        } else {
+            if (!Utils.Validate.isDate(XDate.toString(date, "dd-MM-yyyy"))) {
+                MsgBox.aleart(this, "Ngày kết thúc sai định dạng dd-MM-yyyy");
+                txtNgaySinh.requestFocus();
+                return null;
+            }
+            try {
+                XDate.toDate(XDate.toString(date, "dd-MM-yyyy"), "dd-MM-yyyy");
+            } catch (Exception e) {
+                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+                txtNgaySinh.requestFocus();
+                return null;
+            }
+        }
+        //date = XDate.convertDateFormat(date, "MM-dd-yyyy");
 
         return new KhachHang(nhanVien, maKH, tenKH, sdt, date, gioiTinh, email, diaChi);
     }
@@ -754,47 +820,47 @@ public class Form_KhachHang extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblKHMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKHMouseClicked
-       pbgTienDo.setMaximum(0);
-            pbgTienDo.setValue(0);
+        pbgTienDo.setMaximum(0);
+        pbgTienDo.setValue(0);
         index = tblKH.getSelectedRow();
         setBtn();
         showData(index);
         KhachHang khachHang = khachHangRepository.getAll(page, lmit).get(index);
         String maKH = txtMaKH.getText().trim();
         listLSGD = khachHangRepository.listLSGDByMaKH(maKH, page2, lmit);
-        
-        if (khachHang.getMaKhachHang().equals("KH000") || khachHang.getCapBac()==3) {
-                pbgTienDo.setMaximum(0);
-                pbgTienDo.setValue(0);
-            }
-            if (khachHang.getCapBac() == null) {
 
-            } else {
-                if (khachHang.getCapBac() == 0 && !khachHang.getMaKhachHang().equals("KH000")) {
-                    pbgTienDo.setMaximum(5000000);
-                    BigDecimal money = khachHangRepository.getTongTienKH(maKH);
-                    if (money != null) {
-                        int tien = (int) money.doubleValue();
-                        pbgTienDo.setValue(tien);
-                    }
-                }
-                if (khachHang.getCapBac() == 1) {
-                    pbgTienDo.setMaximum(10000000);
-                    BigDecimal money = khachHangRepository.getTongTienKH(maKH);
-                    if (money != null) {
-                        int tien = (int) money.doubleValue();
-                        pbgTienDo.setValue(tien);
-                    }
-                }
-                if (khachHang.getCapBac() == 2) {
-                    pbgTienDo.setMaximum(20000000);
-                    BigDecimal money = khachHangRepository.getTongTienKH(maKH);
-                    if (money != null) {
-                        int tien = (int) money.doubleValue();
-                        pbgTienDo.setValue(tien);
-                    }
+        if (khachHang.getMaKhachHang().equals("KH000") || khachHang.getCapBac() == 3) {
+            pbgTienDo.setMaximum(0);
+            pbgTienDo.setValue(0);
+        }
+        if (khachHang.getCapBac() == null) {
+
+        } else {
+            if (khachHang.getCapBac() == 0 && !khachHang.getMaKhachHang().equals("KH000")) {
+                pbgTienDo.setMaximum(5000000);
+                BigDecimal money = khachHangRepository.getTongTienKH(maKH);
+                if (money != null) {
+                    int tien = (int) money.doubleValue();
+                    pbgTienDo.setValue(tien);
                 }
             }
+            if (khachHang.getCapBac() == 1) {
+                pbgTienDo.setMaximum(10000000);
+                BigDecimal money = khachHangRepository.getTongTienKH(maKH);
+                if (money != null) {
+                    int tien = (int) money.doubleValue();
+                    pbgTienDo.setValue(tien);
+                }
+            }
+            if (khachHang.getCapBac() == 2) {
+                pbgTienDo.setMaximum(20000000);
+                BigDecimal money = khachHangRepository.getTongTienKH(maKH);
+                if (money != null) {
+                    int tien = (int) money.doubleValue();
+                    pbgTienDo.setValue(tien);
+                }
+            }
+        }
 //        Timer timer = new Timer(1, new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {

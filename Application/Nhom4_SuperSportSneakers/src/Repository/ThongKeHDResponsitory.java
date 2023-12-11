@@ -4,6 +4,7 @@
  */
 package Repository;
 
+import Utils.Format;
 import Utils.XDate2;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -201,7 +202,8 @@ public class ThongKeHDResponsitory {
                 nv.add(i);
                 nv.add(rs.getString(1));
                 nv.add(rs.getString(2));
-                nv.add(rs.getFloat(3));
+                nv.add(Format.format(rs.getBigDecimal(3)));
+//                nv.add(rs.getFloat(3));
                 lst.add(nv);
             }
             rs.close();
@@ -231,7 +233,7 @@ public class ThongKeHDResponsitory {
                 kh.add(i);
                 kh.add(rs.getString(1));
                 kh.add(rs.getString(2));
-                kh.add(rs.getFloat(3));
+                 kh.add(Format.format(rs.getBigDecimal(3)));
                 lst.add(kh);
             }
             rs.close();

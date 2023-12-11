@@ -77,6 +77,8 @@ public class Form_DotGiamGia extends javax.swing.JPanel {
             btnSua.setVisible(false);
             btnThem.setVisible(false);
         }
+        
+        txtNguoiTao.setText(Auth.nv.getMaNhanVien());
     }
 
     private void setBtn() {

@@ -537,58 +537,62 @@ public class Form_HoaDon extends javax.swing.JPanel {
         return date2.isAfter(date1);
     }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        index = 2;
-        Date date1 = null;
-        Date date2 = null;
-        int loai = cboLoai.getSelectedIndex() - 1;
-        int tt = cboTrangThai.getSelectedIndex() - 1;
         try {
-            date1 = txtDau.getDate();
-            date2 = txtDau1.getDate();
-        } catch (Exception e) {
-            MsgBox.aleart(this, "Ngày tháng năm ko hợp lệ");
-            return;
-        }
-        if (date1 != null || date2 != null) {
-            if (date1 == null || date2 == null) {
-                MsgBox.aleart(this, "Bạn hãy điền đủ 2 ngày");
-                return;
-            }
-
-        }
-        if (date1 != null && date2 != null) {
-
-            System.out.println("Vaof ");
-            if (!Utils.Validate.isDate(XDate.toString(date1, "dd-MM-yyyy"))) {
-                MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
-                txtDau.requestFocus();
-                return;
-            }
-            if (!Utils.Validate.isDate(XDate.toString(date2, "dd-MM-yyyy"))) {
-                MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
-                txtDau1.requestFocus();
-                return;
-            }
+            index = 2;
+            Date date1 = null;
+            Date date2 = null;
+            int loai = cboLoai.getSelectedIndex() - 1;
+            int tt = cboTrangThai.getSelectedIndex() - 1;
             try {
-                XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
-                XDate.toDate(XDate.toString(date2, "dd-MM-yyyy"), "dd-MM-yyyy");
+                date1 = txtDau.getDate();
+                date2 = txtDau1.getDate();
             } catch (Exception e) {
-                MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
-
+                MsgBox.aleart(this, "Ngày tháng năm ko hợp lệ");
                 return;
             }
+            if (date1 != null || date2 != null) {
+                if (date1 == null || date2 == null) {
+                    MsgBox.aleart(this, "Bạn hãy điền đúng 2 ngày");
+                    return;
+                }
 
-            if (!compareDates(XDate.toString(date1, "dd-MM-yyyy"), XDate.toString(date2, "dd-MM-yyyy"))) {
-                MsgBox.aleart(this, "Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
-                return;
             }
+            if (date1 != null && date2 != null) {
+
+                System.out.println("Vaof ");
+                if (!Utils.Validate.isDate(XDate.toString(date1, "dd-MM-yyyy"))) {
+                    MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                    txtDau.requestFocus();
+                    return;
+                }
+                if (!Utils.Validate.isDate(XDate.toString(date2, "dd-MM-yyyy"))) {
+                    MsgBox.aleart(this, "Ngày sinh sai định dạng dd-MM-yyyy");
+                    txtDau1.requestFocus();
+                    return;
+                }
+                try {
+                    XDate.toDate(XDate.toString(date1, "dd-MM-yyyy"), "dd-MM-yyyy");
+                    XDate.toDate(XDate.toString(date2, "dd-MM-yyyy"), "dd-MM-yyyy");
+                } catch (Exception e) {
+                    MsgBox.aleart(this, "Ngày hoặc Tháng hoặc Năm sai ");
+
+                    return;
+                }
+
+                if (!compareDates(XDate.toString(date1, "dd-MM-yyyy"), XDate.toString(date2, "dd-MM-yyyy"))) {
+                    MsgBox.aleart(this, "Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
+                    return;
+                }
+            }
+            System.out.println(" l " + loai);
+            System.out.println(" tt " + tt);
+            listHD = hoaDon_MRepositoryM.getAll_Loc(date1, date2, loai, tt, 1, lmit);
+            listEx = hoaDon_MRepositoryM.getAll_Loc_ALL(date2, date2, loai, tt);
+            fillToTableHD(listHD);
+            lblPageTTKH.setText(page + " / " + gioiHanPage);
+        } catch (Exception e) {
+            MsgBox.aleart(this, "Bạn hay kiểm tra lại thông tin");
         }
-        System.out.println(" l " + loai);
-        System.out.println(" tt " + tt);
-        listHD = hoaDon_MRepositoryM.getAll_Loc(date1, date2, loai, tt, 1, lmit);
-        listEx = hoaDon_MRepositoryM.getAll_Loc_ALL(date2, date2, loai, tt);
-        fillToTableHD(listHD);
-        lblPageTTKH.setText(page + " / " + gioiHanPage);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txtTimKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKeyReleased
@@ -633,7 +637,7 @@ public class Form_HoaDon extends javax.swing.JPanel {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         int index = tblHD3.getSelectedRow();
-        if(index<0){
+        if (index < 0) {
             MsgBox.aleart(this, "Bạn hãy chọn một hóa đơn");
             return;
         }
@@ -804,6 +808,7 @@ public class Form_HoaDon extends javax.swing.JPanel {
             if (webcam != null) {
                 if (webcam.isOpen()) {
                     webcam.close();
+                    
                     thread.stop();
                 }
             }
