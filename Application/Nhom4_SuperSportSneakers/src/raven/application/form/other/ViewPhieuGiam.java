@@ -23,7 +23,7 @@ public class ViewPhieuGiam extends javax.swing.JDialog {
 
     private BigDecimal dtt = BigDecimal.ZERO;
     private List<PhieuGiamGia> list = new ArrayList<>();
-    private PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
+    private PhieuGiamGia vc = new PhieuGiamGia();
 
     private String maHD = "";
 
@@ -50,7 +50,7 @@ public class ViewPhieuGiam extends javax.swing.JDialog {
     }
 
     public PhieuGiamGia getPGGSelect() {
-        return phieuGiamGia;
+        return vc;
     }
 
     /**
@@ -126,8 +126,9 @@ public class ViewPhieuGiam extends javax.swing.JDialog {
 
     private void tblMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMouseClicked
         int index = tbl.getSelectedRow();
-        phieuGiamGia = list.get(index);
-        hoaDon_MRepository.updateIdDGGInHDByMaHD(maHD, phieuGiamGia);
+        vc = list.get(index);
+        System.out.println(vc.toString());
+        hoaDon_MRepository.updateIdDGGInHDByMaHD(maHD, vc);
       
         this.dispose();
     }//GEN-LAST:event_tblMouseClicked

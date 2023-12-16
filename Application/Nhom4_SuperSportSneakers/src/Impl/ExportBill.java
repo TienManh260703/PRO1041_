@@ -4,7 +4,6 @@ import Model.ChiTietHoaDon;
 import Model.HoaDon;
 import Utils.Format;
 import Utils.XDate;
-import com.itextpdf.barcodes.Barcode1D;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.color.Color;
@@ -20,42 +19,18 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.VerticalAlignment;
-import com.itextpdf.text.pdf.PdfContentByte;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.Formatter;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.ArrayList;
-import com.itextpdf.barcodes.BarcodeEAN;
-import com.itextpdf.barcodes.Barcode1D;
-import com.itextpdf.barcodes.Barcode39;
-import com.itextpdf.barcodes.BarcodeQRCode;
-import com.itextpdf.barcodes.qrcode.EncodeHintType;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
 import java.awt.Desktop;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Date;
 
-/**
- *
- * @author sonpt_ph19600
- */
 public class ExportBill {
 
     public String docPDF(HoaDon hoaDon, List<ChiTietHoaDon> lstHdct, String path, boolean open) {
@@ -122,8 +97,6 @@ public class ExportBill {
                 if (hoaDon.getIdKH().getCapBac() == 3) {
                     khachLe = new Paragraph("Khách lẻ");
                     khachLe.setFont(fontTitle).setBold().setFontSize(9f);
-//                    qr = new Paragraph("QR hóa đơn : ");
-//                    qr.setFont(fontTitle).setBold().setFontSize(9f);
                     maHD = new Paragraph("Mã HD :\t" + hoaDon.getMaHoaDon());
                 } else {
                     nameCos = new Paragraph("Họ tên:\t" + hoaDon.getIdKH().getTenKhachHang());
@@ -135,8 +108,6 @@ public class ExportBill {
 
                     phoneNumber = new Paragraph("Số điện thoại:\t" + hoaDon.getIdKH().getSdt());
                     phoneNumber.setFont(fontTitle).setFontSize(9f);
-//                    qr = new Paragraph("QR hóa đơn : ");
-//                    qr.setFont(fontTitle).setFontSize(9f);
                 }
 
                 Paragraph nhanVienThanhToan = new Paragraph("Nhân viên thanh toán:\t" + hoaDon.getIdNV().getMaNhanVien() + "-" + hoaDon.getIdNV().getTenNhanVien());
@@ -155,24 +126,7 @@ public class ExportBill {
                     document.add(khachLe);
 
                 }
-                // document.add(qr);
                 float columnWithBarcode[] = {1000f};
-//                tableHeader.addCell(new Cell().add(imageOr).setBorder(Border.NO_BORDER)
-//                        .setVerticalAlignment(VerticalAlignment.MIDDLE).setMarginTop(5f));
-//
-//                Table tableQr = new Table(columnWithBarcode)
-//                        .setMarginTop(2f)
-//                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
-//                        .setTextAlignment(TextAlignment.LEFT)
-//                        .setBorder(Border.NO_BORDER);
-//
-//                tableQr.addCell(new Cell().add(imageOr)
-//                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
-//                        .setTextAlignment(TextAlignment.LEFT)
-//                        .setBorder(Border.NO_BORDER))
-//                        .setMarginLeft(2f);
-
-                //   document.add(tableQr);
                 document.add(nhanVienThanhToan);
 
                 Paragraph listProducts = new Paragraph("Sản phẩm");
@@ -290,13 +244,13 @@ public class ExportBill {
                     tongTienKhachDua = hoaDon.getTienKhDua().add(hoaDon.getTienKhChuyenKhoan());
                 }
                 int capBac = 0;
-                if(hoaDon.getCapBac()==0){
-                    capBac =0 ;
-                }else if(hoaDon.getCapBac()==1){
-                    capBac =3 ;
-                }else if(hoaDon.getCapBac()==2){
-                    capBac =8 ;
-                }else{
+                if (hoaDon.getCapBac() == 0) {
+                    capBac = 0;
+                } else if (hoaDon.getCapBac() == 1) {
+                    capBac = 3;
+                } else if (hoaDon.getCapBac() == 2) {
+                    capBac = 8;
+                } else {
                     capBac = 0;
                 }
                 tableFotter.addCell(new Cell().add(

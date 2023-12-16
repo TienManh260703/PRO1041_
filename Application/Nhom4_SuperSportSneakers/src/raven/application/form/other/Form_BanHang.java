@@ -113,10 +113,10 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
     DefaultComboBoxModel cboModelKichThuoc1 = new DefaultComboBoxModel();
     DefaultComboBoxModel cboModelMauSac1 = new DefaultComboBoxModel();
     //
-    DefaultComboBoxModel cboModelThuongHieu = new DefaultComboBoxModel();
-    DefaultComboBoxModel cboModelKichThuoc = new DefaultComboBoxModel();
-    DefaultComboBoxModel cboModelMauSac = new DefaultComboBoxModel();
-    DefaultComboBoxModel cboModelTenGiay = new DefaultComboBoxModel();
+//    DefaultComboBoxModel cboModelThuongHieu = new DefaultComboBoxModel();
+//    DefaultComboBoxModel cboModelKichThuoc = new DefaultComboBoxModel();
+//    DefaultComboBoxModel cboModelMauSac = new DefaultComboBoxModel();
+//    DefaultComboBoxModel cboModelTenGiay = new DefaultComboBoxModel();
     private static SanPhamCT_Repository sanPhamCT_Repository = new SanPhamCT_Repository();
     public static SanPhamChiTiet spct = new SanPhamChiTiet();
     //
@@ -493,7 +493,6 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
         }
         //
         BigDecimal giamPGG = BigDecimal.ZERO;
-
         BigDecimal mucGiam = BigDecimal.ZERO; //vouCher.getMucGiam();
 
         Long idDGG = hoaDon_MRepository.getPPGByMaHD(maHD);
@@ -2068,7 +2067,9 @@ public class Form_BanHang extends javax.swing.JPanel implements Runnable, Thread
                 String ma = txtMHD.getText().trim();
 
                 if (Impl.Bill.exportPdf(path, ma)) {
-                    Email.sendFile(defaultKhachHang.getEmail(), "Cảm ơn bạn đã đặt hàng tại shop \n Đây là thông tin háo đơn của bạn: \n", "Hóa đơn", "src\\bill\\" + hoaDon.getMaHoaDon() + ".pdf",
+                    Email.sendFile(defaultKhachHang.getEmail(), "Cảm ơn bạn đã đặt hàng tại shop \n Đây là thông tin háo đơn của bạn: \n", 
+                            
+                            "Hóa đơn", "src\\bill\\" + hoaDon.getMaHoaDon() + ".pdf",
                             "src\\qrbill\\" + hoaDon.getMaHoaDon() + ".png");
                     clearFormTT();
                 }
